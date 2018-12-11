@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:background="@color/colorPrimary">
+
+
+    <ImageButton
+        android:id="@+id/action_bar_button_back"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentStart="true"
+        android:background="@color/transparent"
+        android:padding="15dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/back_arrow"
+        android:visibility="gone" />
+
+
+    <TextView
+        android:id="@+id/action_bar_tv_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:clickable="true"
+        android:maxWidth="100dp"
+        android:minHeight="24dp"
+        android:scrollHorizontally="false"
+        android:text="@string/default_city"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+
+    <ImageButton
+        android:id="@+id/action_bar_button_options"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:adjustViewBounds="false"
+        android:background="@color/transparent"
+        android:padding="15dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/options" />
+
+</RelativeLayout>
