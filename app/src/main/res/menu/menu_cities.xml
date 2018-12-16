@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/cities1"
+        android:title="@string/menu_cities_1" />
+
+    <item
+        android:id="@+id/cities2"
+        android:title="@string/menu_cities_2" />
+
+
+</menu>
