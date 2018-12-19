@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:clickable="true"
-        android:maxWidth="100dp"
+        android:maxWidth="200dp"
         android:minHeight="24dp"
         android:scrollHorizontally="false"
         android:text="@string/default_city"

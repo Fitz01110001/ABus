@@ -1,73 +1,72 @@
 package com.fitz.abus;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.view.MenuItem;
+import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fitz.abus.base.BaseActivity;
+import com.fitz.abus.base.BaseFragment;
+import com.fitz.abus.fitzView.FitzActionBar;
+import com.qmuiteam.qmui.util.QMUIDisplayHelper;
+import com.qmuiteam.qmui.widget.popup.QMUIListPopup;
+import com.qmuiteam.qmui.widget.popup.QMUIPopup;
+import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity  {
+public class MainActivity extends BaseActivity {
 
-    @BindView(R.id.action_bar_button_back)    ImageButton actionBarButtonBack;
-    @BindView(R.id.action_bar_tv_city)        TextView    actionBarTvCity;
-    @BindView(R.id.action_bar_button_options) ImageButton actionBarButtonOptions;
+    @BindView(R.id.action_bar_button_back)
+    ImageButton actionBarButtonBack;
+    @BindView(R.id.action_bar_tv_city)
+    TextView actionBarTvCity;
+    @BindView(R.id.action_bar_button_options)
+    ImageButton actionBarButtonOptions;
+    @BindView(R.id.fitzactionbar)
+    FitzActionBar fitzactionbar;
+    @BindView(R.id.main_ConstraintLayout)
+    ConstraintLayout mainConstraintLayout;
+    @BindView(R.id.main_button_add)
+    QMUIRoundButton mainButtonAdd;
 
+    private QMUIListPopup mListPopup;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        init();
+        mContext = this;
+
     }
 
-    private void init() {
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.main_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showPopMenu(view);
-            }
-        });
+    @OnClick(R.id.main_button_add)
+    public void onViewClicked() {
+
     }
 
-    protected void showPopMenu(View view) {
-        PopupMenu popupMenu = new PopupMenu(this, view);
-        popupMenu.getMenuInflater().inflate(R.menu.menu_cities, popupMenu.getMenu());
-        popupMenu.show();
 
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.options_settings:
-                        FLOG("click options_settings");
-                        break;
-                    default:
-                        break;
-                }
-                return true;
-            }
-        });
-        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-            @Override
-            public void onDismiss(PopupMenu menu) {
-                // 控件消失时的事件
-            }
-        });
+    protected Context getContext() {
+        return mContext;
     }
 
     @Override
     public int getContentViewResId() {
         return R.layout.activity_main;
     }
-
 
     @Override
     protected Activity getCurrtentActivity() {
@@ -96,14 +95,6 @@ public class MainActivity extends BaseActivity  {
     @Override
     protected int isOptionVisible() {
         return View.VISIBLE;
-    }
-
-
-
-
-    public void to2(View view) {
-        Intent intent = new Intent(this, Main2Activity.class);
-        startActivity(intent);
     }
 
 

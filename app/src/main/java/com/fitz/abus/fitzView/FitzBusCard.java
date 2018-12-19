@@ -30,7 +30,7 @@ public class FitzBusCard extends LinearLayout {
 
     private void initBusCard() {
         FLOG("initBusCard");
-        contentView = inflate(mContext,R.layout.bus__info_card,this);
+        contentView = inflate(mContext,R.layout.bus_info_card,this);
 
     }
 
