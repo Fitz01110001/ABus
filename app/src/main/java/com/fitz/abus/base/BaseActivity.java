@@ -125,7 +125,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                     transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_fragment_container, fg)
                             .addToBackStack("Item " + (i + 1)).show(fg).commit();
-                    ((BaseFragment) fg).setTV(getResources().getString(cityNameResID.get(i)));
                     FitzApplication.setDefaultCity(Integer.valueOf(cityID.get(i)));
                     mListPopup.dismiss();
                 }
