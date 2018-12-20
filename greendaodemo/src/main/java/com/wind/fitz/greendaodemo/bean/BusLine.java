@@ -11,8 +11,11 @@ import org.greenrobot.greendao.DaoException;
 @Entity
 public class BusLine {
 
-    @Id
+    @Id(autoincrement = true)
     private Long busID;
+
+    @NotNull
+    private String cityID;
 
     @Unique
     @NotNull
@@ -30,46 +33,40 @@ public class BusLine {
     @NotNull
     private String stationName;
 
-    private Long c_id;
-    @ToOne(joinProperty = "c_id")
-    private City city;
-
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 780868089)
-    private transient BusLineDao myDao;
-
-
-
-    @Generated(hash = 1589562230)
-    public BusLine(Long busID, @NotNull String lineID, @NotNull String lineName,
-            int stationID, @NotNull String stationName, Long c_id) {
+    @Generated(hash = 1098651909)
+    public BusLine(Long busID, @NotNull String cityID, @NotNull String lineID, @NotNull String lineName, int stationID,
+            @NotNull String stationName) {
         this.busID = busID;
+        this.cityID = cityID;
         this.lineID = lineID;
         this.lineName = lineName;
         this.stationID = stationID;
         this.stationName = stationName;
-        this.c_id = c_id;
     }
 
     @Generated(hash = 1871503588)
     public BusLine() {
     }
 
-    @Generated(hash = 1696970556)
-    private transient Long city__resolvedKey;
+    @Override
+    public String toString(){
+        return  "busID:"+busID +",cityID:"+cityID+",lineID:"+lineID+",lineName:"+lineName+",stationID:"+stationID+",stationName:"+stationName;
+    }
 
-
-
-    public long getBusID() {
+    public Long getBusID() {
         return this.busID;
     }
 
-    public void setBusID(long busID) {
+    public void setBusID(Long busID) {
         this.busID = busID;
+    }
+
+    public String getCityID() {
+        return this.cityID;
+    }
+
+    public void setCityID(String cityID) {
+        this.cityID = cityID;
     }
 
     public String getLineID() {
@@ -104,87 +101,5 @@ public class BusLine {
         this.stationName = stationName;
     }
 
-    public void setBusID(Long busID) {
-        this.busID = busID;
-    }
 
-    public Long getC_id() {
-        return this.c_id;
-    }
-
-    public void setC_id(Long c_id) {
-        this.c_id = c_id;
-    }
-
-    /** To-one relationship, resolved on first access. */
-    @Generated(hash = 305276241)
-    public City getCity() {
-        Long __key = this.c_id;
-        if (city__resolvedKey == null || !city__resolvedKey.equals(__key)) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            CityDao targetDao = daoSession.getCityDao();
-            City cityNew = targetDao.load(__key);
-            synchronized (this) {
-                city = cityNew;
-                city__resolvedKey = __key;
-            }
-        }
-        return city;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1543385931)
-    public void setCity(City city) {
-        synchronized (this) {
-            this.city = city;
-            c_id = city == null ? null : city.getCityID();
-            city__resolvedKey = c_id;
-        }
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1574118397)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getBusLineDao() : null;
-    }
 }

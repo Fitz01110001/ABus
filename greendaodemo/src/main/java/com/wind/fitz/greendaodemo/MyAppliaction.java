@@ -3,14 +3,9 @@ package com.wind.fitz.greendaodemo;
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.wind.fitz.greendaodemo.bean.DaoMaster;
-import com.wind.fitz.greendaodemo.bean.DaoSession;
-
 public class MyAppliaction extends Application {
 
     private static DaoSession daoSession;
-
-
 
     @Override
     public void onCreate() {
