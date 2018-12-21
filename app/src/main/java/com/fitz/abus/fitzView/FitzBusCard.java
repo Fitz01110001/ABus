@@ -106,6 +106,5 @@ public class FitzBusCard extends LinearLayout {
     public void onViewClicked() {
 
 
-
     }
 }

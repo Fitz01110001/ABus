@@ -2,9 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/options_city"
+        android:id="@+id/options_add"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/menu_switch_city" />
+        android:title="@string/menu_add_bus" />
 
     <item
         android:id="@+id/options_settings"

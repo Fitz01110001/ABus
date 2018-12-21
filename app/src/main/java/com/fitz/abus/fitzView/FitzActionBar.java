@@ -23,7 +23,6 @@ public class FitzActionBar extends RelativeLayout {
     private View.OnClickListener mActionBarClickListener;
     private Context mContext;
 
-
     public FitzActionBar(Context context) {
         super(context, null);
 
@@ -35,6 +34,8 @@ public class FitzActionBar extends RelativeLayout {
         mContext = context;
         initActionBar();
     }
+
+
 
     public void setData(View.OnClickListener viewClickListener, int backVisible, int cityVisible, int optionsVisible) {
         FLOG("setData");
@@ -58,6 +59,10 @@ public class FitzActionBar extends RelativeLayout {
         mImageButton_back = contentView.findViewById(R.id.action_bar_button_back);
         mImageButton_options = contentView.findViewById(R.id.action_bar_button_options);
 
+    }
+
+    public void setDefaultCityTV(String cityName){
+        mTextView_City.setText(cityName);
     }
 
     public void FLOG(String msg) {

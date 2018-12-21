@@ -2,6 +2,7 @@ package com.fitz.abus.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.PopupMenu;
 
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
+import com.fitz.abus.activity.AddBusActivity;
 import com.fitz.abus.fitzView.FitzActionBar;
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.widget.popup.QMUIListPopup;
@@ -37,9 +39,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     private boolean isDebug = true;
-    private String TAG = "fitz-" + this.getClass().getSimpleName();
-    private Unbinder mUnbinder;
-    private QMUIListPopup mListPopup;
     /**
      * 是否禁止旋转屏幕
      */
@@ -48,11 +47,14 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 是否允许全屏
      */
     private boolean mAllowFullScreen = true;
+    private String TAG = "fitz-" + this.getClass().getSimpleName();
+    private Unbinder mUnbinder;
+    private QMUIListPopup mListPopup;
     private FitzActionBar mFitzActionBar;
     private FragmentTransaction transaction;
     private static final String ARG_INDEX = "arg_index";
 
-
+    /** actionbar 点击事件控制*/
     private View.OnClickListener mActionBarClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -95,25 +97,27 @@ public abstract class BaseActivity extends AppCompatActivity {
         //设置状态栏颜色
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorAccent, null));
 
-        setMyActionBar();
+        setMyActionBar(getContentActionBarResId());
 
     }
 
-    protected void setMyActionBar() {
-        mFitzActionBar = (FitzActionBar) findViewById(R.id.fitzactionbar);
+    protected void setMyActionBar(int res) {
+        mFitzActionBar = (FitzActionBar) findViewById(res);
         mFitzActionBar.setData(mActionBarClickListener, isBackVisible(), isCityVisible(), isOptionVisible());
     }
 
+    /** 城市TV 弹出 QMUI popmenu*/
     private void showQMUIpopupMenu(View v) {
         if (mListPopup == null) {
-            Collection<Integer> collectionCityName = FitzApplication.getInstance().Cities.values();
+            Collection<Integer> collectionCityName = FitzApplication.Cities.values();
             final List<Integer> cityNameResID = new ArrayList<>(collectionCityName);
             List<String> cityName = new ArrayList<>();
             for(Iterator<Integer> it= cityNameResID.iterator();it.hasNext();)
             {
                 cityName.add(getResources().getString(it.next()));
             }
-            Set<String> collectionCityID = FitzApplication.getInstance().Cities.keySet();
+
+            Set<String> collectionCityID = FitzApplication.Cities.keySet();
             final List<String> cityID = new ArrayList<>(collectionCityID);
             ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.simple_list_item, cityName);
 
@@ -125,8 +129,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                     transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_fragment_container, fg)
                             .addToBackStack("Item " + (i + 1)).show(fg).commit();
-                    FitzApplication.setDefaultCity(Integer.valueOf(cityID.get(i)));
                     mListPopup.dismiss();
+
+
+                    FitzApplication.setDefaultCity(Integer.valueOf(cityID.get(i)));
+                    mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName(String.valueOf(cityID.get(i))));
                 }
             });
             /*mListPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -150,6 +157,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         return mFitzActionBar;
     }
 
+    /** 选项button 弹出popmenu*/
     protected void showPopMenu(int res, View view) {
         // 这里的view代表popupMenu需要依附的view
         PopupMenu popupMenu = new PopupMenu(this, view);
@@ -161,6 +169,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
+                    case R.id.options_add:
+                        // to-do bug
+                        /*Intent intent = new Intent(getCurrtentActivity(),AddBusActivity.class);
+                        //intent.addFlags();
+                        startActivity(intent);*/
+                        break;
                     case R.id.options_settings:
                         FLOG("click options_settings");
                         break;
@@ -169,12 +183,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                         break;
                     case R.id.options_feedback:
                         FLOG("click options_feedback");
-                        break;
-                    case R.id.cities1:
-                        FLOG("click cities1");
-                        break;
-                    case R.id.cities2:
-                        FLOG("click cities2");
                         break;
                     default:
                         break;
@@ -198,23 +206,29 @@ public abstract class BaseActivity extends AppCompatActivity {
         return fragment;
     }
 
+    /** 获取子类 context*/
+    protected abstract Context getContext();
+
+    /** 获取子类view资源*/
     protected abstract int getContentViewResId();
 
+    /** 获取当前activity对象*/
     protected abstract Activity getCurrtentActivity();
 
-    // 只在主界面可点击
-    protected abstract boolean isCitySelectable();
-
-    // 主界面不应显示
+    /** 主界面不应显示*/
     protected abstract int isBackVisible();
 
-    // 应始终显示
+    /** 应始终显示*/
     protected abstract int isCityVisible();
 
-    // 应始终显示
+    /** 应始终显示*/
     protected abstract int isOptionVisible();
 
-    protected abstract Context getContext();
+    /** 只在主界面可点击*/
+    protected abstract boolean isCitySelectable();
+
+    /** 获取当前activity包含的 actionbar res*/
+    protected abstract int getContentActionBarResId();
 
     @Override
     protected void onStart() {

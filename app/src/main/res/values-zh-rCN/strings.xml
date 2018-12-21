@@ -11,5 +11,5 @@
     <string name="menu_feedback">反馈</string>
     <string name="menu_cities_sh">上海</string>
     <string name="menu_cities_wh">芜湖</string>
-    <string name="menu_switch_city">切换城市</string>
+    <string name="menu_add_bus">添加</string>
 </resources>
