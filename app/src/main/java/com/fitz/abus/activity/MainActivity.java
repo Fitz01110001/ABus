@@ -1,30 +1,17 @@
 package com.fitz.abus.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fitz.abus.R;
 import com.fitz.abus.base.BaseActivity;
-import com.fitz.abus.base.BaseFragment;
-import com.fitz.abus.fitzView.FitzActionBar;
-import com.qmuiteam.qmui.util.QMUIDisplayHelper;
+import com.fitz.abus.fitzview.FitzActionBar;
 import com.qmuiteam.qmui.widget.popup.QMUIListPopup;
-import com.qmuiteam.qmui.widget.popup.QMUIPopup;
 import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -70,15 +57,10 @@ public class MainActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
-    @Override
-    protected Activity getCurrtentActivity() {
-        return this;
-    }
-
     /** 主界面可以点击城市列表*/
     @Override
     protected boolean isCitySelectable() {
-        return false;
+        return true;
     }
 
     @Override

@@ -2,7 +2,8 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/qmui_config_color_white">
 
 
     <TableRow
@@ -32,6 +33,30 @@
     <TableRow
         android:id="@+id/row2"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="起始时间"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_seTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="15sp" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/row3"
+        android:layout_width="match_parent"
         android:layout_height="20dp"
         android:orientation="horizontal">
 
@@ -56,30 +81,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textSize="20sp" />
-    </TableRow>
-
-    <TableRow
-        android:id="@+id/row3"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="起始时间"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/tv_seTime"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="15sp" />
-
     </TableRow>
 
 

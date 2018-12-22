@@ -4,19 +4,18 @@ import com.wind.fitz.greendaodemo.MyAppliaction;
 
 import java.util.List;
 
-public class ABusData {
+public class BusLineDBUtils {
 
-    private ABusData() {
+    private BusLineDBUtils() {
     }
 
-    public static ABusData getInstance(){
+    public static BusLineDBUtils getInstance(){
         return ABusDataHolder.ABusData;
     }
 
     private static class ABusDataHolder{
-        private static final ABusData ABusData = new ABusData();
+        private static final BusLineDBUtils ABusData = new BusLineDBUtils();
     }
-
 
     public void insertBus(BusLine busLine) {
         MyAppliaction.getDaoInstant().getBusLineDao().insertOrReplace(busLine);
@@ -37,7 +36,5 @@ public class ABusData {
     public List<BusLine> queryRawBus(String cityID) {
         return MyAppliaction.getDaoInstant().getBusLineDao().queryRaw("where CITY_ID = ?", cityID);
     }
-
-
 
 }

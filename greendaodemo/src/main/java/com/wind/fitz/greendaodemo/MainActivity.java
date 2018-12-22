@@ -6,10 +6,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.wind.fitz.greendaodemo.bean.ABusData;
+import com.wind.fitz.greendaodemo.bean.BusLineDBUtils;
 import com.wind.fitz.greendaodemo.bean.BusLine;
 
-import java.nio.Buffer;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 BusLine bus = new BusLine(1L,"021","763","763路",5,"水清路报春路");
-                ABusData.getInstance().insertBus(bus);
+                BusLineDBUtils.getInstance().insertBus(bus);
 
-                List<BusLine> busLine= ABusData.getInstance().queryRawBus("021");
+                List<BusLine> busLine= BusLineDBUtils.getInstance().queryRawBus("021");
                 for (BusLine businfo:busLine){
                     if (businfo.getLineID().equals("763")){
                         mTextView.setText(businfo.toString());

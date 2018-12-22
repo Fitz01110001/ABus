@@ -1,4 +1,4 @@
-package com.fitz.abus.fitzView;
+package com.fitz.abus.fitzview;
 
 import android.content.Context;
 import android.graphics.Bitmap;

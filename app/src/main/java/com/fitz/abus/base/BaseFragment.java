@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.fitz.abus.R;
-import com.fitz.abus.fitzView.FitzBusCard;
+import com.fitz.abus.fitzview.FitzBusCard;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;

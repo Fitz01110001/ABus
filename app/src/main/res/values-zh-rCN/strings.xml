@@ -12,4 +12,7 @@
     <string name="menu_cities_sh">上海</string>
     <string name="menu_cities_wh">芜湖</string>
     <string name="menu_add_bus">添加</string>
+    <string name="input_prompt_sh" >请输入完整的线路名称，仅限中文和数字</string>
+    <string name="input_prompt_wh">请输入线路名称，仅需数字即可</string>
+    <string name="input_line_hint">请输入线路名称</string>
 </resources>

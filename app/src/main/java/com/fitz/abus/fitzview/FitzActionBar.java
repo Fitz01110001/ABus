@@ -1,4 +1,4 @@
-package com.fitz.abus.fitzView;
+package com.fitz.abus.fitzview;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 
 public class FitzActionBar extends RelativeLayout {
@@ -46,6 +47,7 @@ public class FitzActionBar extends RelativeLayout {
         mImageButton_back.setVisibility(backVisible);
         mTextView_City.setVisibility(cityVisible);
         mImageButton_options.setVisibility(optionsVisible);
+        mTextView_City.setText(FitzApplication.getInstance().getDefaultCityName());
     }
 
 

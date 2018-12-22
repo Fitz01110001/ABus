@@ -1,6 +1,5 @@
 package com.fitz.abus.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -20,20 +19,29 @@ import android.widget.PopupMenu;
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.activity.AddBusActivity;
-import com.fitz.abus.fitzView.FitzActionBar;
+import com.fitz.abus.fitzview.FitzActionBar;
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.widget.popup.QMUIListPopup;
 import com.qmuiteam.qmui.widget.popup.QMUIPopup;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+/**
+ * @ProjectName: ABus
+ * @Package: com.fitz.abus.base
+ * @ClassName: BaseActivity
+ * @Author: Fitz
+ * @CreateDate: 2018/12/20 13:10
+ */
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -61,7 +69,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.action_bar_button_back:
                     FLOG("click actionbar back");
-                    getCurrtentActivity().finish();
+                    onBackPressed();
                     break;
                 case R.id.action_bar_tv_city:
                     FLOG("click actionbar city");
@@ -83,6 +91,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         // 一些系统配置
         if (!isAllowScreenRoate) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -132,8 +141,8 @@ public abstract class BaseActivity extends AppCompatActivity {
                     mListPopup.dismiss();
 
 
-                    FitzApplication.setDefaultCity(Integer.valueOf(cityID.get(i)));
-                    mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName(String.valueOf(cityID.get(i))));
+                    FitzApplication.setDefaultCityKey(cityID.get(i));
+                    mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());
                 }
             });
             /*mListPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
@@ -171,9 +180,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.options_add:
                         // to-do bug
-                        /*Intent intent = new Intent(getCurrtentActivity(),AddBusActivity.class);
+                        Intent intent = new Intent(getContext(),AddBusActivity.class);
                         //intent.addFlags();
-                        startActivity(intent);*/
+                        startActivity(intent);
                         break;
                     case R.id.options_settings:
                         FLOG("click options_settings");
@@ -211,9 +220,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /** 获取子类view资源*/
     protected abstract int getContentViewResId();
-
-    /** 获取当前activity对象*/
-    protected abstract Activity getCurrtentActivity();
 
     /** 主界面不应显示*/
     protected abstract int isBackVisible();
@@ -259,6 +265,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
+        if(EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     public void FLOG(String msg) {

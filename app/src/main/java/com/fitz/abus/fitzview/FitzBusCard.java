@@ -1,10 +1,10 @@
-package com.fitz.abus.fitzView;
+package com.fitz.abus.fitzview;
 
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.fitz.abus.R;
@@ -19,7 +19,7 @@ import butterknife.OnClick;
  * @Author: Fitz
  * @CreateDate: 2018/12/16 20:10
  */
-public class FitzBusCard extends LinearLayout {
+public class FitzBusCard extends TableLayout {
 
     @BindView(R.id.tv_line_name)
     TextView tvLineName;
@@ -104,7 +104,7 @@ public class FitzBusCard extends LinearLayout {
 
     @OnClick(R.id.button)
     public void onViewClicked() {
-
+        // TODO: 2018/12/22 切换bus方向需求待评估 
 
     }
 }

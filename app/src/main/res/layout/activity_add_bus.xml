@@ -6,13 +6,58 @@
     android:layout_height="match_parent"
     tools:context=".activity.AddBusActivity">
 
-    <com.fitz.abus.fitzView.FitzActionBar
+    <com.fitz.abus.fitzview.FitzActionBar
         android:id="@+id/add_fitzactionbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
-    </com.fitz.abus.fitzView.FitzActionBar>
+    </com.fitz.abus.fitzview.FitzActionBar>
+
+    <EditText
+        android:id="@+id/add_textview_inputLine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        android:elevation="0dp"
+        android:ems="20"
+        android:gravity="center"
+        android:theme="@style/MyEditText"
+        android:imeOptions="actionSearch"
+        android:hint="@string/input_line_hint"
+        android:inputType="textCapCharacters|textCapWords|number"
+        android:textCursorDrawable="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_fitzactionbar" />
+
+    <com.fitz.abus.fitzview.FitzRecyclerView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_textview_inputLine" />
+
+    <TextView
+        android:id="@+id/add_textview_input_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/input_prompt_sh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_textview_inputLine" />
 
 </android.support.constraint.ConstraintLayout>

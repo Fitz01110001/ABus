@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 28
@@ -27,9 +28,17 @@ android {
 
 }
 
+greendao {
+    //版本号，升级时可配置
+    schemaVersion 1
+    daoPackage 'com.fitz.abus'
+    targetGenDir 'src/main/java'
+}
+
 dependencies {
     implementation 'com.qmuiteam:qmui:1.1.3'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'org.greenrobot:greendao:3.2.2'
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'

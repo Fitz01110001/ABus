@@ -11,4 +11,7 @@
     <string name="menu_cities_sh">ShangHai</string>
     <string name="menu_cities_wh">WuHu</string>
     <string name="menu_add_bus">Add</string>
+    <string name="input_prompt_sh" >Please enter the full line name,Such as \"763路\"、\"46路区间\"</string>
+    <string name="input_prompt_wh">Please enter the line name, just the number</string>
+    <string name="input_line_hint">Please enter the line name</string>
 </resources>

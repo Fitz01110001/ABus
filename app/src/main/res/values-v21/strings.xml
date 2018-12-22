@@ -10,4 +10,5 @@
     <string name="menu_feedback">Feedback</string>
     <string name="menu_cities_sh">ShangHai</string>
     <string name="menu_cities_wh">WuHu</string>
+    <string name="input_prompt_sh" >Please enter the full line name, only Chinese and numbers</string>
 </resources>

@@ -20,18 +20,18 @@ public class FitzApplication extends Application {
 
 
     /** 从Cities中取出对应区号的城市名称*/
-    public String getDefaultCityName(String key) {
-        return getResources().getString(Cities.get(key));
+    public String getDefaultCityName() {
+        return getResources().getString(Cities.get(defaultCityKey));
     }
 
-    public static void setDefaultCity(int defaultCity) {
-        FitzApplication.defaultCity = defaultCity;
+    public static void setDefaultCityKey(String defaultCityKey) {
+        FitzApplication.defaultCityKey = defaultCityKey;
     }
 
-    private static int defaultCity;
+    private static String defaultCityKey;
 
-    public int getDefaultCityKey() {
-        return defaultCity;
+    public String getDefaultCityKey() {
+        return defaultCityKey;
     }
 
     /** 存储区号-城市，每个城市需要单独适配*/
@@ -46,13 +46,13 @@ public class FitzApplication extends Application {
     public void onCreate() {
         super.onCreate();
         application = this;
-        defaultCity = readDefaultCityID();
+        defaultCityKey = readDefaultCityKey();
 
         setupDatabase();
     }
 
     private void setupDatabase() {
-        //创建数据库shop.db
+        //abus.db
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "abus.db", null);
         //获取可写数据库
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -67,10 +67,10 @@ public class FitzApplication extends Application {
         return daoSession;
     }
 
-    private int readDefaultCityID() {
-        // to-do
+    private String readDefaultCityKey() {
+        // TODO: 2018/12/22
         // 应该从数据库中读
-        return 0;
+        return "021";
     }
 
 }
