@@ -18,20 +18,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     //优化编译速度
     dexOptions {
         dexInProcess true
         preDexLibraries true
         javaMaxHeapSize "4g"//越大越好
     }
-
 }
 
 greendao {
     //版本号，升级时可配置
     schemaVersion 1
-    daoPackage 'com.fitz.abus'
+    daoPackage 'com.fitz.abus.greendao'
     targetGenDir 'src/main/java'
 }
 
@@ -39,6 +37,7 @@ dependencies {
     implementation 'com.qmuiteam:qmui:1.1.3'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
     //noinspection GradleCompatible
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'

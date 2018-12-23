@@ -1,4 +1,4 @@
-package com.fitz.abus.Bean;
+package com.fitz.abus.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -8,7 +8,7 @@ import org.greenrobot.greendao.annotation.Unique;
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class BusLineBean {
+public class BusLineDB {
 
     @Id(autoincrement = true)
     private Long busID;
@@ -53,8 +53,10 @@ public class BusLineBean {
     @Transient
     private String upLine;
 
-    @Generated(hash = 1395041959)
-    public BusLineBean(Long busID, @NotNull String cityID, @NotNull String lineID, @NotNull String lineName, int stationID, @NotNull String stationName) {
+
+
+    @Generated(hash = 852073903)
+    public BusLineDB(Long busID, @NotNull String cityID, @NotNull String lineID, @NotNull String lineName, int stationID, @NotNull String stationName) {
         this.busID = busID;
         this.cityID = cityID;
         this.lineID = lineID;
@@ -63,9 +65,11 @@ public class BusLineBean {
         this.stationName = stationName;
     }
 
-    @Generated(hash = 313166461)
-    public BusLineBean() {
+    @Generated(hash = 1982642731)
+    public BusLineDB() {
     }
+
+    
 
     @Override
     public String toString() {

@@ -36,6 +36,7 @@
         app:layout_constraintTop_toBottomOf="@+id/add_fitzactionbar" />
 
     <com.fitz.abus.fitzview.FitzRecyclerView
+        android:id="@+id/add_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"

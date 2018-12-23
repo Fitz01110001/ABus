@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.fitz.abus.R;
 import com.fitz.abus.base.BaseActivity;
 import com.fitz.abus.fitzview.FitzActionBar;
-import com.qmuiteam.qmui.widget.popup.QMUIListPopup;
 import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
 
 import butterknife.BindView;
@@ -31,7 +30,6 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.main_button_add)
     QMUIRoundButton mainButtonAdd;
 
-    private QMUIListPopup mListPopup;
     private Context mContext;
 
     @Override

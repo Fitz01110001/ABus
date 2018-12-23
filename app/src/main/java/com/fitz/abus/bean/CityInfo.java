@@ -1,9 +1,5 @@
-package com.fitz.abus.Bean;
+package com.fitz.abus.bean;
 
-
-import com.fitz.abus.R;
-
-import java.util.HashMap;
 
 public class CityInfo {
     private int cityID;

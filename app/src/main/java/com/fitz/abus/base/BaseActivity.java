@@ -91,7 +91,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
         // 一些系统配置
         if (!isAllowScreenRoate) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -236,8 +236,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /** 获取当前activity包含的 actionbar res*/
     protected abstract int getContentActionBarResId();
 
-    @Override
-    protected void onStart() {
+    protected void onCallBefore() {
         super.onStart();
     }
 
