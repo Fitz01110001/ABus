@@ -1,5 +1,8 @@
 package com.fitz.abus.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @ProjectName: ABus
  * @Package: com.fitz.abus.bean
@@ -8,7 +11,7 @@ package com.fitz.abus.bean;
  * @CreateDate: 2018/12/23 17:34
  */
 @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
-public class BusBaseSHBean {
+public class BusBaseSHBean  implements Parcelable {
 
     private String start_latetime;
     private String line_name;
@@ -18,6 +21,17 @@ public class BusBaseSHBean {
     private String line_id;
     private String start_stop;
     private String end_latetime;
+
+    protected BusBaseSHBean(Parcel in) {
+        start_latetime = in.readString();
+        line_name = in.readString();
+        end_earlytime = in.readString();
+        start_earlytime = in.readString();
+        end_stop = in.readString();
+        line_id = in.readString();
+        start_stop = in.readString();
+        end_latetime = in.readString();
+    }
 
     public void setStartLatetime(String start_latetime) {
         this.start_latetime = start_latetime;
@@ -84,4 +98,34 @@ public class BusBaseSHBean {
     public boolean nonNull(){
         return getLine_name() != null && getEnd_stop() != null;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(start_latetime);
+        parcel.writeString(line_name);
+        parcel.writeString(end_earlytime);
+        parcel.writeString(start_earlytime);
+        parcel.writeString(end_stop);
+        parcel.writeString(line_id);
+        parcel.writeString(start_stop);
+        parcel.writeString(end_latetime);
+
+    }
+
+    public static final Creator<BusBaseSHBean> CREATOR = new Creator<BusBaseSHBean>() {
+        @Override
+        public BusBaseSHBean createFromParcel(Parcel in) {
+            return new BusBaseSHBean(in);
+        }
+
+        @Override
+        public BusBaseSHBean[] newArray(int size) {
+            return new BusBaseSHBean[size];
+        }
+    };
 }

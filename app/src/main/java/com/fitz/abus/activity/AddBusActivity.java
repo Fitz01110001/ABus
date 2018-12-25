@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.fitz.abus.R;
-import com.fitz.abus.adapter.FitzRecycleAdapter;
+import com.fitz.abus.adapter.BusLineRecycleAdapter;
 import com.fitz.abus.base.BaseActivity;
 import com.fitz.abus.bean.BusBaseSHBean;
 import com.fitz.abus.fitzview.FitzActionBar;
@@ -79,14 +79,14 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public void onCallError(String meg) {
                 super.onCallError(meg);
+                addTextViewInputPrompt.setVisibility(View.VISIBLE);
+                addRecyclerView.setVisibility(View.GONE);
                 addTextViewInputPrompt.setText("shit happens !!!\n");
             }
         };
     }
 
     private void handleSuccess(BusBaseSHBean busBaseSHBean) {
-        addTextViewInputPrompt.setVisibility(View.GONE);
-        addRecyclerView.setVisibility(View.VISIBLE);
         if (busBaseSHBean.nonNull()) {
             list.clear();
             list.add(busBaseSHBean);
@@ -94,15 +94,23 @@ public class AddBusActivity extends BaseActivity {
             list.add(busBaseSHBean);
             list.add(busBaseSHBean);
             list.add(busBaseSHBean);
-
         }
+        if(addRecyclerView.getVisibility() != View.VISIBLE){
+            addTextViewInputPrompt.setVisibility(View.GONE);
+            addRecyclerView.setVisibility(View.VISIBLE);
+            initRecycleView();
+        }
+        //设置Adapter
+        addRecyclerView.setAdapter(new BusLineRecycleAdapter(mContext, list));
+
+    }
+
+    private void initRecycleView(){
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         //设置布局管理器
         addRecyclerView.setLayoutManager(layoutManager);
         //设置为垂直布局，这也是默认的
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
-        //设置Adapter
-        addRecyclerView.setAdapter(new FitzRecycleAdapter(mContext, list));
         //设置分隔线
         addRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, OrientationHelper.VERTICAL));
         //设置增加或删除条目的动画
