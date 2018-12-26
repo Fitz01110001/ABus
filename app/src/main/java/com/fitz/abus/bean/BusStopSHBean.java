@@ -25,4 +25,7 @@ public class BusStopSHBean {
         return lineResults0;
     }
 
+    public boolean nonNull(){
+        return getLineResults1() != null && getLineResults0() != null;
+    }
 }

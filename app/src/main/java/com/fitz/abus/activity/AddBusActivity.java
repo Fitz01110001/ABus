@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
+import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -23,6 +24,8 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 
@@ -65,9 +68,7 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
-                FLOG("onCallSuccess" + data);
                 BusBaseSHBean busBaseSHBean = new Gson().fromJson(data, BusBaseSHBean.class);
-                FLOG("onCallSuccess" + busBaseSHBean.getLine_name() + busBaseSHBean.getEnd_stop());
                 handleSuccess(busBaseSHBean);
             }
 
@@ -125,7 +126,7 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    //do something
+                    //
                     new FitzHttpUtils().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                     return true;
                 }

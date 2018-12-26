@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.fitz.abus.R;
-import com.fitz.abus.activity.BusStationListActivity;
+import com.fitz.abus.activity.BusStopListActivity;
 import com.fitz.abus.bean.BusBaseSHBean;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
             @Override
             public void onClick(View v) {
                 Log.d("BusLineRecycleAdapter","click"+"position:"+pos);
-                Intent intent = new Intent(mcontext,BusStationListActivity.class);
+                Intent intent = new Intent(mcontext,BusStopListActivity.class);
                 Bundle b = new Bundle();
                 b.putParcelable("busbaseSH", mList.get(pos));
                 intent.putExtras(b);

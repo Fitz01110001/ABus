@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.AddBusActivity" />
-        <activity android:name=".activity.BusStationListActivity" />
+        <activity android:name=".activity.BusStopListActivity" />
 
     </application>
 

@@ -21,18 +21,17 @@ import okhttp3.Response;
  */
 public class FitzHttpUtils {
 
-    private OkHttpClient.Builder mOkHttpClientBuilder;
-    private OkHttpClient mOkHttpClient;
-    private static final String URL_SH = "http://apps.eshimin.com/traffic/gjc/";
-    private static final String JSON_TYPE = "application/json;charset=UTF-8";
-    private static final String CONTENT_TYPE = "Content-Type";
-
     /**
      * 超时时间
      * 5s
      */
     public static final int TIMEOUT = 5 * 1000;
-
+    private static final String URL_SH = "http://apps.eshimin.com/traffic/gjc/";
+    private static final String JSON_TYPE = "application/json;charset=UTF-8";
+    private static final String CONTENT_TYPE = "Content-Type";
+    private static final String EMPTY = "{ }";
+    private OkHttpClient.Builder mOkHttpClientBuilder;
+    private OkHttpClient mOkHttpClient;
     private Handler handler = new Handler(Looper.getMainLooper());
 
     public FitzHttpUtils() {
@@ -47,20 +46,21 @@ public class FitzHttpUtils {
 
     }
 
-    /** 获取上海公交线路信息
-     *  返回示例：
-     *  {
-     *   "start_latetime" : "23:50",
-     *   "line_name" : "763",
-     *   "end_earlytime" : "06:00",
-     *   "start_earlytime" : "05:20",
-     *   "end_stop" : "上海南站(北广场)",
-     *   "line_id" : "076300",
-     *   "start_stop" : "莘庄地铁站(北广场)",
-     *   "end_latetime" : "23:58"
+    /**
+     * 获取上海公交线路信息
+     * 返回示例：
+     * {
+     * "start_latetime" : "23:50",
+     * "line_name" : "763",
+     * "end_earlytime" : "06:00",
+     * "start_earlytime" : "05:20",
+     * "end_stop" : "上海南站(北广场)",
+     * "line_id" : "076300",
+     * "start_stop" : "莘庄地铁站(北广场)",
+     * "end_latetime" : "23:58"
      * }
-     * */
-    public void getBusBaseSH(String busLine,final AbstractHttpCallBack callBack) {
+     */
+    public void getBusBaseSH(String busLine, final AbstractHttpCallBack callBack) {
         final Request request = new Request.Builder().url(URL_SH + "getBusBase?name=" + busLine + "%E8%B7%AF\n").build();
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
@@ -94,7 +94,7 @@ public class FitzHttpUtils {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful() && isJsonData(response)) {
-                    onSuccess(callBack,response.body().string());
+                    onSuccess(callBack, response.body().string());
                 } else {
                     OnError(callBack, response.message());
                 }
@@ -103,26 +103,27 @@ public class FitzHttpUtils {
         });
     }
 
-    /** 获取上海公交线路站点列表
-     *  返回示例
-     *  {
-     *   "lineResults1" : {
-     *     "stops" : [ {
-     *       "id" : "1",
-     *       "zdmc" : "上海南站(北广场)"
-     *     } ],
-     *     "direction" : "false"
-     *   },
-     *   "lineResults0" : {
-     *     "stops" : [ {
-     *       "id" : "1",
-     *       "zdmc" : "莘庄地铁站(北广场)"
-     *     }],
-     *     "direction" : "true"
-     *   }
+    /**
+     * 获取上海公交线路站点列表
+     * 返回示例
+     * {
+     * "lineResults1" : {
+     * "stops" : [ {
+     * "id" : "1",
+     * "zdmc" : "上海南站(北广场)"
+     * } ],
+     * "direction" : "false"
+     * },
+     * "lineResults0" : {
+     * "stops" : [ {
+     * "id" : "1",
+     * "zdmc" : "莘庄地铁站(北广场)"
+     * }],
+     * "direction" : "true"
      * }
-     * */
-    public void getBusStopSH(String busLine,String lineid,final AbstractHttpCallBack callBack){
+     * }
+     */
+    public void getBusStopSH(String busLine, String lineid, final AbstractHttpCallBack callBack) {
         final Request request = new Request.Builder().url(URL_SH + "getBusStop?name=" + busLine + "%E8%B7%AF&lineid=" + lineid + "\n").build();
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
@@ -155,7 +156,7 @@ public class FitzHttpUtils {
              */
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && isJsonData(response)) {
                     onSuccess(callBack, response.body().string());
                 } else {
                     OnError(callBack, response.message());
@@ -165,21 +166,22 @@ public class FitzHttpUtils {
         });
     }
 
-    /** 获取上海公交到站信息
-     *  返回示例
+    /**
+     * 获取上海公交到站信息
+     * 返回示例
      * {
-     *   "cars" : [ {
-     *     "time" : "478",
-     *     "distance" : "2357",
-     *     "terminal" : "沪D-G3936",
-     *     "stopdis" : "4"
-     *   } ]
+     * "cars" : [ {
+     * "time" : "478",
+     * "distance" : "2357",
+     * "terminal" : "沪D-G3936",
+     * "stopdis" : "4"
+     * } ]
      * }
-     * */
-    public void getArriveBaseSH(String busLine,String lineid,String stopid,int direction,final AbstractHttpCallBack callBack){
-        final Request request = new Request.Builder().url(URL_SH + "getBusStop?name=" + busLine +
-                                                          "%E8%B7%AF&lineid=" + lineid + "&stopid=" + stopid + "&direction=" + direction + "\n")
-                                                     .build();
+     */
+    public void getArriveBaseSH(String busName, String lineid, String stopid, int direction, final AbstractHttpCallBack callBack) {
+        final Request request = new Request.Builder().url(URL_SH + "getArriveBase?name=" + busName +
+                "%E8%B7%AF&lineid=" + lineid + "&stopid=" + stopid + "&direction=" + direction + "\n")
+                .build();
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
@@ -211,8 +213,10 @@ public class FitzHttpUtils {
              */
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    onSuccess(callBack, response.body().string());
+                // response.body().string() 一次性数据
+                String data = response.body().string();
+                if (response.isSuccessful() && hasArriveBaseDataSH(data)) {
+                    onSuccess(callBack, data);
                 } else {
                     OnError(callBack, response.message());
                 }
@@ -224,21 +228,30 @@ public class FitzHttpUtils {
 
     /**
      * 吐槽：上海公交查询错误的线路，返回的不是错误码，而是网页……
-     * */
-    private boolean isJsonData(Response response){
-        if(JSON_TYPE.equals(response.headers().get(CONTENT_TYPE))){
+     */
+    private boolean isJsonData(Response response) {
+        if (JSON_TYPE.equals(response.headers().get(CONTENT_TYPE))) {
             return true;
         }
         return false;
     }
 
-    public void OnStart(AbstractHttpCallBack callBack){
-        if(callBack!=null){
+    private boolean hasArriveBaseDataSH(String data) {
+        if (EMPTY.equals(data)) {
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    public void OnStart(AbstractHttpCallBack callBack) {
+        if (callBack != null) {
             callBack.onCallBefore();
         }
     }
-    public void onSuccess(final AbstractHttpCallBack callBack, final String data){
-        if(callBack!=null){
+
+    public void onSuccess(final AbstractHttpCallBack callBack, final String data) {
+        if (callBack != null) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {//在主线程操作
@@ -247,8 +260,9 @@ public class FitzHttpUtils {
             });
         }
     }
-    public void OnError(final AbstractHttpCallBack callBack, final String msg){
-        if(callBack!=null){
+
+    public void OnError(final AbstractHttpCallBack callBack, final String msg) {
+        if (callBack != null) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -259,15 +273,21 @@ public class FitzHttpUtils {
     }
 
     public static abstract class AbstractHttpCallBack {
-        /** 查询前准备*/
-        public void onCallBefore(){}
-        /** 获取成功
+        /** 查询前准备 */
+        public void onCallBefore() {}
+
+        /**
+         * 获取成功
+         *
          * @param data 结果
-         * */
-        public void onCallSuccess(String data){}
-        /** 获取失败
+         */
+        public void onCallSuccess(String data) {}
+
+        /**
+         * 获取失败
+         *
          * @param meg 错误
-         * */
-        public void onCallError(String meg){}
+         */
+        public void onCallError(String meg) {}
     }
 }
