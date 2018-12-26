@@ -14,7 +14,13 @@ import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
+/**
+ * @ProjectName: ABus
+ * @Package: com.fitz.abus.fitzView
+ * @ClassName: MainActivity
+ * @Author: Fitz
+ * @CreateDate: 2018/12/15 13:10
+ */
 public class MainActivity extends BaseActivity {
 
     @BindView(R.id.action_bar_button_back)

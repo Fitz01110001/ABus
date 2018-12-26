@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.StopListRecycleAdapter;
 import com.fitz.abus.base.BaseActivity;
-import com.fitz.abus.bean.ArriveBaseBean;
 import com.fitz.abus.bean.BusBaseSHBean;
 import com.fitz.abus.bean.BusStopSHBean;
 import com.fitz.abus.bean.Stops;
@@ -28,7 +27,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
+/**
+ * @ProjectName: ABus
+ * @Package: com.fitz.abus.fitzView
+ * @ClassName: BusStopListActivity
+ * @Author: Fitz
+ * @CreateDate: 2018/12/20 13:10
+ */
 public class BusStopListActivity extends BaseActivity {
 
 
