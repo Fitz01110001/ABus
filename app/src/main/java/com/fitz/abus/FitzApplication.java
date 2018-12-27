@@ -14,9 +14,14 @@ public class FitzApplication extends Application {
 
     private static DaoSession daoSession;
 
+    /*
+    * json 中 direction=true 对应 lineResults0
+    * 但在使用时需要反过来，因为recycleview加载结果是list倒序
+    * 默认
+    * */
+    public static boolean directionSH = false;
+
     public static FitzApplication getInstance() { return application; }
-
-
 
 
     /** 从Cities中取出对应区号的城市名称*/

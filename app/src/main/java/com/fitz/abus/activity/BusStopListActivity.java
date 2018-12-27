@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.StopListRecycleAdapter;
 import com.fitz.abus.base.BaseActivity;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
 /**
  * @ProjectName: ABus
  * @Package: com.fitz.abus.fitzView
@@ -37,7 +39,9 @@ import butterknife.OnClick;
 public class BusStopListActivity extends BaseActivity {
 
 
-    private static List<Stops> list = new ArrayList<>();
+    private static BusBaseSHBean busbaseSH;
+    private static BusStopSHBean busStopSHBean;
+    private static StopListRecycleAdapter stopListRecycleAdapter;
     @BindView(R.id.bus_station_list_fitzactionbar)
     FitzActionBar busStationListFitzactionbar;
     @BindView(R.id.bus_station_tv_bus_name)
@@ -52,8 +56,8 @@ public class BusStopListActivity extends BaseActivity {
     TextView busStationSeTime;
     @BindView(R.id.bus_station_stop_list)
     FitzRecyclerView busStationStopList;
+    private List<Stops> list = new ArrayList<>();
     private Context mContext;
-    private BusBaseSHBean busbaseSH;
     private FitzHttpUtils.AbstractHttpCallBack mBusStationCallBack;
 
 
@@ -75,8 +79,9 @@ public class BusStopListActivity extends BaseActivity {
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
-                BusStopSHBean busStopSHBean = new Gson().fromJson(data, BusStopSHBean.class);
+                busStopSHBean = new Gson().fromJson(data, BusStopSHBean.class);
                 handleSuccess(busStopSHBean);
+
             }
 
             @Override
@@ -89,10 +94,10 @@ public class BusStopListActivity extends BaseActivity {
     private void handleSuccess(BusStopSHBean busStopSHBean) {
         if (busStopSHBean.nonNull()) {
             list.clear();
-            list = busStopSHBean.getLineResults0().getStops();
+            list.addAll(busStopSHBean.getLineResults0().getStops());
+            stopListRecycleAdapter = new StopListRecycleAdapter(mContext, busbaseSH, list);
+            initRecycleView();
         }
-        initRecycleView();
-        busStationStopList.setAdapter(new StopListRecycleAdapter(mContext, busbaseSH.getLine_name(), busbaseSH.getLineId(),busStopSHBean.getLineResults1().getDirection(), list));
     }
 
     private void initRecycleView() {
@@ -101,6 +106,8 @@ public class BusStopListActivity extends BaseActivity {
         busStationStopList.setLayoutManager(layoutManager);
         //设置为垂直布局，这也是默认的
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
+        //设置Adapter
+        busStationStopList.setAdapter(stopListRecycleAdapter);
         //设置分隔线
         busStationStopList.addItemDecoration(new DividerItemDecoration(mContext, OrientationHelper.VERTICAL));
         //设置增加或删除条目的动画
@@ -118,7 +125,6 @@ public class BusStopListActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     private void initTableView() {
@@ -184,5 +190,11 @@ public class BusStopListActivity extends BaseActivity {
     }
 
     @OnClick(R.id.bus_station_switch)
-    public void onViewClicked() {}
+    public void onViewClicked() {
+        FLOG("onViewClicked");
+        FitzApplication.directionSH = !FitzApplication.directionSH;
+        list.clear();
+        list.addAll(busStopSHBean.getLineResults1().getStops());
+        stopListRecycleAdapter.notifyDataSetChanged();
+    }
 }

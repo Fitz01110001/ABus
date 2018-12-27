@@ -12,8 +12,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.bean.ArriveBaseBean;
+import com.fitz.abus.bean.BusBaseSHBean;
 import com.fitz.abus.bean.Stops;
 import com.fitz.abus.utils.FitzHttpUtils;
 import com.google.gson.Gson;
@@ -38,20 +40,18 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private int selectedIndex = -1;
     private String busName;
     private String lineId;
-    private int direction;
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
     protected ArriveBaseBean arriveBaseBean;
     private int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
-    private String currentStopName;
+    private String titleStopName;
     private long lastClickTime = 0L;
     private static final int FAST_CLICK_DELAY_TIME = 1000;
 
-    public StopListRecycleAdapter(Context context, String busName, String lineId, String direction, List<Stops> list) {
+    public StopListRecycleAdapter(Context context, BusBaseSHBean busbaseSH, List<Stops> list) {
         mcontext = context;
         mList = list;
-        this.busName = busName;
-        this.lineId = lineId;
-        this.direction = direction.equals("true") ? 1 : 0;
+        this.busName = busbaseSH.getLine_name();
+        this.lineId = busbaseSH.getLineId();
         mArriveBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
             public void onCallBefore() {
@@ -65,7 +65,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 Log.d(TAG,data);
                 arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
                 new QMUIDialog.MessageDialogBuilder(mcontext)
-                        .setTitle(currentStopName)
+                        .setTitle(titleStopName)
                         .setMessage("车牌:"+arriveBaseBean.getCars().get(0).getTerminal()+"\n"+
                                 "距离:"+arriveBaseBean.getCars().get(0).getDistance()+"\n"+
                                 "还有:"+arriveBaseBean.getCars().get(0).getStopdis()+"站")
@@ -103,7 +103,8 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     @Override
     public void onBindViewHolder(@NonNull final StationViewHolder holder, final int i) {
-        currentStopName = mList.get(i).getZdmc();
+        Log.d(TAG,"i:"+i);
+        String currentStopName = mList.get(i).getZdmc();
         holder.stop_name.setText(currentStopName);
         if (selectedIndex == i) {
             holder.checkButton.setImageDrawable(ContextCompat.getDrawable(mcontext, R.drawable.circle_selected));
@@ -120,6 +121,9 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 lastClickTime = System.currentTimeMillis();
                 //更新选中状态
                 setSelectedIndex(i);
+                titleStopName = mList.get(i).getZdmc();
+                Log.d(TAG,"name:"+mList.get(i).getZdmc()+" id:"+mList.get(i).getId());
+                int direction =  FitzApplication.directionSH ? 1 : 0;
                 new FitzHttpUtils().getArriveBaseSH(busName, lineId, mList.get(i).getId(), direction, mArriveBaseCallBack);
 
             }

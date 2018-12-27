@@ -236,28 +236,34 @@ public abstract class BaseActivity extends AppCompatActivity {
     /** 获取当前activity包含的 actionbar res*/
     protected abstract int getContentActionBarResId();
 
-    protected void onCallBefore() {
+    @Override
+    protected void onStart() {
         super.onStart();
+        FLOG("onStart");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        FLOG("onResume");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        FLOG("onPause");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        FLOG("onStop");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
+        FLOG("onRestart");
     }
 
     @Override
@@ -267,6 +273,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if(EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
+        FLOG("onDestroy");
     }
 
     public void FLOG(String msg) {

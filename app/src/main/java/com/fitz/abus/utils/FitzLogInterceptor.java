@@ -18,7 +18,7 @@ import okhttp3.Response;
  */
 public class FitzLogInterceptor implements Interceptor {
 
-    private static final String TAG = "LogInterceptor";
+    private static final String TAG = "FitzLogInterceptor";
 
     @Override
     public Response intercept(Chain chain) throws IOException {
