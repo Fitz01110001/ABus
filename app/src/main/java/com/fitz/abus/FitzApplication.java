@@ -15,11 +15,11 @@ public class FitzApplication extends Application {
     private static DaoSession daoSession;
 
     /*
-    * json 中 direction=true 对应 lineResults0
-    * 但在使用时需要反过来，因为recycleview加载结果是list倒序
-    * 默认
+    * json 中 direction = true 对应 lineResults0
+    * 查询时 direction = true 对应 direction 0
+    *
     * */
-    public static boolean directionSH = false;
+    public static boolean directionSH = true;
 
     public static FitzApplication getInstance() { return application; }
 

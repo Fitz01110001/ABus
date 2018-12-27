@@ -65,10 +65,11 @@ public class BusStopListActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        FitzApplication.directionSH =true;
         if (getIntent().getExtras().containsKey("busbaseSH")) {
             busbaseSH = getIntent().getExtras().getParcelable("busbaseSH");
         }
-        initTableView();
+        updateBusInfo(FitzApplication.directionSH);
         mBusStationCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
             public void onCallBefore() {
@@ -127,11 +128,18 @@ public class BusStopListActivity extends BaseActivity {
         super.onResume();
     }
 
-    private void initTableView() {
-        busStationTvBusName.setText(busbaseSH.getLine_name() + getResources().getString(R.string.line));
-        busStationSeTime.setText(busbaseSH.getStartEarlytime() + " - " + busbaseSH.getStartLatetime());
-        busStationTvStartStop.setText(busbaseSH.getStartStop());
-        busStationTvEndStop.setText(busbaseSH.getEnd_stop());
+    private void updateBusInfo(boolean direction) {
+        if(direction){
+            busStationTvBusName.setText(busbaseSH.getLine_name() + getResources().getString(R.string.line));
+            busStationSeTime.setText(busbaseSH.getStartEarlytime() + " - " + busbaseSH.getStartLatetime());
+            busStationTvStartStop.setText(busbaseSH.getStartStop());
+            busStationTvEndStop.setText(busbaseSH.getEnd_stop());
+        }else {
+            busStationTvBusName.setText(busbaseSH.getLine_name() + getResources().getString(R.string.line));
+            busStationSeTime.setText(busbaseSH.getEndEarlytime() + " - " + busbaseSH.getEndLatetime());
+            busStationTvStartStop.setText(busbaseSH.getEnd_stop());
+            busStationTvEndStop.setText(busbaseSH.getStartStop());
+        }
     }
 
     @Override
@@ -193,8 +201,14 @@ public class BusStopListActivity extends BaseActivity {
     public void onViewClicked() {
         FLOG("onViewClicked");
         FitzApplication.directionSH = !FitzApplication.directionSH;
+        updateBusInfo(FitzApplication.directionSH);
         list.clear();
-        list.addAll(busStopSHBean.getLineResults1().getStops());
-        stopListRecycleAdapter.notifyDataSetChanged();
+        if(FitzApplication.directionSH){
+            list.addAll(busStopSHBean.getLineResults0().getStops());
+        }else {
+            list.addAll(busStopSHBean.getLineResults1().getStops());
+        }
+        // 去除选中图标，更新list
+        stopListRecycleAdapter.setSelectedIndex(-1);
     }
 }

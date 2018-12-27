@@ -103,7 +103,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     @Override
     public void onBindViewHolder(@NonNull final StationViewHolder holder, final int i) {
-        Log.d(TAG,"i:"+i);
+        Log.d(TAG,"onBindViewHolder i:"+i);
         String currentStopName = mList.get(i).getZdmc();
         holder.stop_name.setText(currentStopName);
         if (selectedIndex == i) {
@@ -123,7 +123,8 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 setSelectedIndex(i);
                 titleStopName = mList.get(i).getZdmc();
                 Log.d(TAG,"name:"+mList.get(i).getZdmc()+" id:"+mList.get(i).getId());
-                int direction =  FitzApplication.directionSH ? 1 : 0;
+                int direction =  FitzApplication.directionSH ? 0 : 1;
+                Log.d(TAG,"direction:"+direction);
                 new FitzHttpUtils().getArriveBaseSH(busName, lineId, mList.get(i).getId(), direction, mArriveBaseCallBack);
 
             }
