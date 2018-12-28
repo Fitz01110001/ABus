@@ -3,11 +3,11 @@
 
     <item
         android:id="@+id/cities1"
-        android:title="@string/menu_cities_sh" />
+        android:title="@string/city_sh" />
 
     <item
         android:id="@+id/cities2"
-        android:title="@string/menu_cities_wh" />
+        android:title="@string/city_wh" />
 
 
 </menu>

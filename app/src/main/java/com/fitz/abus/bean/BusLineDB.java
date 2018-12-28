@@ -1,11 +1,11 @@
 package com.fitz.abus.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
-import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class BusLineDB {
@@ -24,52 +24,47 @@ public class BusLineDB {
     private String lineName;
 
     @NotNull
-    private int stationID;
+    private String stationID;
 
     @NotNull
     private String stationName;
 
-    @Transient
+    @NotNull
+    private int direction;
+
+    @NotNull
     private String startStop;
 
-    @Transient
+    @NotNull
     private String endStop;
 
-    @Transient
-    private String startEarlyTime;
+    @NotNull
+    private String startTime;
 
-    @Transient
-    private String startLateTime;
-
-    @Transient
-    private String endEarlyTime;
-
-    @Transient
-    private String endLateTime;
-
-    @Transient
-    private String startEndTime;
-
-    @Transient
-    private String upLine;
+    @NotNull
+    private String endTime;
 
 
 
-    @Generated(hash = 852073903)
-    public BusLineDB(Long busID, @NotNull String cityID, @NotNull String lineID, @NotNull String lineName, int stationID, @NotNull String stationName) {
+    @Generated(hash = 1650418293)
+    public BusLineDB(Long busID, @NotNull String cityID, @NotNull String lineID, @NotNull String lineName, @NotNull String stationID, @NotNull String stationName,
+            int direction, @NotNull String startStop, @NotNull String endStop, @NotNull String startTime, @NotNull String endTime) {
         this.busID = busID;
         this.cityID = cityID;
         this.lineID = lineID;
         this.lineName = lineName;
         this.stationID = stationID;
         this.stationName = stationName;
+        this.direction = direction;
+        this.startStop = startStop;
+        this.endStop = endStop;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     @Generated(hash = 1982642731)
     public BusLineDB() {
     }
-
-    
 
     @Override
     public String toString() {
@@ -108,11 +103,11 @@ public class BusLineDB {
         this.lineName = lineName;
     }
 
-    public int getStationID() {
+    public String getStationID() {
         return this.stationID;
     }
 
-    public void setStationID(int stationID) {
+    public void setStationID(String stationID) {
         this.stationID = stationID;
     }
 
@@ -122,6 +117,46 @@ public class BusLineDB {
 
     public void setStationName(String stationName) {
         this.stationName = stationName;
+    }
+
+    public int getDirection() {
+        return this.direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
+    public String getStartStop() {
+        return this.startStop;
+    }
+
+    public void setStartStop(String startStop) {
+        this.startStop = startStop;
+    }
+
+    public String getEndStop() {
+        return this.endStop;
+    }
+
+    public void setEndStop(String endStop) {
+        this.endStop = endStop;
+    }
+
+    public String getStartTime() {
+        return this.startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return this.endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
     }
 
 }

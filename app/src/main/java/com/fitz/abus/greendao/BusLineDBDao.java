@@ -28,8 +28,13 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         public final static Property CityID = new Property(1, String.class, "cityID", false, "CITY_ID");
         public final static Property LineID = new Property(2, String.class, "lineID", false, "LINE_ID");
         public final static Property LineName = new Property(3, String.class, "lineName", false, "LINE_NAME");
-        public final static Property StationID = new Property(4, int.class, "stationID", false, "STATION_ID");
+        public final static Property StationID = new Property(4, String.class, "stationID", false, "STATION_ID");
         public final static Property StationName = new Property(5, String.class, "stationName", false, "STATION_NAME");
+        public final static Property Direction = new Property(6, int.class, "direction", false, "DIRECTION");
+        public final static Property StartStop = new Property(7, String.class, "startStop", false, "START_STOP");
+        public final static Property EndStop = new Property(8, String.class, "endStop", false, "END_STOP");
+        public final static Property StartTime = new Property(9, String.class, "startTime", false, "START_TIME");
+        public final static Property EndTime = new Property(10, String.class, "endTime", false, "END_TIME");
     }
 
 
@@ -49,8 +54,13 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
                 "\"CITY_ID\" TEXT NOT NULL ," + // 1: cityID
                 "\"LINE_ID\" TEXT NOT NULL UNIQUE ," + // 2: lineID
                 "\"LINE_NAME\" TEXT NOT NULL ," + // 3: lineName
-                "\"STATION_ID\" INTEGER NOT NULL ," + // 4: stationID
-                "\"STATION_NAME\" TEXT NOT NULL );"); // 5: stationName
+                "\"STATION_ID\" TEXT NOT NULL ," + // 4: stationID
+                "\"STATION_NAME\" TEXT NOT NULL ," + // 5: stationName
+                "\"DIRECTION\" INTEGER NOT NULL ," + // 6: direction
+                "\"START_STOP\" TEXT NOT NULL ," + // 7: startStop
+                "\"END_STOP\" TEXT NOT NULL ," + // 8: endStop
+                "\"START_TIME\" TEXT NOT NULL ," + // 9: startTime
+                "\"END_TIME\" TEXT NOT NULL );"); // 10: endTime
     }
 
     /** Drops the underlying database table. */
@@ -70,8 +80,13 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         stmt.bindString(2, entity.getCityID());
         stmt.bindString(3, entity.getLineID());
         stmt.bindString(4, entity.getLineName());
-        stmt.bindLong(5, entity.getStationID());
+        stmt.bindString(5, entity.getStationID());
         stmt.bindString(6, entity.getStationName());
+        stmt.bindLong(7, entity.getDirection());
+        stmt.bindString(8, entity.getStartStop());
+        stmt.bindString(9, entity.getEndStop());
+        stmt.bindString(10, entity.getStartTime());
+        stmt.bindString(11, entity.getEndTime());
     }
 
     @Override
@@ -85,8 +100,13 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         stmt.bindString(2, entity.getCityID());
         stmt.bindString(3, entity.getLineID());
         stmt.bindString(4, entity.getLineName());
-        stmt.bindLong(5, entity.getStationID());
+        stmt.bindString(5, entity.getStationID());
         stmt.bindString(6, entity.getStationName());
+        stmt.bindLong(7, entity.getDirection());
+        stmt.bindString(8, entity.getStartStop());
+        stmt.bindString(9, entity.getEndStop());
+        stmt.bindString(10, entity.getStartTime());
+        stmt.bindString(11, entity.getEndTime());
     }
 
     @Override
@@ -101,8 +121,13 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
             cursor.getString(offset + 1), // cityID
             cursor.getString(offset + 2), // lineID
             cursor.getString(offset + 3), // lineName
-            cursor.getInt(offset + 4), // stationID
-            cursor.getString(offset + 5) // stationName
+            cursor.getString(offset + 4), // stationID
+            cursor.getString(offset + 5), // stationName
+            cursor.getInt(offset + 6), // direction
+            cursor.getString(offset + 7), // startStop
+            cursor.getString(offset + 8), // endStop
+            cursor.getString(offset + 9), // startTime
+            cursor.getString(offset + 10) // endTime
         );
         return entity;
     }
@@ -113,8 +138,13 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         entity.setCityID(cursor.getString(offset + 1));
         entity.setLineID(cursor.getString(offset + 2));
         entity.setLineName(cursor.getString(offset + 3));
-        entity.setStationID(cursor.getInt(offset + 4));
+        entity.setStationID(cursor.getString(offset + 4));
         entity.setStationName(cursor.getString(offset + 5));
+        entity.setDirection(cursor.getInt(offset + 6));
+        entity.setStartStop(cursor.getString(offset + 7));
+        entity.setEndStop(cursor.getString(offset + 8));
+        entity.setStartTime(cursor.getString(offset + 9));
+        entity.setEndTime(cursor.getString(offset + 10));
      }
     
     @Override

@@ -1,61 +1,120 @@
 package com.fitz.abus;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import com.fitz.abus.bean.BusLineDB;
 import com.fitz.abus.greendao.DaoMaster;
 import com.fitz.abus.greendao.DaoSession;
+import com.fitz.abus.utils.FitzDBUtils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
+/**
+ * @ProjectName: ABus
+ * @Package: com.fitz.abus
+ * @ClassName: FitzApplication
+ * @Author: Fitz
+ * @CreateDate: 2018/12/12 13:10
+ */
 public class FitzApplication extends Application {
 
-    private static FitzApplication application;
-
-    private static DaoSession daoSession;
-
-    /*
-    * json 中 direction = true 对应 lineResults0
-    * 查询时 direction = true 对应 direction 0
-    *
-    * */
+    /** 存储区号-城市，每个城市需要单独适配 */
+    public static final HashMap<String, Integer> Cities = new HashMap<String, Integer>() {
+        {
+            put("021", R.string.city_sh);
+            put("0553", R.string.city_wh);
+            put("025", R.string.city_nj);
+        }
+    };
+    private static final String KEY = "defaultCityKey";
+    /**
+     * json 中 direction = true 对应 lineResults0
+     * 查询时 direction = true 对应 direction 0
+     */
     public static boolean directionSH = true;
+    protected static FitzApplication application;
+    protected static DaoSession daoSession;
+    private final String firstBootDefaultCity = "021";
+    private final List<String> cities = new ArrayList<>(
+            Arrays.asList("021",
+                    "0553",
+                    "025"));
+    private String TAG = "FitzApplication";
+    private String defaultCityKey;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+    private List<BusLineDB> favoriteBusListSH = new ArrayList<>();
+    private List<BusLineDB> favoriteBusListWH = new ArrayList<>();
+    private List<BusLineDB> favoriteBusListNJ = new ArrayList<>();
 
+    /**
+     * 单例
+     */
     public static FitzApplication getInstance() { return application; }
 
-
-    /** 从Cities中取出对应区号的城市名称*/
-    public String getDefaultCityName() {
-        return getResources().getString(Cities.get(defaultCityKey));
+    public static DaoSession getDaoInstant() {
+        return daoSession;
     }
 
-    public static void setDefaultCityKey(String defaultCityKey) {
-        FitzApplication.defaultCityKey = defaultCityKey;
+    public List<BusLineDB> getFavoriteBusListWH() {
+        return favoriteBusListWH;
     }
 
-    private static String defaultCityKey;
+    public void setFavoriteBusListWH(List<BusLineDB> favoriteBusListWH) {
+        this.favoriteBusListWH = favoriteBusListWH;
+    }
+
+    public List<BusLineDB> getFavoriteBusListSH() {
+        return favoriteBusListSH;
+    }
+
+    public void setFavoriteBusListSH(List<BusLineDB> favoriteBusListSH) {
+        this.favoriteBusListSH = favoriteBusListSH;
+    }
 
     public String getDefaultCityKey() {
         return defaultCityKey;
     }
 
-    /** 存储区号-城市，每个城市需要单独适配*/
-    public static final HashMap<String, Integer> Cities = new HashMap<String, Integer>() {
-        {
-            put("0553", R.string.menu_cities_wh);
-            put("021", R.string.menu_cities_sh);
+    /**
+     * 保存用户选择的默认城市
+     */
+    public void setDefaultCityKey(String defaultCityKey) {
+        this.defaultCityKey = defaultCityKey;
+        preferences = getApplicationContext().getSharedPreferences(KEY, MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.putString(KEY, defaultCityKey);
+        if (!editor.commit()) {
+            Log.e(TAG, "set defaultCityKey error");
         }
-    };
+    }
+
+    /** 从Cities中取出对应区号的城市名称 */
+    public String getDefaultCityName() {
+        return getResources().getString(Cities.get(defaultCityKey));
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         application = this;
         defaultCityKey = readDefaultCityKey();
-
         setupDatabase();
+        favoriteBusListSH = FitzDBUtils.getInstance().queryRawBus(cities.get(0));
+        favoriteBusListWH = FitzDBUtils.getInstance().queryRawBus(cities.get(1));
+        //favoriteBusListNJ = FitzDBUtils.getInstance().queryRawBus(cities.get(2));
+        Log.d(TAG, "favoriteBusListSH" + favoriteBusListSH.toString());
     }
 
+    /**
+     * 初始化GreenDao
+     */
     private void setupDatabase() {
         //abus.db
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "abus.db", null);
@@ -67,15 +126,12 @@ public class FitzApplication extends Application {
         daoSession = daoMaster.newSession();
     }
 
-
-    public static DaoSession getDaoInstant() {
-        return daoSession;
-    }
-
+    /**
+     * 应用启动获取默认城市，若是首次打开，选择 firstBootDefaultCity 设定值。
+     */
     private String readDefaultCityKey() {
-        // TODO: 2018/12/22
-        // 应该从数据库中读
-        return "021";
+        preferences = getApplicationContext().getSharedPreferences(KEY, MODE_PRIVATE);
+        return preferences.getString(KEY, firstBootDefaultCity);
     }
 
 }

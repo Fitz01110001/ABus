@@ -43,6 +43,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mContext = this;
 
+
     }
 
     @OnClick(R.id.main_button_add)

@@ -15,6 +15,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
@@ -134,23 +135,23 @@ public abstract class BaseActivity extends AppCompatActivity {
             mListPopup.create(QMUIDisplayHelper.dp2px(getContext(), 150), QMUIDisplayHelper.dp2px(getContext(), 100), new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                     Fragment fg = newInstance(i);
                     transaction = getSupportFragmentManager().beginTransaction();
                     transaction.replace(R.id.main_fragment_container, fg)
                             .addToBackStack("Item " + (i + 1)).show(fg).commit();
+
                     mListPopup.dismiss();
-
-
-                    FitzApplication.setDefaultCityKey(cityID.get(i));
+                    FitzApplication.getInstance().setDefaultCityKey(cityID.get(i));
                     mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());
                 }
             });
-            /*mListPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            mListPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
                 public void onDismiss() {
-
+                    onDismiss();
                 }
-            });*/
+            });
         }
         mListPopup.setAnimStyle(QMUIPopup.ANIM_GROW_FROM_CENTER);
         mListPopup.setPreferredDirection(QMUIPopup.DIRECTION_TOP);
@@ -209,9 +210,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public static BaseFragment newInstance(int index) {
         Bundle args = new Bundle();
-        args.putInt(ARG_INDEX, index);
+        //args.putInt(ARG_INDEX, index);
         BaseFragment fragment = new BaseFragment();
-        fragment.setArguments(args);
+        //fragment.setArguments(args);
         return fragment;
     }
 

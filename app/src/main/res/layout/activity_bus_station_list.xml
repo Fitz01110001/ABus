@@ -7,6 +7,18 @@
     tools:context=".activity.AddBusActivity">
 
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/return_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_home_black_24dp" />
+
     <com.fitz.abus.fitzview.FitzActionBar
         android:id="@+id/bus_station_list_fitzactionbar"
         android:layout_width="wrap_content"

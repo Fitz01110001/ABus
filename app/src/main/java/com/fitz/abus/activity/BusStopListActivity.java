@@ -1,8 +1,10 @@
 package com.fitz.abus.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -56,16 +58,17 @@ public class BusStopListActivity extends BaseActivity {
     TextView busStationSeTime;
     @BindView(R.id.bus_station_stop_list)
     FitzRecyclerView busStationStopList;
+    @BindView(R.id.return_main)
+    FloatingActionButton returnMain;
     private List<Stops> list = new ArrayList<>();
     private Context mContext;
     private FitzHttpUtils.AbstractHttpCallBack mBusStationCallBack;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        FitzApplication.directionSH =true;
+        FitzApplication.directionSH = true;
         if (getIntent().getExtras().containsKey("busbaseSH")) {
             busbaseSH = getIntent().getExtras().getParcelable("busbaseSH");
         }
@@ -126,15 +129,24 @@ public class BusStopListActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        returnMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext,MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
     }
 
     private void updateBusInfo(boolean direction) {
-        if(direction){
+        if (direction) {
             busStationTvBusName.setText(busbaseSH.getLine_name() + getResources().getString(R.string.line));
             busStationSeTime.setText(busbaseSH.getStartEarlytime() + " - " + busbaseSH.getStartLatetime());
             busStationTvStartStop.setText(busbaseSH.getStartStop());
             busStationTvEndStop.setText(busbaseSH.getEnd_stop());
-        }else {
+        } else {
             busStationTvBusName.setText(busbaseSH.getLine_name() + getResources().getString(R.string.line));
             busStationSeTime.setText(busbaseSH.getEndEarlytime() + " - " + busbaseSH.getEndLatetime());
             busStationTvStartStop.setText(busbaseSH.getEnd_stop());
@@ -203,12 +215,13 @@ public class BusStopListActivity extends BaseActivity {
         FitzApplication.directionSH = !FitzApplication.directionSH;
         updateBusInfo(FitzApplication.directionSH);
         list.clear();
-        if(FitzApplication.directionSH){
+        if (FitzApplication.directionSH) {
             list.addAll(busStopSHBean.getLineResults0().getStops());
-        }else {
+        } else {
             list.addAll(busStopSHBean.getLineResults1().getStops());
         }
         // 去除选中图标，更新list
         stopListRecycleAdapter.setSelectedIndex(-1);
     }
+
 }

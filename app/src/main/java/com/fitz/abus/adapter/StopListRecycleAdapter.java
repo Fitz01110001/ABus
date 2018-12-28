@@ -16,7 +16,9 @@ import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.bean.ArriveBaseBean;
 import com.fitz.abus.bean.BusBaseSHBean;
+import com.fitz.abus.bean.BusLineDB;
 import com.fitz.abus.bean.Stops;
+import com.fitz.abus.utils.FitzDBUtils;
 import com.fitz.abus.utils.FitzHttpUtils;
 import com.google.gson.Gson;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
@@ -35,23 +37,33 @@ import java.util.List;
 public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycleAdapter.StationViewHolder> {
 
     private static final String TAG = "fitzStopListRecycleAdapter";
+    private static final int FAST_CLICK_DELAY_TIME = 1000;
+    private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
+    protected ArriveBaseBean arriveBaseBean;
     private Context mcontext;
     private List<Stops> mList;
     private int selectedIndex = -1;
     private String busName;
     private String lineId;
+    private int direction;
+    private String stopId;
+    private String startTime;
+    private String endTime;
+    private String startStop;
+    private String endStop;
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
-    protected ArriveBaseBean arriveBaseBean;
-    private int mCurrentDialogStyle = com.qmuiteam.qmui.R.style.QMUI_Dialog;
-    private String titleStopName;
+    private String stopName;
     private long lastClickTime = 0L;
-    private static final int FAST_CLICK_DELAY_TIME = 1000;
 
-    public StopListRecycleAdapter(Context context, BusBaseSHBean busbaseSH, List<Stops> list) {
+    public StopListRecycleAdapter(Context context, final BusBaseSHBean busbaseSH, List<Stops> list) {
         mcontext = context;
         mList = list;
         this.busName = busbaseSH.getLine_name();
         this.lineId = busbaseSH.getLineId();
+        startTime = busbaseSH.getStartEarlytime();
+        endTime = busbaseSH.getEndLatetime();
+        startStop = busbaseSH.getStartStop();
+        endStop = busbaseSH.getEnd_stop();
         mArriveBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
             public void onCallBefore() {
@@ -62,13 +74,13 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
-                Log.d(TAG,data);
+                Log.d(TAG, data);
                 arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
                 new QMUIDialog.MessageDialogBuilder(mcontext)
-                        .setTitle(titleStopName)
-                        .setMessage("车牌:"+arriveBaseBean.getCars().get(0).getTerminal()+"\n"+
-                                "距离:"+arriveBaseBean.getCars().get(0).getDistance()+"\n"+
-                                "还有:"+arriveBaseBean.getCars().get(0).getStopdis()+"站")
+                        .setTitle(stopName)
+                        .setMessage("车牌:" + arriveBaseBean.getCars().get(0).getTerminal() + "\n" +
+                                "距离:" + arriveBaseBean.getCars().get(0).getDistance() + "\n" +
+                                "还有:" + arriveBaseBean.getCars().get(0).getStopdis() + "站")
                         .addAction("取消", new QMUIDialogAction.ActionListener() {
                             @Override
                             public void onClick(QMUIDialog dialog, int index) {
@@ -79,10 +91,22 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                             @Override
                             public void onClick(QMUIDialog dialog, int index) {
                                 dialog.dismiss();
-                                Toast.makeText(mcontext, "000", Toast.LENGTH_SHORT).show();
+                                BusLineDB busLineDB = new BusLineDB();
+                                busLineDB.setCityID(FitzApplication.getInstance().getDefaultCityKey());
+                                busLineDB.setLineID(lineId);
+                                busLineDB.setLineName(busName);
+                                busLineDB.setStationID(stopId);
+                                busLineDB.setStationName(stopName);
+                                busLineDB.setDirection(direction);
+                                busLineDB.setStartTime(startTime);
+                                busLineDB.setEndTime(endTime);
+                                busLineDB.setStartStop(startStop);
+                                busLineDB.setEndStop(endStop);
+                                FitzDBUtils.getInstance().insertBus(busLineDB);
+                                Toast.makeText(mcontext, "post", Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .create(mCurrentDialogStyle).show();
+                        .create(QMUI_DIAGLOG_STYLE).show();
             }
 
             @Override
@@ -103,7 +127,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     @Override
     public void onBindViewHolder(@NonNull final StationViewHolder holder, final int i) {
-        Log.d(TAG,"onBindViewHolder i:"+i);
+        Log.d(TAG, "onBindViewHolder i:" + i);
         String currentStopName = mList.get(i).getZdmc();
         holder.stop_name.setText(currentStopName);
         if (selectedIndex == i) {
@@ -115,17 +139,18 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME){
+                if (System.currentTimeMillis() - lastClickTime < FAST_CLICK_DELAY_TIME) {
                     return;
                 }
                 lastClickTime = System.currentTimeMillis();
                 //更新选中状态
                 setSelectedIndex(i);
-                titleStopName = mList.get(i).getZdmc();
-                Log.d(TAG,"name:"+mList.get(i).getZdmc()+" id:"+mList.get(i).getId());
-                int direction =  FitzApplication.directionSH ? 0 : 1;
-                Log.d(TAG,"direction:"+direction);
-                new FitzHttpUtils().getArriveBaseSH(busName, lineId, mList.get(i).getId(), direction, mArriveBaseCallBack);
+                stopName = mList.get(i).getZdmc();
+                Log.d(TAG, "name:" + mList.get(i).getZdmc() + " id:" + mList.get(i).getId());
+                direction = FitzApplication.directionSH ? 0 : 1;
+                Log.d(TAG, "direction:" + direction);
+                stopId = mList.get(i).getId();
+                new FitzHttpUtils().getArriveBaseSH(busName, lineId, stopId, direction, mArriveBaseCallBack);
 
             }
         });
