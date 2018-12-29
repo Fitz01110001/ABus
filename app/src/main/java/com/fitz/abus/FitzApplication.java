@@ -106,9 +106,8 @@ public class FitzApplication extends Application {
         application = this;
         defaultCityKey = readDefaultCityKey();
         setupDatabase();
-        favoriteBusListSH = FitzDBUtils.getInstance().queryRawBus(cities.get(0));
-        favoriteBusListWH = FitzDBUtils.getInstance().queryRawBus(cities.get(1));
-        //favoriteBusListNJ = FitzDBUtils.getInstance().queryRawBus(cities.get(2));
+        favoriteBusListSH = FitzDBUtils.getInstance().queryRawBusWhereCityID(cities.get(0));
+        favoriteBusListWH = FitzDBUtils.getInstance().queryRawBusWhereCityID(cities.get(1));
         Log.d(TAG, "favoriteBusListSH" + favoriteBusListSH.toString());
     }
 

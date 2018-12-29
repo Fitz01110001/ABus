@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -21,6 +19,7 @@ import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.activity.AddBusActivity;
 import com.fitz.abus.fitzview.FitzActionBar;
+import com.fitz.abus.utils.FitzBusFragmentUtils;
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.widget.popup.QMUIListPopup;
 import com.qmuiteam.qmui.widget.popup.QMUIPopup;
@@ -47,6 +46,7 @@ import butterknife.Unbinder;
 public abstract class BaseActivity extends AppCompatActivity {
 
 
+    private static final String ARG_TAG = "arg_tag";
     private boolean isDebug = true;
     /**
      * 是否禁止旋转屏幕
@@ -60,10 +60,10 @@ public abstract class BaseActivity extends AppCompatActivity {
     private Unbinder mUnbinder;
     private QMUIListPopup mListPopup;
     private FitzActionBar mFitzActionBar;
-    private FragmentTransaction transaction;
-    private static final String ARG_INDEX = "arg_index";
+    private Context context;
+    private FitzBusFragmentUtils fitzBusFragmentUtils;
 
-    /** actionbar 点击事件控制*/
+    /** actionbar 点击事件控制 */
     private View.OnClickListener mActionBarClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -102,7 +102,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         setContentView(getContentViewResId());
+        context = this;
         mUnbinder = ButterKnife.bind(this);
+        fitzBusFragmentUtils = new FitzBusFragmentUtils((AppCompatActivity) context);
 
         //设置状态栏颜色
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorAccent, null));
@@ -111,19 +113,13 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    protected void setMyActionBar(int res) {
-        mFitzActionBar = (FitzActionBar) findViewById(res);
-        mFitzActionBar.setData(mActionBarClickListener, isBackVisible(), isCityVisible(), isOptionVisible());
-    }
-
-    /** 城市TV 弹出 QMUI popmenu*/
+    /** 城市TV 弹出 QMUI popmenu */
     private void showQMUIpopupMenu(View v) {
         if (mListPopup == null) {
             Collection<Integer> collectionCityName = FitzApplication.Cities.values();
             final List<Integer> cityNameResID = new ArrayList<>(collectionCityName);
             List<String> cityName = new ArrayList<>();
-            for(Iterator<Integer> it= cityNameResID.iterator();it.hasNext();)
-            {
+            for (Iterator<Integer> it = cityNameResID.iterator(); it.hasNext(); ) {
                 cityName.add(getResources().getString(it.next()));
             }
 
@@ -132,26 +128,27 @@ public abstract class BaseActivity extends AppCompatActivity {
             ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.simple_list_item, cityName);
 
             mListPopup = new QMUIListPopup(getContext(), QMUIPopup.DIRECTION_NONE, adapter);
-            mListPopup.create(QMUIDisplayHelper.dp2px(getContext(), 150), QMUIDisplayHelper.dp2px(getContext(), 100), new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                    Fragment fg = newInstance(i);
-                    transaction = getSupportFragmentManager().beginTransaction();
-                    transaction.replace(R.id.main_fragment_container, fg)
-                            .addToBackStack("Item " + (i + 1)).show(fg).commit();
-
-                    mListPopup.dismiss();
-                    FitzApplication.getInstance().setDefaultCityKey(cityID.get(i));
-                    mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());
-                }
-            });
-            mListPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            mListPopup.create(QMUIDisplayHelper.dp2px(getContext(), 150),
+                    QMUIDisplayHelper.dp2px(getContext(), 100), new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            BaseFragment fg = new BaseFragment();
+                            Bundle args = new Bundle();
+                            String tag = cityID.get(i);
+                            args.putString(ARG_TAG, tag);
+                            fg.setArguments(args);
+                            fitzBusFragmentUtils.replaceFragment(fg, tag);
+                            mListPopup.dismiss();
+                            FitzApplication.getInstance().setDefaultCityKey(cityID.get(i));
+                            mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());
+                        }
+                    });
+            /*mListPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
                 @Override
                 public void onDismiss() {
                     onDismiss();
                 }
-            });
+            });*/
         }
         mListPopup.setAnimStyle(QMUIPopup.ANIM_GROW_FROM_CENTER);
         mListPopup.setPreferredDirection(QMUIPopup.DIRECTION_TOP);
@@ -167,7 +164,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         return mFitzActionBar;
     }
 
-    /** 选项button 弹出popmenu*/
+    protected void setMyActionBar(int res) {
+        mFitzActionBar = (FitzActionBar) findViewById(res);
+        mFitzActionBar.setData(mActionBarClickListener, isBackVisible(), isCityVisible(), isOptionVisible());
+    }
+
+    /** 选项button 弹出popmenu */
     protected void showPopMenu(int res, View view) {
         // 这里的view代表popupMenu需要依附的view
         PopupMenu popupMenu = new PopupMenu(this, view);
@@ -181,7 +183,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.options_add:
                         // to-do bug
-                        Intent intent = new Intent(getContext(),AddBusActivity.class);
+                        Intent intent = new Intent(getContext(), AddBusActivity.class);
                         //intent.addFlags();
                         startActivity(intent);
                         break;
@@ -208,33 +210,26 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-    public static BaseFragment newInstance(int index) {
-        Bundle args = new Bundle();
-        //args.putInt(ARG_INDEX, index);
-        BaseFragment fragment = new BaseFragment();
-        //fragment.setArguments(args);
-        return fragment;
-    }
 
-    /** 获取子类 context*/
+    /** 获取子类 context */
     protected abstract Context getContext();
 
-    /** 获取子类view资源*/
+    /** 获取子类view资源 */
     protected abstract int getContentViewResId();
 
-    /** 主界面不应显示*/
+    /** 主界面不应显示 */
     protected abstract int isBackVisible();
 
-    /** 应始终显示*/
+    /** 应始终显示 */
     protected abstract int isCityVisible();
 
-    /** 应始终显示*/
+    /** 应始终显示 */
     protected abstract int isOptionVisible();
 
-    /** 只在主界面可点击*/
+    /** 只在主界面可点击 */
     protected abstract boolean isCitySelectable();
 
-    /** 获取当前activity包含的 actionbar res*/
+    /** 获取当前activity包含的 actionbar res */
     protected abstract int getContentActionBarResId();
 
     @Override
@@ -271,7 +266,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
-        if(EventBus.getDefault().isRegistered(this)) {
+        if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
         FLOG("onDestroy");

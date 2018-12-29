@@ -11,7 +11,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.fitz.abus.R;
+import com.fitz.abus.bean.BusLineDB;
 import com.fitz.abus.fitzview.FitzBusCard;
+import com.fitz.abus.utils.FitzDBUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -19,17 +24,21 @@ import butterknife.Unbinder;
 public class BaseFragment extends Fragment {
 
     public static final String TAG = BaseFragment.class.getSimpleName();
-
+    private static final String ARG_TAG = "arg_tag";
+    private String defaultCityKey;
     private View mRootView;
     private LinearLayout linearLayout;
     private Unbinder mUnBinder;
     public Activity mActivity;
+    private List<BusLineDB> currentBusList = new ArrayList<>();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActivity = getActivity();
+        defaultCityKey = getArguments().getString(ARG_TAG);
+        currentBusList = FitzDBUtils.getInstance().queryRawBusWhereCityID(defaultCityKey);
     }
 
     @Nullable
@@ -45,6 +54,7 @@ public class BaseFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         linearLayout = mRootView.findViewById(R.id.fg_container);
+        addBusCard();
     }
 
     @Override
@@ -56,11 +66,10 @@ public class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        addBusCard();
     }
 
     public void addBusCard(){
-        FitzBusCard card = new FitzBusCard(mActivity);
+        FitzBusCard card = new FitzBusCard(mActivity,currentBusList);
         linearLayout.addView(card);
     }
 

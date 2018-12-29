@@ -3,6 +3,9 @@ package com.fitz.abus.utils;
 import com.fitz.abus.bean.BusLineDB;
 import com.fitz.abus.FitzApplication;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
 
 public class FitzDBUtils {
@@ -34,7 +37,9 @@ public class FitzDBUtils {
         return FitzApplication.getDaoInstant().getBusLineDBDao().loadAll();
     }
 
-    public List<BusLineDB> queryRawBus(String cityID) {
+    public List<BusLineDB> queryRawBusWhereCityID(String cityID) {
         return FitzApplication.getDaoInstant().getBusLineDBDao().queryRaw("where CITY_ID = ?", cityID);
     }
+
+
 }

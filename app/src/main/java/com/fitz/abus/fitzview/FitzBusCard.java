@@ -8,6 +8,9 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import com.fitz.abus.R;
+import com.fitz.abus.bean.BusLineDB;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -48,7 +51,7 @@ public class FitzBusCard extends TableLayout {
     private Context mContext;
     private View contentView;
 
-    public FitzBusCard(Context context) {
+    public FitzBusCard(Context context, List<BusLineDB> list) {
         super(context);
         mContext = context;
         initBusCard();
