@@ -129,7 +129,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             mListPopup = new QMUIListPopup(getContext(), QMUIPopup.DIRECTION_NONE, adapter);
             mListPopup.create(QMUIDisplayHelper.dp2px(getContext(), 150),
-                    QMUIDisplayHelper.dp2px(getContext(), 100), new AdapterView.OnItemClickListener() {
+                    QMUIDisplayHelper.dp2px(getContext(), 200), new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             BaseFragment fg = new BaseFragment();

@@ -22,7 +22,8 @@ public class FitzDBUtils {
     }
 
     public void insertBus(BusLineDB busLine) {
-        FitzApplication.getDaoInstant().getBusLineDBDao().insertOrReplace(busLine);
+        //FitzApplication.getDaoInstant().getBusLineDBDao().insertOrReplace(busLine);
+        FitzApplication.getDaoInstant().getBusLineDBDao().insert(busLine);
     }
 
     public void deleteBus(BusLineDB busLine) {

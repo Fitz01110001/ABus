@@ -38,7 +38,7 @@
         app:layout_constraintTop_toBottomOf="@+id/bus_station_list_fitzactionbar">
 
         <TextView
-            android:id="@+id/bus_station_tv_bus_name"
+            android:id="@+id/tv_line_name"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="10dp"
@@ -58,9 +58,9 @@
             android:layout_marginStart="10dp"
             android:text="开往："
             android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="@+id/bus_station_tv_end_stop"
-            app:layout_constraintStart_toEndOf="@+id/bus_station_tv_bus_name"
-            app:layout_constraintTop_toTopOf="@+id/bus_station_tv_end_stop" />
+            app:layout_constraintBottom_toBottomOf="@+id/tv_end_stop"
+            app:layout_constraintStart_toEndOf="@+id/tv_line_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_end_stop" />
 
         <TextView
             android:id="@+id/tv_start"
@@ -69,12 +69,12 @@
             android:layout_marginStart="10dp"
             android:text="始发："
             android:textSize="10sp"
-            app:layout_constraintBottom_toBottomOf="@+id/bus_station_tv_start_stop"
-            app:layout_constraintStart_toEndOf="@+id/bus_station_tv_bus_name"
-            app:layout_constraintTop_toTopOf="@+id/bus_station_tv_start_stop" />
+            app:layout_constraintBottom_toBottomOf="@+id/tv_start_stop"
+            app:layout_constraintStart_toEndOf="@+id/tv_line_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_start_stop" />
 
         <TextView
-            android:id="@+id/bus_station_tv_start_stop"
+            android:id="@+id/tv_start_stop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -87,7 +87,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/bus_station_tv_end_stop"
+            android:id="@+id/tv_end_stop"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -97,7 +97,7 @@
             android:textSize="15sp"
             app:layout_constraintEnd_toStartOf="@+id/bus_station_switch"
             app:layout_constraintStart_toEndOf="@+id/tv_start"
-            app:layout_constraintTop_toBottomOf="@+id/bus_station_tv_start_stop" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_start_stop" />
 
         <ImageButton
             android:id="@+id/bus_station_switch"
@@ -107,13 +107,13 @@
             android:background="@color/qmui_config_color_transparent"
             android:padding="10dp"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="@+id/bus_station_tv_end_stop"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_end_stop"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/bus_station_tv_start_stop"
+            app:layout_constraintTop_toTopOf="@+id/tv_start_stop"
             app:srcCompat="@drawable/switch_direction" />
 
         <TextView
-            android:id="@+id/bus_station_se_time"
+            android:id="@+id/tv_seTime"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -122,8 +122,8 @@
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/bus_station_switch"
-            app:layout_constraintStart_toStartOf="@+id/bus_station_tv_end_stop"
-            app:layout_constraintTop_toBottomOf="@+id/bus_station_tv_end_stop" />
+            app:layout_constraintStart_toStartOf="@+id/tv_end_stop"
+            app:layout_constraintTop_toBottomOf="@+id/tv_end_stop" />
 
 
     </android.support.constraint.ConstraintLayout>

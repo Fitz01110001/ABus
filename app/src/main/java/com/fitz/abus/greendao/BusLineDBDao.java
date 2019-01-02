@@ -52,10 +52,10 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         db.execSQL("CREATE TABLE " + constraint + "\"BUS_LINE_DB\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: busID
                 "\"CITY_ID\" TEXT NOT NULL ," + // 1: cityID
-                "\"LINE_ID\" TEXT NOT NULL UNIQUE ," + // 2: lineID
+                "\"LINE_ID\" TEXT NOT NULL ," + // 2: lineID
                 "\"LINE_NAME\" TEXT NOT NULL ," + // 3: lineName
                 "\"STATION_ID\" TEXT NOT NULL ," + // 4: stationID
-                "\"STATION_NAME\" TEXT NOT NULL ," + // 5: stationName
+                "\"STATION_NAME\" TEXT NOT NULL UNIQUE ," + // 5: stationName
                 "\"DIRECTION\" INTEGER NOT NULL ," + // 6: direction
                 "\"START_STOP\" TEXT NOT NULL ," + // 7: startStop
                 "\"END_STOP\" TEXT NOT NULL ," + // 8: endStop

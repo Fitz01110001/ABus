@@ -16,7 +16,6 @@ public class BusLineDB {
     @NotNull
     private String cityID;
 
-    @Unique
     @NotNull
     private String lineID;
 
@@ -26,6 +25,7 @@ public class BusLineDB {
     @NotNull
     private String stationID;
 
+    @Unique
     @NotNull
     private String stationName;
 

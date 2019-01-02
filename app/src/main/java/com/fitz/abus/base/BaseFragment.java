@@ -25,11 +25,11 @@ public class BaseFragment extends Fragment {
 
     public static final String TAG = BaseFragment.class.getSimpleName();
     private static final String ARG_TAG = "arg_tag";
+    public Activity mActivity;
     private String defaultCityKey;
     private View mRootView;
     private LinearLayout linearLayout;
     private Unbinder mUnBinder;
-    public Activity mActivity;
     private List<BusLineDB> currentBusList = new ArrayList<>();
 
 
@@ -54,7 +54,10 @@ public class BaseFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         linearLayout = mRootView.findViewById(R.id.fg_container);
-        addBusCard();
+        for (BusLineDB busline : currentBusList) {
+            addBusCard(busline);
+        }
+
     }
 
     @Override
@@ -68,8 +71,8 @@ public class BaseFragment extends Fragment {
         super.onResume();
     }
 
-    public void addBusCard(){
-        FitzBusCard card = new FitzBusCard(mActivity,currentBusList);
+    public void addBusCard(BusLineDB busline) {
+        FitzBusCard card = new FitzBusCard(mActivity, busline);
         linearLayout.addView(card);
     }
 

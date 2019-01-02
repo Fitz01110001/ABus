@@ -46,15 +46,15 @@ public class BusStopListActivity extends BaseActivity {
     private static StopListRecycleAdapter stopListRecycleAdapter;
     @BindView(R.id.bus_station_list_fitzactionbar)
     FitzActionBar busStationListFitzactionbar;
-    @BindView(R.id.bus_station_tv_bus_name)
+    @BindView(R.id.tv_line_name)
     TextView busStationTvBusName;
-    @BindView(R.id.bus_station_tv_start_stop)
+    @BindView(R.id.tv_start_stop)
     TextView busStationTvStartStop;
-    @BindView(R.id.bus_station_tv_end_stop)
+    @BindView(R.id.tv_end_stop)
     TextView busStationTvEndStop;
     @BindView(R.id.bus_station_switch)
     ImageButton busStationSwitch;
-    @BindView(R.id.bus_station_se_time)
+    @BindView(R.id.tv_seTime)
     TextView busStationSeTime;
     @BindView(R.id.bus_station_stop_list)
     FitzRecyclerView busStationStopList;
@@ -123,7 +123,7 @@ public class BusStopListActivity extends BaseActivity {
         super.onStart();
         if (busbaseSH != null) {
             new FitzHttpUtils().getBusStopSH(busbaseSH.getLine_name(), busbaseSH.getLineId(), mBusStationCallBack);
-        }
+    }
     }
 
     @Override
@@ -134,8 +134,10 @@ public class BusStopListActivity extends BaseActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(mContext,MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+                finish();
             }
         });
     }
