@@ -23,6 +23,7 @@ import com.fitz.abus.utils.FitzHttpUtils;
 import com.google.gson.Gson;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
     private String stopName;
     private long lastClickTime = 0L;
+    private static QMUITipDialog tipDialog;
 
     public StopListRecycleAdapter(Context context, final BusBaseSHBean busbaseSH, List<Stops> list) {
         mcontext = context;
@@ -64,17 +66,24 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         endTime = busbaseSH.getEndLatetime();
         startStop = busbaseSH.getStartStop();
         endStop = busbaseSH.getEnd_stop();
+
         mArriveBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
-                // TODO: 2018/12/26 这里需要等待动画 
+                // TODO: 2018/12/26 这里需要等待动画
+                tipDialog = new QMUITipDialog.Builder(mcontext)
+                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                        .setTipWord("查询中")
+                        .create();
+                tipDialog.show();
             }
 
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
                 Log.d(TAG, data);
+                tipDialog.dismiss();
                 arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
                 new QMUIDialog.MessageDialogBuilder(mcontext)
                         .setTitle(stopName)
@@ -91,18 +100,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                             @Override
                             public void onClick(QMUIDialog dialog, int index) {
                                 dialog.dismiss();
-                                BusLineDB busLineDB = new BusLineDB();
-                                busLineDB.setCityID(FitzApplication.getInstance().getDefaultCityKey());
-                                busLineDB.setLineID(lineId);
-                                busLineDB.setLineName(busName);
-                                busLineDB.setStationID(stopId);
-                                busLineDB.setStationName(stopName);
-                                busLineDB.setDirection(direction);
-                                busLineDB.setStartTime(startTime);
-                                busLineDB.setEndTime(endTime);
-                                busLineDB.setStartStop(startStop);
-                                busLineDB.setEndStop(endStop);
-                                FitzDBUtils.getInstance().insertBus(busLineDB);
+                                saveBus();
                                 Toast.makeText(mcontext, "post", Toast.LENGTH_SHORT).show();
                             }
                         })
@@ -112,10 +110,41 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
             @Override
             public void onCallError(String meg) {
                 super.onCallError(meg);
-                // TODO: 2018/12/26 异常处理
-                Toast.makeText(mcontext, "等待发车", Toast.LENGTH_SHORT).show();
+                tipDialog.dismiss();
+                new QMUIDialog.MessageDialogBuilder(mcontext)
+                        .setTitle(stopName)
+                        .setMessage("等待发车")
+                        .addAction("取消", new QMUIDialogAction.ActionListener() {
+                            @Override
+                            public void onClick(QMUIDialog dialog, int index) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .addAction("收藏", new QMUIDialogAction.ActionListener() {
+                            @Override
+                            public void onClick(QMUIDialog dialog, int index) {
+                                dialog.dismiss();
+                                saveBus();
+                            }
+                        })
+                        .create(QMUI_DIAGLOG_STYLE).show();
             }
         };
+    }
+
+    private void saveBus(){
+        BusLineDB busLineDB = new BusLineDB();
+        busLineDB.setCityID(FitzApplication.getInstance().getDefaultCityKey());
+        busLineDB.setLineID(lineId);
+        busLineDB.setLineName(busName);
+        busLineDB.setStationID(stopId);
+        busLineDB.setStationName(stopName);
+        busLineDB.setDirection(direction);
+        busLineDB.setStartTime(startTime);
+        busLineDB.setEndTime(endTime);
+        busLineDB.setStartStop(startStop);
+        busLineDB.setEndStop(endStop);
+        FitzDBUtils.getInstance().insertBus(busLineDB);
     }
 
     @NonNull
@@ -151,7 +180,6 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 Log.d(TAG, "direction:" + direction);
                 stopId = mList.get(i).getId();
                 new FitzHttpUtils().getArriveBaseSH(busName, lineId, stopId, direction, mArriveBaseCallBack);
-
             }
         });
     }

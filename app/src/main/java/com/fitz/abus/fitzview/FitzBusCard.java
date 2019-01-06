@@ -3,7 +3,6 @@ package com.fitz.abus.fitzview;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,8 +13,6 @@ import com.fitz.abus.bean.BusLineDB;
 import com.fitz.abus.utils.FitzHttpUtils;
 import com.google.gson.Gson;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -97,7 +94,7 @@ public class FitzBusCard extends TableLayout {
                 }
             };
             new FitzHttpUtils().getArriveBaseSH(busLineDB.getLineName(), busLineDB.getLineID(), busLineDB.getStationID(), busLineDB.getDirection(),
-                                                mArriveBaseCallBack);
+                    mArriveBaseCallBack);
 
         }
     }

@@ -6,7 +6,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
-import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -24,8 +23,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 
@@ -43,13 +40,20 @@ public class AddBusActivity extends BaseActivity {
     @BindView(R.id.add_textview_input_prompt) TextView addTextViewInputPrompt;
     @BindView(R.id.add_recycler_view) FitzRecyclerView addRecyclerView;
     private Context mContext;
-    private FitzHttpUtils.AbstractHttpCallBack mBusBaseCallBack;
+    private static FitzHttpUtils.AbstractHttpCallBack mBusBaseCallBack;
     private static List<BusBaseSHBean> list = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         mBusBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             /**
              * 查询前准备
@@ -80,47 +84,12 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public void onCallError(String meg) {
                 super.onCallError(meg);
+                // TODO: 2018/12/26 应用在后台是可能出现空指针
                 addTextViewInputPrompt.setVisibility(View.VISIBLE);
                 addRecyclerView.setVisibility(View.GONE);
                 addTextViewInputPrompt.setText("shit happens !!!\n");
             }
         };
-    }
-
-    private void handleSuccess(BusBaseSHBean busBaseSHBean) {
-        if (busBaseSHBean.nonNull()) {
-            list.clear();
-            list.add(busBaseSHBean);
-            list.add(busBaseSHBean);
-            list.add(busBaseSHBean);
-            list.add(busBaseSHBean);
-            list.add(busBaseSHBean);
-        }
-        if(addRecyclerView.getVisibility() != View.VISIBLE){
-            addTextViewInputPrompt.setVisibility(View.GONE);
-            addRecyclerView.setVisibility(View.VISIBLE);
-            initRecycleView();
-        }
-        //设置Adapter
-        addRecyclerView.setAdapter(new BusLineRecycleAdapter(mContext, list));
-
-    }
-
-    private void initRecycleView(){
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
-        //设置布局管理器
-        addRecyclerView.setLayoutManager(layoutManager);
-        //设置为垂直布局，这也是默认的
-        layoutManager.setOrientation(OrientationHelper.VERTICAL);
-        //设置分隔线
-        addRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, OrientationHelper.VERTICAL));
-        //设置增加或删除条目的动画
-        addRecyclerView.setItemAnimator(new DefaultItemAnimator());
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         // 键盘搜索点击响应
         addTextViewInputLine.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -133,6 +102,37 @@ public class AddBusActivity extends BaseActivity {
                 return false;
             }
         });
+    }
+
+    private void handleSuccess(BusBaseSHBean busBaseSHBean) {
+        if (busBaseSHBean.nonNull()) {
+            list.clear();
+            list.add(busBaseSHBean);
+            list.add(busBaseSHBean);
+            list.add(busBaseSHBean);
+            list.add(busBaseSHBean);
+            list.add(busBaseSHBean);
+        }
+        if (addRecyclerView.getVisibility() != View.VISIBLE) {
+            addTextViewInputPrompt.setVisibility(View.GONE);
+            addRecyclerView.setVisibility(View.VISIBLE);
+            initRecycleView();
+        }
+        //设置Adapter
+        addRecyclerView.setAdapter(new BusLineRecycleAdapter(mContext, list));
+
+    }
+
+    private void initRecycleView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        //设置布局管理器
+        addRecyclerView.setLayoutManager(layoutManager);
+        //设置为垂直布局，这也是默认的
+        layoutManager.setOrientation(OrientationHelper.VERTICAL);
+        //设置分隔线
+        addRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, OrientationHelper.VERTICAL));
+        //设置增加或删除条目的动画
+        addRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override
@@ -170,5 +170,9 @@ public class AddBusActivity extends BaseActivity {
         return mContext;
     }
 
-
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mBusBaseCallBack = null;
+    }
 }

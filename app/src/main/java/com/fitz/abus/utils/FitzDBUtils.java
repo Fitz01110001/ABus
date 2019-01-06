@@ -1,10 +1,7 @@
 package com.fitz.abus.utils;
 
-import com.fitz.abus.bean.BusLineDB;
 import com.fitz.abus.FitzApplication;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
+import com.fitz.abus.bean.BusLineDB;
 
 import java.util.List;
 
@@ -22,8 +19,7 @@ public class FitzDBUtils {
     }
 
     public void insertBus(BusLineDB busLine) {
-        //FitzApplication.getDaoInstant().getBusLineDBDao().insertOrReplace(busLine);
-        FitzApplication.getDaoInstant().getBusLineDBDao().insert(busLine);
+        FitzApplication.getDaoInstant().getBusLineDBDao().insertOrReplace(busLine);
     }
 
     public void deleteBus(BusLineDB busLine) {

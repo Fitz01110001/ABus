@@ -22,7 +22,4 @@ public class FitzRecyclerView extends RecyclerView {
         super(context, attrs);
     }
 
-
-
-
 }
