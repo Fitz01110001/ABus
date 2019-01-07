@@ -53,7 +53,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MainViewHolder mainViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final MainViewHolder mainViewHolder, final int i) {
         currentBusLineDB = mList.get(i);
         Log.d(TAG, "the " + i + " currentBusLineDB:" + currentBusLineDB.toString());
         if (currentBusLineDB != null) {
@@ -111,12 +111,13 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                             @Override
                             public void onClick(QMUIDialog dialog, int index) {
                                 dialog.dismiss();
-                                delete(currentBusLineDB);
+                                delete(mList.get(i));
                                 EventBus.getDefault().post(new MessageEvent("delete"));
                             }
                         })
                         .create(QMUI_DIAGLOG_STYLE)
                         .show();
+                Log.d(TAG,"longclick i:"+i);
                 return false;
             }
         });
