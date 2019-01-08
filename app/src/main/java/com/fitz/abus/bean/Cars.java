@@ -6,6 +6,7 @@ package com.fitz.abus.bean;
  * @ClassName: Cars
  * @Author: Fitz
  * @CreateDate: 2018/12/23 17:42
+ * GSON数据类，不要改动
  */
 public class Cars {
 

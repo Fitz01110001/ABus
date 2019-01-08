@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="1dp"
-        android:layout_toRightOf="@+id/recycler_item"
+        android:layout_toEndOf="@+id/recycler_item"
         android:background="@android:color/holo_red_dark"
         android:gravity="center"
         android:padding="10dp"

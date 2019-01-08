@@ -33,8 +33,10 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         public final static Property Direction = new Property(6, int.class, "direction", false, "DIRECTION");
         public final static Property StartStop = new Property(7, String.class, "startStop", false, "START_STOP");
         public final static Property EndStop = new Property(8, String.class, "endStop", false, "END_STOP");
-        public final static Property StartTime = new Property(9, String.class, "startTime", false, "START_TIME");
-        public final static Property EndTime = new Property(10, String.class, "endTime", false, "END_TIME");
+        public final static Property StartEarlyTime = new Property(9, String.class, "startEarlyTime", false, "START_EARLY_TIME");
+        public final static Property StartLateTime = new Property(10, String.class, "startLateTime", false, "START_LATE_TIME");
+        public final static Property EndEarlyTime = new Property(11, String.class, "endEarlyTime", false, "END_EARLY_TIME");
+        public final static Property EndLateTime = new Property(12, String.class, "endLateTime", false, "END_LATE_TIME");
     }
 
 
@@ -59,8 +61,10 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
                 "\"DIRECTION\" INTEGER NOT NULL ," + // 6: direction
                 "\"START_STOP\" TEXT NOT NULL ," + // 7: startStop
                 "\"END_STOP\" TEXT NOT NULL ," + // 8: endStop
-                "\"START_TIME\" TEXT NOT NULL ," + // 9: startTime
-                "\"END_TIME\" TEXT NOT NULL );"); // 10: endTime
+                "\"START_EARLY_TIME\" TEXT NOT NULL ," + // 9: startEarlyTime
+                "\"START_LATE_TIME\" TEXT NOT NULL ," + // 10: startLateTime
+                "\"END_EARLY_TIME\" TEXT NOT NULL ," + // 11: endEarlyTime
+                "\"END_LATE_TIME\" TEXT NOT NULL );"); // 12: endLateTime
     }
 
     /** Drops the underlying database table. */
@@ -85,8 +89,10 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         stmt.bindLong(7, entity.getDirection());
         stmt.bindString(8, entity.getStartStop());
         stmt.bindString(9, entity.getEndStop());
-        stmt.bindString(10, entity.getStartTime());
-        stmt.bindString(11, entity.getEndTime());
+        stmt.bindString(10, entity.getStartEarlyTime());
+        stmt.bindString(11, entity.getStartLateTime());
+        stmt.bindString(12, entity.getEndEarlyTime());
+        stmt.bindString(13, entity.getEndLateTime());
     }
 
     @Override
@@ -105,8 +111,10 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         stmt.bindLong(7, entity.getDirection());
         stmt.bindString(8, entity.getStartStop());
         stmt.bindString(9, entity.getEndStop());
-        stmt.bindString(10, entity.getStartTime());
-        stmt.bindString(11, entity.getEndTime());
+        stmt.bindString(10, entity.getStartEarlyTime());
+        stmt.bindString(11, entity.getStartLateTime());
+        stmt.bindString(12, entity.getEndEarlyTime());
+        stmt.bindString(13, entity.getEndLateTime());
     }
 
     @Override
@@ -126,8 +134,10 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
             cursor.getInt(offset + 6), // direction
             cursor.getString(offset + 7), // startStop
             cursor.getString(offset + 8), // endStop
-            cursor.getString(offset + 9), // startTime
-            cursor.getString(offset + 10) // endTime
+            cursor.getString(offset + 9), // startEarlyTime
+            cursor.getString(offset + 10), // startLateTime
+            cursor.getString(offset + 11), // endEarlyTime
+            cursor.getString(offset + 12) // endLateTime
         );
         return entity;
     }
@@ -143,8 +153,10 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
         entity.setDirection(cursor.getInt(offset + 6));
         entity.setStartStop(cursor.getString(offset + 7));
         entity.setEndStop(cursor.getString(offset + 8));
-        entity.setStartTime(cursor.getString(offset + 9));
-        entity.setEndTime(cursor.getString(offset + 10));
+        entity.setStartEarlyTime(cursor.getString(offset + 9));
+        entity.setStartLateTime(cursor.getString(offset + 10));
+        entity.setEndEarlyTime(cursor.getString(offset + 11));
+        entity.setEndLateTime(cursor.getString(offset + 12));
      }
     
     @Override

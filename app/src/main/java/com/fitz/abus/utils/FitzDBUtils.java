@@ -26,7 +26,7 @@ public class FitzDBUtils {
         FitzApplication.getDaoInstant().getBusLineDBDao().delete(busLine);
     }
 
-    public void uodateBus(BusLineDB busLine) {
+    public void updateBus(BusLineDB busLine) {
         FitzApplication.getDaoInstant().getBusLineDBDao().update(busLine);
     }
 

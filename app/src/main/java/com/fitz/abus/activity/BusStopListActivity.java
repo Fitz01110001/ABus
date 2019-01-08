@@ -44,22 +44,14 @@ public class BusStopListActivity extends BaseActivity {
     private static BusBaseSHBean busbaseSH;
     private static BusStopSHBean busStopSHBean;
     private static StopListRecycleAdapter stopListRecycleAdapter;
-    @BindView(R.id.bus_station_list_fitzactionbar)
-    FitzActionBar busStationListFitzactionbar;
-    @BindView(R.id.tv_line_name)
-    TextView busStationTvBusName;
-    @BindView(R.id.tv_start_stop)
-    TextView busStationTvStartStop;
-    @BindView(R.id.tv_end_stop)
-    TextView busStationTvEndStop;
-    @BindView(R.id.bus_station_switch)
-    ImageButton busStationSwitch;
-    @BindView(R.id.tv_seTime)
-    TextView busStationSeTime;
-    @BindView(R.id.bus_station_stop_list)
-    FitzRecyclerView busStationStopList;
-    @BindView(R.id.return_main)
-    FloatingActionButton returnMain;
+    @BindView(R.id.bus_station_list_fitzactionbar) FitzActionBar busStationListFitzactionbar;
+    @BindView(R.id.tv_line_name) TextView busStationTvBusName;
+    @BindView(R.id.tv_start_stop) TextView busStationTvStartStop;
+    @BindView(R.id.tv_end_stop) TextView busStationTvEndStop;
+    @BindView(R.id.bus_station_switch) ImageButton busStationSwitch;
+    @BindView(R.id.tv_seTime) TextView busStationSeTime;
+    @BindView(R.id.bus_station_stop_list) FitzRecyclerView busStationStopList;
+    @BindView(R.id.return_main) FloatingActionButton returnMain;
     private List<Stops> list = new ArrayList<>();
     private Context mContext;
     private FitzHttpUtils.AbstractHttpCallBack mBusStationCallBack;
@@ -123,7 +115,7 @@ public class BusStopListActivity extends BaseActivity {
         super.onStart();
         if (busbaseSH != null) {
             new FitzHttpUtils().getBusStopSH(busbaseSH.getLine_name(), busbaseSH.getLineId(), mBusStationCallBack);
-    }
+        }
     }
 
     @Override
@@ -132,7 +124,7 @@ public class BusStopListActivity extends BaseActivity {
         returnMain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext,MainActivity.class);
+                Intent intent = new Intent(mContext, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

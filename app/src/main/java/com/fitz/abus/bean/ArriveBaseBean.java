@@ -8,6 +8,7 @@ import java.util.List;
  * @ClassName: ArriveBaseBean
  * @Author: Fitz
  * @CreateDate: 2018/12/26
+ * GSON数据类，不要改动
  */
 public class ArriveBaseBean {
     private List<Cars> cars;

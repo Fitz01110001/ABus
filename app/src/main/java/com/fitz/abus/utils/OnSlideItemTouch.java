@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -18,15 +19,23 @@ import com.fitz.abus.adapter.FragmentListAdapter;
  * @CreateDate: 2019/1/8
  */
 public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
+
+    private String TAG = "OnSlideItemTouch";
     private VelocityTracker velocityTracker = VelocityTracker.obtain();
     private FragmentListAdapter.MainViewHolder curHolder;
     private FragmentListAdapter.MainViewHolder oldHolder;
-    private boolean flag = true; //标志在一个完整的过程中手势速度只判断一次
-    private int state = 0;//state表示Item的状态; 0表示关闭 , 1 表示打开
-    private int MAX_WIDTH;//能滑动的最大值,这里设置为屏幕宽度的1/5
+    /**标志在一个完整的过程中手势速度只判断一次*/
+    private boolean flag = true;
+    /**state表示Item的状态; 0表示关闭 , 1 表示打开*/
+    private int state = 0;
+    /**能滑动的最大值,这里设置为屏幕宽度的1/5*/
+    private int MAX_WIDTH;
     private int x;
-    private boolean dealEvent = true; //是否应该进行事件处理
-    private final int MAX_VELOCITY = 100; //最大临界速度,即向右滑动速度超过此值时将关闭Item
+    /**是否应该进行事件处理*/
+    private boolean dealEvent = true;
+    /**最大临界速度,即向右滑动速度超过此值时将关闭Item*/
+    private final int MAX_VELOCITY = 100;
+    private ItemClicked itemCilcked;
 
     public OnSlideItemTouch(Context context) {
         DisplayMetrics metrics = new DisplayMetrics();
@@ -35,10 +44,13 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
 
     }
 
+    // TODO: 2019/1/9  这边滑动效果有点点不顺畅，需要优化
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        itemCilcked = (ItemClicked)rv.getAdapter();
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+                Log.d(TAG, "ACTION_DOWN");
                 View view = rv.findChildViewUnder(e.getX(), e.getY());
                 if (view != null) {
                     curHolder = (FragmentListAdapter.MainViewHolder) rv.getChildViewHolder(view);
@@ -47,6 +59,7 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                         @Override
                         public void onClick(View v) {
                             onItemClick();
+                            itemCilcked.itemCilcked(curHolder);
                         }
                     });
                 } else {
@@ -60,8 +73,8 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                 }
                 x = (int) e.getX();
                 break;
-            }
-            case MotionEvent.ACTION_MOVE: {
+            } case MotionEvent.ACTION_MOVE: {
+                Log.d(TAG, "ACTION_MOVE");
                 //扩展: 通过具体速度的判断,还可以实现像QQ那样的右滑出现侧边菜单
                 if (flag) {
                     velocityTracker.addMovement(e);
@@ -69,8 +82,8 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                     flag = false;
                     //如果横向滑动
                     //或者当前有打开的Item,并且手指DOWN处仍为该Item,那么应该交给onTouchEvent()处理Item的滑动事件
-                    if (Math.abs(velocityTracker.getYVelocity()) < Math.abs(velocityTracker.getXVelocity())
-                            || (state == 1 && curHolder != null && curHolder == oldHolder)) {
+                    if (Math.abs(velocityTracker.getYVelocity()) < Math.abs(velocityTracker.getXVelocity()) || (state == 1 && curHolder != null &&
+                                                                                                                curHolder == oldHolder)) {
                         return true;
                     }
                 }
@@ -80,20 +93,21 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                 reset();
                 break;
             }
-        }
-        return false;
+        } return false;
     }
 
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE: {
+                Log.d(TAG, "onTouchEvent,ACTION_MOVE");
                 if (null != curHolder && curHolder.root.getScrollX() >= 0 && dealEvent) {
                     onScroll(e);
                 }
                 break;
             }
             case MotionEvent.ACTION_UP: {
+                Log.d(TAG, "onTouchEvent,ACTION_UP");
                 if (dealEvent) {
                     if (curHolder != null) {
                         oldHolder = curHolder;
@@ -170,5 +184,10 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
         if (null != oldHolder && 1 == state) {
             closeItem();
         }
+    }
+
+    public interface ItemClicked {
+        void itemCilcked(FragmentListAdapter.MainViewHolder mainViewHolder);
+
     }
 }

@@ -9,6 +9,7 @@ import android.os.Parcelable;
  * @ClassName: BusBaseSHBean
  * @Author: Fitz
  * @CreateDate: 2018/12/23 17:34
+ * GSON数据类，不要改动
  */
 @SuppressWarnings("AlibabaLowerCamelCaseVariableNaming")
 public class BusBaseSHBean  implements Parcelable {
@@ -21,6 +22,10 @@ public class BusBaseSHBean  implements Parcelable {
     private String line_id;
     private String start_stop;
     private String end_latetime;
+
+    public BusBaseSHBean(){
+
+    }
 
     protected BusBaseSHBean(Parcel in) {
         start_latetime = in.readString();
@@ -114,7 +119,6 @@ public class BusBaseSHBean  implements Parcelable {
         parcel.writeString(line_id);
         parcel.writeString(start_stop);
         parcel.writeString(end_latetime);
-
     }
 
     public static final Creator<BusBaseSHBean> CREATOR = new Creator<BusBaseSHBean>() {

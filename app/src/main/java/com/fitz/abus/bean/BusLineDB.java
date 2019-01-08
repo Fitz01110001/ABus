@@ -4,51 +4,44 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
-import org.greenrobot.greendao.annotation.Transient;
 import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class BusLineDB {
 
-    @Id(autoincrement = true)
-    private Long busID;
+    @Id(autoincrement = true) private Long busID;
 
-    @NotNull
-    private String cityID;
+    @NotNull private String cityID;
 
-    @NotNull
-    private String lineID;
+    @NotNull private String lineID;
 
-    @NotNull
-    private String lineName;
+    @NotNull private String lineName;
 
-    @NotNull
-    private String stationID;
+    @NotNull private String stationID;
 
     @Unique
     @NotNull
     private String stationName;
 
-    @NotNull
-    private int direction;
+    @NotNull private int direction;
 
-    @NotNull
-    private String startStop;
+    @NotNull private String startStop;
 
-    @NotNull
-    private String endStop;
+    @NotNull private String endStop;
 
-    @NotNull
-    private String startTime;
+    @NotNull private String startEarlyTime;
 
-    @NotNull
-    private String endTime;
+    @NotNull private String startLateTime;
 
+    @NotNull private String endEarlyTime;
+
+    @NotNull private String endLateTime;
 
 
-    @Generated(hash = 1650418293)
-    public BusLineDB(Long busID, @NotNull String cityID, @NotNull String lineID, @NotNull String lineName, @NotNull String stationID, @NotNull String stationName,
-            int direction, @NotNull String startStop, @NotNull String endStop, @NotNull String startTime, @NotNull String endTime) {
+    @Generated(hash = 222292962)
+    public BusLineDB(Long busID, @NotNull String cityID, @NotNull String lineID, @NotNull String lineName, @NotNull String stationID, @NotNull
+            String stationName, int direction, @NotNull String startStop, @NotNull String endStop, @NotNull String startEarlyTime, @NotNull String
+            startLateTime, @NotNull String endEarlyTime, @NotNull String endLateTime) {
         this.busID = busID;
         this.cityID = cityID;
         this.lineID = lineID;
@@ -58,8 +51,10 @@ public class BusLineDB {
         this.direction = direction;
         this.startStop = startStop;
         this.endStop = endStop;
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startEarlyTime = startEarlyTime;
+        this.startLateTime = startLateTime;
+        this.endEarlyTime = endEarlyTime;
+        this.endLateTime = endLateTime;
     }
 
     @Generated(hash = 1982642731)
@@ -68,7 +63,8 @@ public class BusLineDB {
 
     @Override
     public String toString() {
-        return "busID:" + busID + ",cityID:" + cityID + ",lineID:" + lineID + ",lineName:" + lineName + ",stationID:" + stationID + ",stationName:" + stationName;
+        return "busID:" + busID + ",cityID:" + cityID + ",lineID:" + lineID + ",lineName:" + lineName + ",stationID:" + stationID + ",stationName:"
+               + stationName;
     }
 
     public Long getBusID() {
@@ -143,20 +139,36 @@ public class BusLineDB {
         this.endStop = endStop;
     }
 
-    public String getStartTime() {
-        return this.startTime;
+    public String getStartEarlyTime() {
+        return this.startEarlyTime;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setStartEarlyTime(String startEarlyTime) {
+        this.startEarlyTime = startEarlyTime;
     }
 
-    public String getEndTime() {
-        return this.endTime;
+    public String getStartLateTime() {
+        return this.startLateTime;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setStartLateTime(String startLateTime) {
+        this.startLateTime = startLateTime;
+    }
+
+    public String getEndEarlyTime() {
+        return this.endEarlyTime;
+    }
+
+    public void setEndEarlyTime(String endEarlyTime) {
+        this.endEarlyTime = endEarlyTime;
+    }
+
+    public String getEndLateTime() {
+        return this.endLateTime;
+    }
+
+    public void setEndLateTime(String endLateTime) {
+        this.endLateTime = endLateTime;
     }
 
 }

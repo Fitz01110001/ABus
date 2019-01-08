@@ -67,7 +67,7 @@ public class FitzBusCard extends TableLayout {
         if (busLineDB != null) {
             setTvLineName(busLineDB.getLineName());
             setStationName(busLineDB.getStationName());
-            setSETime(busLineDB.getStartTime() + " - " + busLineDB.getEndTime());
+            setSETime(busLineDB.getStartEarlyTime() + " - " + busLineDB.getStartLateTime());
             setStartStop(busLineDB.getStartStop());
             setEndStop(busLineDB.getEndStop());
             mArriveBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {

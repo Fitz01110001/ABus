@@ -48,8 +48,10 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private String lineId;
     private int direction;
     private String stopId;
-    private String startTime;
-    private String endTime;
+    private String startEarlyTime;
+    private String startLateTime;
+    private String endEarlyTime;
+    private String endLateTime;
     private String startStop;
     private String endStop;
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
@@ -62,8 +64,10 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         mList = list;
         this.busName = busbaseSH.getLine_name();
         this.lineId = busbaseSH.getLineId();
-        startTime = busbaseSH.getStartEarlytime();
-        endTime = busbaseSH.getEndLatetime();
+        startEarlyTime = busbaseSH.getStartEarlytime();
+        startLateTime = busbaseSH.getEndLatetime();
+        endEarlyTime = busbaseSH.getEndEarlytime();
+        endLateTime = busbaseSH.getEndLatetime();
         startStop = busbaseSH.getStartStop();
         endStop = busbaseSH.getEnd_stop();
 
@@ -71,7 +75,6 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
-                // TODO: 2018/12/26 这里需要等待动画
                 tipDialog = new QMUITipDialog.Builder(mcontext)
                         .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
                         .setTipWord("查询中")
@@ -140,8 +143,10 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         busLineDB.setStationID(stopId);
         busLineDB.setStationName(stopName);
         busLineDB.setDirection(direction);
-        busLineDB.setStartTime(startTime);
-        busLineDB.setEndTime(endTime);
+        busLineDB.setStartEarlyTime(startEarlyTime);
+        busLineDB.setStartLateTime(startLateTime);
+        busLineDB.setEndEarlyTime(endEarlyTime);
+        busLineDB.setEndLateTime(endLateTime);
         busLineDB.setStartStop(startStop);
         busLineDB.setEndStop(endStop);
         FitzDBUtils.getInstance().insertBus(busLineDB);

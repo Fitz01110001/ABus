@@ -108,10 +108,6 @@ public class AddBusActivity extends BaseActivity {
         if (busBaseSHBean.nonNull()) {
             list.clear();
             list.add(busBaseSHBean);
-            list.add(busBaseSHBean);
-            list.add(busBaseSHBean);
-            list.add(busBaseSHBean);
-            list.add(busBaseSHBean);
         }
         if (addRecyclerView.getVisibility() != View.VISIBLE) {
             addTextViewInputPrompt.setVisibility(View.GONE);
