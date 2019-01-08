@@ -17,6 +17,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:text="          "
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_end_stop"
@@ -88,10 +90,11 @@
         android:id="@+id/tv_seTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:gravity="center"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_stationName"
-        app:layout_constraintStart_toEndOf="@+id/tv_stationName"
+        app:layout_constraintEnd_toEndOf="@+id/tv_line_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_line_name"
         app:layout_constraintTop_toTopOf="@+id/tv_stationName"
         tools:text="              " />
 
@@ -103,6 +106,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
         android:orientation="horizontal"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_stationName">
@@ -193,12 +197,16 @@
 
     <TextView
         android:id="@+id/tv_stationName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="start"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/tableLayout2"
-        app:layout_constraintStart_toStartOf="@+id/tv_line_name"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tv_to"
         app:layout_constraintTop_toBottomOf="@+id/tv_line_name"
         tools:text="                      " />
 

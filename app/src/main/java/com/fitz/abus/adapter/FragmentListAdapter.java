@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.fitz.abus.R;
 import com.fitz.abus.bean.ArriveBaseBean;
 import com.fitz.abus.bean.BusLineDB;
+import com.fitz.abus.fitzview.FitzSlideItemLayout;
 import com.fitz.abus.utils.FitzDBUtils;
 import com.fitz.abus.utils.FitzHttpUtils;
 import com.fitz.abus.utils.MessageEvent;
@@ -48,7 +49,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     @NonNull
     @Override
     public MainViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.bus_card, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item, viewGroup, false);
         return new MainViewHolder(v);
     }
 
@@ -84,8 +85,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                     //Toast.makeText(FitzBusCard.this.context, "等待发车", Toast.LENGTH_SHORT).show();
                 }
             };
-            new FitzHttpUtils().getArriveBaseSH(currentBusLineDB.getLineName(), currentBusLineDB.getLineID(), currentBusLineDB.getStationID(),
-                    currentBusLineDB.getDirection(), mMainCallBack);
+            /*new FitzHttpUtils().getArriveBaseSH(currentBusLineDB.getLineName(), currentBusLineDB.getLineID(), currentBusLineDB.getStationID(),
+                    currentBusLineDB.getDirection(), mMainCallBack);*/
         }
         mainViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +120,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                         .show();
                 Log.d(TAG,"longclick i:"+i);
                 return false;
+
+
             }
         });
     }
@@ -135,6 +138,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
+        public FitzSlideItemLayout root;
         protected TextView tvLineName;
         protected TextView tvStationName;
         protected TextView tvStartStop;
@@ -147,6 +151,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
 
         public MainViewHolder(View v) {
             super(v);
+            root = itemView.findViewById(R.id.item_root);
             tvLineName = v.findViewById(R.id.tv_line_name);
             tvStationName = v.findViewById(R.id.tv_stationName);
             tvStartStop = v.findViewById(R.id.tv_start_stop);

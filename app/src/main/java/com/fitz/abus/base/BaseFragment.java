@@ -22,6 +22,7 @@ import com.fitz.abus.bean.BusLineDB;
 import com.fitz.abus.fitzview.FitzRecyclerView;
 import com.fitz.abus.utils.FitzDBUtils;
 import com.fitz.abus.utils.MessageEvent;
+import com.fitz.abus.utils.OnSlideItemTouch;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,7 +53,6 @@ public class BaseFragment extends Fragment {
     private FitzRecyclerView fg_container;
     private static FragmentListAdapter fragmentListAdapter;
     private Unbinder mUnBinder;
-    private Context context;
     private List<BusLineDB> currentBusList = new ArrayList<>();
     private final String DELETE = "delete";
 
@@ -97,6 +97,7 @@ public class BaseFragment extends Fragment {
         fg_container.addItemDecoration(new DividerItemDecoration(mActivity, OrientationHelper.VERTICAL));
         //设置增加或删除条目的动画
         fg_container.setItemAnimator(new DefaultItemAnimator());
+        fg_container.addOnItemTouchListener(new OnSlideItemTouch(mActivity));
     }
 
     @Override
