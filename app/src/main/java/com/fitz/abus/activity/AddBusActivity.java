@@ -20,6 +20,7 @@ import com.fitz.abus.fitzview.FitzActionBar;
 import com.fitz.abus.fitzview.FitzRecyclerView;
 import com.fitz.abus.utils.FitzHttpUtils;
 import com.google.gson.Gson;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +40,15 @@ public class AddBusActivity extends BaseActivity {
     @BindView(R.id.add_textview_inputLine) EditText addTextViewInputLine;
     @BindView(R.id.add_textview_input_prompt) TextView addTextViewInputPrompt;
     @BindView(R.id.add_recycler_view) FitzRecyclerView addRecyclerView;
-    private Context mContext;
+    private Context mcontext;
     private static FitzHttpUtils.AbstractHttpCallBack mBusBaseCallBack;
     private static List<BusBaseSHBean> list = new ArrayList<>();
+    private static QMUITipDialog tipDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
+        mcontext = this;
 
     }
 
@@ -61,6 +63,11 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
+                tipDialog = new QMUITipDialog.Builder(mcontext)
+                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                        .setTipWord("查询中")
+                        .create();
+                tipDialog.show();
                 addTextViewInputPrompt.setText("等一哈不要急");
             }
 
@@ -72,6 +79,7 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
+                tipDialog.dismiss();
                 BusBaseSHBean busBaseSHBean = new Gson().fromJson(data, BusBaseSHBean.class);
                 handleSuccess(busBaseSHBean);
             }
@@ -84,6 +92,7 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public void onCallError(String meg) {
                 super.onCallError(meg);
+                tipDialog.dismiss();
                 // TODO: 2018/12/26 应用在后台是可能出现空指针
                 addTextViewInputPrompt.setVisibility(View.VISIBLE);
                 addRecyclerView.setVisibility(View.GONE);
@@ -115,18 +124,18 @@ public class AddBusActivity extends BaseActivity {
             initRecycleView();
         }
         //设置Adapter
-        addRecyclerView.setAdapter(new BusLineRecycleAdapter(mContext, list));
+        addRecyclerView.setAdapter(new BusLineRecycleAdapter(mcontext, list));
 
     }
 
     private void initRecycleView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mcontext);
         //设置布局管理器
         addRecyclerView.setLayoutManager(layoutManager);
         //设置为垂直布局，这也是默认的
         layoutManager.setOrientation(OrientationHelper.VERTICAL);
         //设置分隔线
-        addRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, OrientationHelper.VERTICAL));
+        addRecyclerView.addItemDecoration(new DividerItemDecoration(mcontext, OrientationHelper.VERTICAL));
         //设置增加或删除条目的动画
         addRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
@@ -163,7 +172,7 @@ public class AddBusActivity extends BaseActivity {
 
     @Override
     protected Context getContext() {
-        return mContext;
+        return mcontext;
     }
 
     @Override

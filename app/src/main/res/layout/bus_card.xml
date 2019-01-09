@@ -93,7 +93,6 @@
         android:gravity="center"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_stationName"
-        app:layout_constraintEnd_toEndOf="@+id/tv_line_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_stationName"
         tools:text="              " />
@@ -117,10 +116,6 @@
         layout="@layout/arrival_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

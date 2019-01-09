@@ -23,6 +23,7 @@ import com.fitz.abus.utils.FitzHttpUtils;
 import com.fitz.abus.utils.MessageEvent;
 import com.fitz.abus.utils.OnSlideItemTouch;
 import com.google.gson.Gson;
+import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,16 +36,17 @@ import java.util.List;
  * @Author: Fitz
  * @CreateDate: 2019/1/6 16:37
  */
-public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapter.MainViewHolder> implements OnSlideItemTouch.ItemClicked {
+public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapter.MainViewHolder>
+        implements OnSlideItemTouch.theItem {
 
     private static final String TAG = "FragmentListAdapter";
     private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
     protected ArriveBaseBean arriveBaseBean;
     private Context mcontext;
     private List<BusLineDB> mList;
-    private BusLineDB currentBusLineDB;
     private MainViewHolder mainViewHolder;
     private FitzHttpUtils.AbstractHttpCallBack mMainCallBack;
+    private static QMUITipDialog tipDialog;
 
     public FragmentListAdapter(Context context, List<BusLineDB> list) {
         mcontext = context;
@@ -53,12 +55,17 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
-                mainViewHolder.rtDetials.setVisibility(View.VISIBLE);
+                tipDialog = new QMUITipDialog.Builder(mcontext)
+                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                        .setTipWord("查询中")
+                        .create();
+                tipDialog.show();
             }
 
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
+                tipDialog.dismiss();
                 mainViewHolder.rtDetials.setVisibility(View.VISIBLE);
                 arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
                 mainViewHolder.setPlate(arriveBaseBean.getCars().get(0).getTerminal());
@@ -70,6 +77,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             @Override
             public void onCallError(String meg) {
                 super.onCallError(meg);
+                tipDialog.dismiss();
+                mainViewHolder.rtDetials.setVisibility(View.GONE);
                 Toast.makeText(mcontext, "等待发车", Toast.LENGTH_SHORT).show();
             }
         };
@@ -78,23 +87,22 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     @NonNull
     @Override
     public MainViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.recycler_item, viewGroup, false);
         return new MainViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MainViewHolder mainViewHolder, final int i) {
-        currentBusLineDB = mList.get(i);
+        final BusLineDB currentBusLineDB = mList.get(i);
         Log.d(TAG, "the " + i + " currentBusLineDB:" + currentBusLineDB.toString());
         if (currentBusLineDB != null) {
             mainViewHolder.setTvLineName(currentBusLineDB.getLineName());
             mainViewHolder.setStationName(currentBusLineDB.getStationName());
-            mainViewHolder.setSETime(currentBusLineDB.getStartEarlyTime() + " - " + currentBusLineDB.getStartLateTime());
+            mainViewHolder.setSETime(
+                    currentBusLineDB.getStartEarlyTime() + " - " + currentBusLineDB.getStartLateTime());
             mainViewHolder.setStartStop(currentBusLineDB.getStartStop());
             mainViewHolder.setEndStop(currentBusLineDB.getEndStop());
-
-            /*new FitzHttpUtils().getArriveBaseSH(currentBusLineDB.getLineName(), currentBusLineDB.getLineID(), currentBusLineDB.getStationID(),
-                    currentBusLineDB.getDirection(), mMainCallBack);*/
         }
         mainViewHolder.tvLineName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +117,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                 busBaseSHBean.setStartLatetime(currentBusLineDB.getStartLateTime());
                 busBaseSHBean.setEndEarlytime(currentBusLineDB.getEndEarlyTime());
                 busBaseSHBean.setEndLatetime(currentBusLineDB.getEndLateTime());
+
                 Bundle b = new Bundle();
                 b.putParcelable("busbaseSH", busBaseSHBean);
                 intent.putExtras(b);
@@ -116,45 +125,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             }
         });
 
-        mainViewHolder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                delete(mList.get(i));
-            }
-        });
 
-
-        /*mainViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Log.d(TAG, "onLongClick,i:" + i + " holder-i:" + mainViewHolder.getLayoutPosition());
-                new QMUIDialog.MessageDialogBuilder(mcontext).setTitle("取消收藏？")
-                                                             .setMessage("取消收藏后主页将不再显示，您可以重新查询后收藏")
-                                                             .addAction("返回", new QMUIDialogAction.ActionListener() {
-                                                                 @Override
-                                                                 public void onClick(QMUIDialog dialog, int index) {
-                                                                     dialog.dismiss();
-                                                                 }
-                                                             })
-                                                             .addAction(0, "取消收藏", QMUIDialogAction.ACTION_PROP_NEGATIVE, new QMUIDialogAction
-                                                                     .ActionListener() {
-                                                                 @Override
-                                                                 public void onClick(QMUIDialog dialog, int index) {
-                                                                     dialog.dismiss();
-                                                                     delete(mList.get(i));
-                                                                 }
-                                                             })
-                                                             .create(QMUI_DIAGLOG_STYLE)
-                                                             .show();
-                return false;
-            }
-        });*/
-    }
-
-    private void delete(BusLineDB b) {
-        Log.d(TAG, "delete this:" + b.toString());
-        FitzDBUtils.getInstance().deleteBus(b);
-        EventBus.getDefault().post(new MessageEvent("delete"));
     }
 
 
@@ -166,9 +137,17 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     @Override
     public void itemCilcked(MainViewHolder mainViewHolder) {
         this.mainViewHolder = mainViewHolder;
-        new FitzHttpUtils().getArriveBaseSH(currentBusLineDB.getLineName(), currentBusLineDB.getLineID(), currentBusLineDB.getStationID(),
-                currentBusLineDB
-                .getDirection(), mMainCallBack);
+        BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
+        new FitzHttpUtils().getArriveBaseSH(b.getLineName(), b.getLineID(), b.getStationID(), b.getDirection(), mMainCallBack);
+    }
+
+    @Override
+    public void itemDeleted(MainViewHolder mainViewHolder) {
+        this.mainViewHolder = mainViewHolder;
+        BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
+        Log.d(TAG, "delete this:" + b.toString());
+        FitzDBUtils.getInstance().deleteBus(b);
+        EventBus.getDefault().post(new MessageEvent("delete"));
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
@@ -236,7 +215,9 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         public void setPlate(String Plate) {
             tvPlate.setText(Plate);
         }
+
+        public View getDelete(){
+            return delete;
+        }
     }
-
-
 }

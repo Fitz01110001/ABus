@@ -34,17 +34,6 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
         mList = list;
     }
 
-    public class FitzViewHolder extends RecyclerView.ViewHolder {
-        TextView tv_line_name;
-        TextView tv_end_stop;
-
-        public FitzViewHolder(View v) {
-            super(v);
-            tv_line_name = v.findViewById(R.id.line_name);
-            tv_end_stop = v.findViewById(R.id.end_stop);
-        }
-    }
-
     @NonNull
     @Override
     public FitzViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -55,15 +44,15 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
     @Override
     public void onBindViewHolder(FitzViewHolder holder, int i) {
         Log.d("BusLineRecycleAdapter", "onBindViewHolder");
-        Log.d("BusLineRecycleAdapter","count"+getItemCount());
+        Log.d("BusLineRecycleAdapter", "count" + getItemCount());
         final int pos = i;
         holder.tv_line_name.setText(mList.get(i).getLine_name());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("BusLineRecycleAdapter","click"+"position:"+pos);
-                Intent intent = new Intent(mcontext,BusStopListActivity.class);
+                Log.d("BusLineRecycleAdapter", "click" + "position:" + pos);
+                Intent intent = new Intent(mcontext, BusStopListActivity.class);
                 Bundle b = new Bundle();
                 b.putParcelable("busbaseSH", mList.get(pos));
                 intent.putExtras(b);
@@ -77,4 +66,14 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
         return mList.size();
     }
 
+    public class FitzViewHolder extends RecyclerView.ViewHolder {
+        TextView tv_line_name;
+        TextView tv_end_stop;
+
+        public FitzViewHolder(View v) {
+            super(v);
+            tv_line_name = v.findViewById(R.id.line_name);
+            tv_end_stop = v.findViewById(R.id.end_stop);
+        }
+    }
 }

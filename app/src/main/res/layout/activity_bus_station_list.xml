@@ -29,7 +29,7 @@
     </com.fitz.abus.fitzview.FitzActionBar>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/bus_item"
+        android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -140,7 +140,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bus_item">
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
     </com.fitz.abus.fitzview.FitzRecyclerView>
 
