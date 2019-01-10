@@ -11,6 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/greendaodemo" />
             <option value="$PROJECT_DIR$/okhttpdemo" />
+            <option value="$PROJECT_DIR$/slideviewdemo" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

@@ -24,16 +24,27 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
     private VelocityTracker velocityTracker = VelocityTracker.obtain();
     private FragmentListAdapter.MainViewHolder curHolder;
     private FragmentListAdapter.MainViewHolder oldHolder;
-    /**标志在一个完整的过程中手势速度只判断一次*/
+    /**
+     * 标志在一个完整的过程中手势速度只判断一次
+     */
     private boolean flag = true;
-    /**state表示Item的状态; 0表示关闭 , 1 表示打开*/
+    /**
+     * state表示Item的状态; 0表示关闭 , 1 表示打开
+     */
     private int state = 0;
-    /**能滑动的最大值,这里设置为屏幕宽度的1/5*/
+    /**
+     * 能滑动的最大值,这里设置为屏幕宽度的1/5
+     */
     private int MAX_WIDTH;
     private int x;
-    /**是否应该进行事件处理*/
+    private int lastX;
+    /**
+     * 是否应该进行事件处理
+     */
     private boolean dealEvent = true;
-    /**最大临界速度,即向右滑动速度超过此值时将关闭Item*/
+    /**
+     * 最大临界速度,即向右滑动速度超过此值时将关闭Item
+     */
     private final int MAX_VELOCITY = 100;
     private theItem theItem;
 
@@ -47,28 +58,36 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
     // TODO: 2019/1/9  这边滑动效果有点点不顺畅，需要优化
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        theItem = (theItem)rv.getAdapter();
+        theItem = (theItem) rv.getAdapter();
+        int moveX = (int) e.getX();
+        //Log.d(TAG, "X:" + moveX);
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+                lastX = moveX;
+
                 View view = rv.findChildViewUnder(e.getX(), e.getY());
                 if (view != null) {
                     curHolder = (FragmentListAdapter.MainViewHolder) rv.getChildViewHolder(view);
-                    Log.d(TAG, "ACTION_DOWN,"+curHolder.getLayoutPosition());
-                    MAX_WIDTH = curHolder.itemView.findViewById(R.id.item_delete).getWidth();
-                    curHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    //Log.d(TAG, "ACTION_DOWN," + curHolder.getLayoutPosition());
+                    MAX_WIDTH = curHolder.itemView.findViewById(R.id.item_menu).getWidth();
+
+                    curHolder.getItem_content().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            //Log.d(TAG, "Item_content click");
                             onItemClick();
                             theItem.itemCilcked(curHolder);
                         }
                     });
-                    curHolder.getDelete().setOnClickListener(new View.OnClickListener() {
+                    // 这里有个奇葩的bug，在浴霸pro上，滑出删除button点击，接收不到click事件，item似乎被 rv 遮挡。
+                    /*curHolder.getItem_delete().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            Log.d(TAG,"Item_delete click");
                             curHolder.root.scrollTo(0,0);
                             theItem.itemDeleted(curHolder);
                         }
-                    });
+                    });*/
                 } else {
                     curHolder = null;
                 }
@@ -77,19 +96,29 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                     closeItem();
                     dealEvent = false;
                     break;
+                } else if (state == 1 && curHolder == oldHolder && moveX > (rv.getRight() - MAX_WIDTH)) {
+                    //Log.d(TAG, "delete click");
+                    curHolder.root.scrollTo(0, 0);
+                    theItem.itemDeleted(curHolder);
                 }
                 x = (int) e.getX();
                 break;
-            } case MotionEvent.ACTION_MOVE: {
+            }
+            case MotionEvent.ACTION_MOVE: {
+                int offsetX = moveX - lastX;
+                //Log.d(TAG, "offsetX:" + offsetX);
                 //扩展: 通过具体速度的判断,还可以实现像QQ那样的右滑出现侧边菜单
                 if (flag) {
                     velocityTracker.addMovement(e);
-                    velocityTracker.computeCurrentVelocity(500);
+                    velocityTracker.computeCurrentVelocity(1000);
                     flag = false;
+                    //Log.d(TAG,"XVelocity:"+Math.abs(velocityTracker.getXVelocity()));
+                    //Log.d(TAG,"YVelocity:"+Math.abs(velocityTracker.getYVelocity()));
                     //如果横向滑动
                     //或者当前有打开的Item,并且手指DOWN处仍为该Item,那么应该交给onTouchEvent()处理Item的滑动事件
-                    if (Math.abs(velocityTracker.getYVelocity()) < Math.abs(velocityTracker.getXVelocity()) || (state == 1 && curHolder != null &&
+                    if (Math.abs(velocityTracker.getYVelocity()) <= Math.abs(velocityTracker.getXVelocity()) || (state == 1 && curHolder != null &&
                                                                                                                 curHolder == oldHolder)) {
+                        Log.d(TAG, "move true");
                         return true;
                     }
                 }
@@ -101,14 +130,15 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
             }
             default:
                 break;
-        } return false;
+        }
+        return false;
     }
 
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE: {
-                Log.d(TAG, "onTouchEvent,ACTION_MOVE");
+                //Log.d(TAG, "onTouchEvent,ACTION_MOVE");
                 if (null != curHolder && curHolder.root.getScrollX() >= 0 && dealEvent) {
                     onScroll(e);
                 }
@@ -124,7 +154,7 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                     // 需要注意的是这里并没有取绝对值,是因为只需要判断向右滑动时
                     if (velocityTracker.getXVelocity() > MAX_VELOCITY) {
                         closeItem();
-                    } else if (curHolder.root.getScrollX() > MAX_WIDTH / 4) {
+                    } else if (curHolder != null && curHolder.itemView.getScrollX() > MAX_WIDTH / 4) {
                         openItem();
                     } else {
                         closeItem();
@@ -149,14 +179,19 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
      */
     private void closeItem() {
         state = 0;
-        oldHolder.root.onScroll(-oldHolder.root.getScrollX());
+        if(oldHolder != null){
+            oldHolder.root.onScroll(-oldHolder.root.getScrollX());
+        }
+
     }
 
     private void openItem() {
         state = 1;
         int startX = oldHolder.root.getScrollX() > MAX_WIDTH ? MAX_WIDTH : oldHolder.root.getScrollX();
         int dx = startX < MAX_WIDTH ? MAX_WIDTH - startX : 0;
-        oldHolder.root.onScroll(dx);
+        if(oldHolder != null){
+            oldHolder.root.onScroll(dx);
+        }
     }
 
     private void onScroll(MotionEvent e) {
@@ -198,9 +233,10 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
 
     /**
      * 让 FragmentListAdapter 同步响应点击事件
-     * */
+     */
     public interface theItem {
         void itemCilcked(FragmentListAdapter.MainViewHolder mainViewHolder);
+
         void itemDeleted(FragmentListAdapter.MainViewHolder mainViewHolder);
     }
 }

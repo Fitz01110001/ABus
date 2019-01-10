@@ -5,25 +5,36 @@
     android:layout_height="wrap_content">
 
 
-    <include android:id="@+id/recycler_item"
+    <include android:id="@+id/item_content"
         layout="@layout/bus_card"/>
 
-    <TextView
+    <!--<TextView
         android:id="@+id/item_delete"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/recycler_item"
+        android:layout_alignBottom="@+id/item_content"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="1dp"
-        android:layout_toRightOf="@+id/recycler_item"
+        android:layout_toRightOf="@+id/item_content"
         android:background="@android:color/holo_red_dark"
         android:gravity="center"
         android:padding="10dp"
         android:paddingStart="30dp"
         android:paddingEnd="30dp"
         android:text="删除"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white" />-->
+
+    <include
+        android:id="@+id/item_menu"
+        layout="@layout/menu_layout"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/item_content"
+        android:layout_toRightOf="@+id/item_content"
+        android:layout_marginLeft="1dp"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/item_content" />
 
 
 

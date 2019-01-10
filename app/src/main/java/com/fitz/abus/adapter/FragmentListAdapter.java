@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -125,6 +126,14 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             }
         });
 
+        mainViewHolder.item_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FitzDBUtils.getInstance().deleteBus(currentBusLineDB);
+                EventBus.getDefault().post(new MessageEvent("item_delete"));
+            }
+        });
+
 
     }
 
@@ -145,9 +154,9 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     public void itemDeleted(MainViewHolder mainViewHolder) {
         this.mainViewHolder = mainViewHolder;
         BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
-        Log.d(TAG, "delete this:" + b.toString());
+        Log.d(TAG, "item_delete this:" + b.toString());
         FitzDBUtils.getInstance().deleteBus(b);
-        EventBus.getDefault().post(new MessageEvent("delete"));
+        EventBus.getDefault().post(new MessageEvent("item_delete"));
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
@@ -162,11 +171,12 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         protected TextView tvDistance;
         protected TextView tvPlate;
         protected View rtDetials;
-        protected View delete;
+        protected ViewGroup item_content;
+        protected ImageButton item_delete;
 
         public MainViewHolder(View v) {
             super(v);
-            root = itemView.findViewById(R.id.item_root);
+            root = v.findViewById(R.id.item_root);
             tvLineName = v.findViewById(R.id.tv_line_name);
             tvStationName = v.findViewById(R.id.tv_stationName);
             tvStartStop = v.findViewById(R.id.tv_start_stop);
@@ -177,7 +187,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             tvDistance = v.findViewById(R.id.tv_distance);
             tvPlate = v.findViewById(R.id.tv_plate);
             rtDetials = v.findViewById(R.id.arrival);
-            delete = v.findViewById(R.id.item_delete);
+            item_content = v.findViewById(R.id.item_content);
+            item_delete = v.findViewById(R.id.item_delete);
         }
 
         public void setTvLineName(String LineName) {
@@ -216,8 +227,12 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             tvPlate.setText(Plate);
         }
 
-        public View getDelete(){
-            return delete;
+        public View getItem_delete(){
+            return item_delete;
+        }
+
+        public ViewGroup getItem_content(){
+            return item_content;
         }
     }
 }

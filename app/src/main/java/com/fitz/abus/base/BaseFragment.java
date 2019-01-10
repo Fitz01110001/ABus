@@ -54,7 +54,7 @@ public class BaseFragment extends Fragment {
     private static FragmentListAdapter fragmentListAdapter;
     private Unbinder mUnBinder;
     private List<BusLineDB> currentBusList = new ArrayList<>();
-    private final String DELETE = "delete";
+    private final String DELETE = "item_delete";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
