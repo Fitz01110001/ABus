@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bus_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/bus_station_list_fitzactionbar">
+
+    <TextView
+        android:id="@+id/tv_line_name"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="          "
+        android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_end_stop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_start_stop" />
+
+    <TextView
+        android:id="@+id/tv_to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="开往："
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_end_stop"
+        app:layout_constraintStart_toEndOf="@+id/tv_line_name"
+        app:layout_constraintTop_toTopOf="@+id/tv_end_stop" />
+
+    <TextView
+        android:id="@+id/tv_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="始发："
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_start_stop"
+        app:layout_constraintStart_toEndOf="@+id/tv_line_name"
+        app:layout_constraintTop_toTopOf="@+id/tv_start_stop" />
+
+    <TextView
+        android:id="@+id/tv_start_stop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="TextView"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/bus_station_switch"
+        app:layout_constraintStart_toEndOf="@+id/tv_to"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_end_stop"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:text="TextView"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/bus_station_switch"
+        app:layout_constraintStart_toEndOf="@+id/tv_start"
+        app:layout_constraintTop_toBottomOf="@+id/tv_start_stop" />
+
+    <ImageButton
+        android:id="@+id/bus_station_switch"
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="10dp"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_end_stop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_start_stop"
+        app:srcCompat="@drawable/switch_direction" />
+
+    <TextView
+        android:id="@+id/tv_seTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_stationName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_stationName"
+        tools:text="              " />
+
+    <TextView
+        android:id="@+id/tv_stationName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="start"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_seTime"
+        app:layout_constraintTop_toBottomOf="@+id/tv_end_stop"
+        tools:text="                      " />
+
+    <include
+        android:id="@+id/arrival"
+        layout="@layout/arrival_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bus_station_switch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_stationName" />
+
+    <!--<TableLayout
+        android:id="@+id/bus_detials"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_stationName">
+
+        <TableRow
+            android:id="@+id/row4"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="还有"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_stopdis"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="预计时间"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_remainTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="15sp" />
+        </TableRow>
+
+
+        <TableRow
+            android:id="@+id/row5"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="距离"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_distance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="车牌号"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_plate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="15sp" />
+        </TableRow>
+    </TableLayout>-->
+
+
+</android.support.constraint.ConstraintLayout>

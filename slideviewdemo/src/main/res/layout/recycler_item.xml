@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wind.fitz.slideviewdemo.fitzview.FitzSlideItem xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recycle_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <include android:id="@+id/item_content"
+        layout="@layout/bus_card"/>
+
+    <include android:id="@+id/item_menu"
+        layout="@layout/menu_layout"/>
+
+
+</com.wind.fitz.slideviewdemo.fitzview.FitzSlideItem>
