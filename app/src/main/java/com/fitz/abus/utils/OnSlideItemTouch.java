@@ -60,7 +60,8 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
         theItem = (theItem) rv.getAdapter();
         int moveX = (int) e.getX();
-
+        int moveY = (int) e.getY();
+        Log.d(TAG, "X:" + moveX + " Y:" + moveY);
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 Log.d(TAG, "onInterceptTouchEvent,ACTION_DOWN");
@@ -78,25 +79,43 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                         }
                     });
 
-                    curHolder.getSearch().setOnClickListener(new View.OnClickListener() {
+
+                    /**
+                     * 在浴霸pro上，会出现点击一次接收到多次ACTION_MOVE事件，所以这里用 OnTouch 代替
+                     * */
+                    curHolder.getSearch().setOnTouchListener(new View.OnTouchListener() {
                         @Override
-                        public void onClick(View view) {
-                            Log.d(TAG, "getSearch click");
-                            onItemClick();
-                            theItem.itemSearchCilcked(curHolder);
+                        public boolean onTouch(View v, MotionEvent event) {
+                            switch (event.getAction()) {
+                                case MotionEvent.ACTION_DOWN:
+                                    Log.d(TAG, "Item_delete touch");
+                                    onItemClick();
+                                    theItem.itemSearchCilcked(curHolder);
+                                    return true;
+                                default:
+                                    break;
+                            }
+                            return false;
                         }
                     });
 
-
-                    // 这里有个奇葩的bug，在浴霸pro上，滑出删除button点击，接收不到click事件，item似乎被 rv 遮挡。
-                    /*curHolder.getItem_delete().setOnClickListener(new View.OnClickListener() {
+                    curHolder.getItem_delete().setOnTouchListener(new View.OnTouchListener() {
                         @Override
-                        public void onClick(View view) {
-                            Log.d(TAG,"Item_delete click");
-                            curHolder.root.scrollTo(0,0);
-                            theItem.itemDeleted(curHolder);
+                        public boolean onTouch(View v, MotionEvent event) {
+                            switch (event.getAction()) {
+                                case MotionEvent.ACTION_DOWN:
+                                case MotionEvent.ACTION_MOVE:
+                                    Log.d(TAG, "Item_delete touch");
+                                    curHolder.root.scrollTo(0, 0);
+                                    theItem.itemDeleted(curHolder);
+                                    return true;
+                                default:
+                                    break;
+                            }
+                            return false;
                         }
-                    });*/
+                    });
+
 
                 } else {
                     curHolder = null;
@@ -106,17 +125,24 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                     closeItem();
                     dealEvent = false;
                     break;
-                } else if (state == 1 && curHolder == oldHolder && moveX > (rv.getRight() - MAX_WIDTH)) {
+                } /*else if (state == 1 && curHolder == oldHolder && moveX > (rv.getRight() - MAX_WIDTH)) {
                     //Log.d(TAG, "delete click");
                     curHolder.root.scrollTo(0, 0);
                     theItem.itemDeleted(curHolder);
-                }
+                }*/
                 x = (int) e.getX();
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
                 Log.d(TAG, "onInterceptTouchEvent,ACTION_MOVE");
-
+                curHolder.getItem_delete().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(TAG, "Item_delete click");
+                        curHolder.root.scrollTo(0, 0);
+                        theItem.itemDeleted(curHolder);
+                    }
+                });
                 //扩展: 通过具体速度的判断,还可以实现像QQ那样的右滑出现侧边菜单
                 if (flag) {
                     velocityTracker.addMovement(e);
@@ -147,19 +173,19 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:{
-                Log.d(TAG, "onTouchEvent,ACTION_DOWN");
+            case MotionEvent.ACTION_DOWN: {
+                Log.d(TAG, "onTouchEvent,ACTION_DOWN" + " X:" + e.getX() + " Y:" + e.getY());
 
             }
             case MotionEvent.ACTION_MOVE: {
-                Log.d(TAG, "onTouchEvent,ACTION_MOVE");
+                Log.d(TAG, "onTouchEvent,ACTION_MOVE" + " X:" + e.getX() + " Y:" + e.getY());
                 if (null != curHolder && curHolder.root.getScrollX() >= 0 && dealEvent) {
                     onScroll(e);
                 }
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                Log.d(TAG, "onTouchEvent,ACTION_UP");
+                Log.d(TAG, "onTouchEvent,ACTION_UP" + " X:" + e.getX() + " Y:" + e.getY());
                 if (dealEvent) {
                     if (curHolder != null) {
                         oldHolder = curHolder;
@@ -193,7 +219,7 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
      */
     private void closeItem() {
         state = 0;
-        if(oldHolder != null){
+        if (oldHolder != null) {
             oldHolder.root.onScroll(-oldHolder.root.getScrollX());
         }
 
@@ -203,7 +229,7 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
         state = 1;
         int startX = oldHolder.root.getScrollX() > MAX_WIDTH ? MAX_WIDTH : oldHolder.root.getScrollX();
         int dx = startX < MAX_WIDTH ? MAX_WIDTH - startX : 0;
-        if(oldHolder != null){
+        if (oldHolder != null) {
             oldHolder.root.onScroll(dx);
         }
     }

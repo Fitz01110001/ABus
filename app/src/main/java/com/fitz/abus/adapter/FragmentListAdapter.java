@@ -52,21 +52,24 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     public FragmentListAdapter(Context context, List<BusLineDB> list) {
         mcontext = context;
         mList = list;
+        tipDialog = new QMUITipDialog.Builder(mcontext)
+                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                .setTipWord("查询中")
+                .create();
         mMainCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
-                tipDialog = new QMUITipDialog.Builder(mcontext)
-                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                        .setTipWord("查询中")
-                        .create();
+                Log.d(TAG,"onCallBefore");
                 tipDialog.show();
             }
 
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
+                Log.d(TAG,"onCallSuccess");
                 tipDialog.dismiss();
+                mainViewHolder.showSearch = false;
                 mainViewHolder.item_Detials.setVisibility(View.VISIBLE);
                 mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_up));
                 arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
@@ -79,7 +82,9 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             @Override
             public void onCallError(String meg) {
                 super.onCallError(meg);
+                Log.d(TAG,"onCallError");
                 tipDialog.dismiss();
+                mainViewHolder.showSearch = true;
                 mainViewHolder.item_Detials.setVisibility(View.GONE);
                 Toast.makeText(mcontext, "等待发车", Toast.LENGTH_SHORT).show();
                 mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_down));
@@ -121,7 +126,6 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                 busBaseSHBean.setStartLatetime(currentBusLineDB.getStartLateTime());
                 busBaseSHBean.setEndEarlytime(currentBusLineDB.getEndEarlyTime());
                 busBaseSHBean.setEndLatetime(currentBusLineDB.getEndLateTime());
-
                 Bundle b = new Bundle();
                 b.putParcelable("busbaseSH", busBaseSHBean);
                 intent.putExtras(b);
@@ -132,6 +136,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         mainViewHolder.item_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG,"item_delete");
                 FitzDBUtils.getInstance().deleteBus(currentBusLineDB);
                 EventBus.getDefault().post(new MessageEvent("item_delete"));
             }
@@ -145,12 +150,6 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             }
         });
 
-        mainViewHolder.ibSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG,"ibSearch click");
-            }
-        });
 
     }
 
@@ -168,10 +167,11 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
             httpQuest(b);
         }else {
+            mainViewHolder.showSearch = true;
             mainViewHolder.item_Detials.setVisibility(View.GONE);
             mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_down));
         }
-        mainViewHolder.showSearch = !mainViewHolder.showSearch;
+
     }
 
     @Override

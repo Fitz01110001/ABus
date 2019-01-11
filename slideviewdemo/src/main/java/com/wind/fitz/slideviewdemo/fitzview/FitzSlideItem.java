@@ -3,6 +3,7 @@ package com.wind.fitz.slideviewdemo.fitzview;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -36,7 +37,7 @@ public class FitzSlideItem extends RelativeLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        FLOG("widthMeasureSpec:"+widthMeasureSpec+" heightMeasureSpec:"+heightMeasureSpec);
+        FLOG("widthMeasureSpec:" + widthMeasureSpec + " heightMeasureSpec:" + heightMeasureSpec);
 
     }
 
@@ -51,7 +52,41 @@ public class FitzSlideItem extends RelativeLayout {
         super.onLayout(changed, l, t, r, b);
     }
 
-    private void FLOG(String s){
-        Log.d(TAG,s);
+    private void FLOG(String s) {
+        Log.d(TAG, s);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.d(TAG, "onInterceptTouchEvent  ACTION_DOWN");
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                Log.d(TAG, "onInterceptTouchEvent  ACTION_MOVE:");
+                break;
+
+                default:break;
+        }
+        return false;
+
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                Log.d(TAG, "onTouchEvent  ACTION_DOWN");
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                Log.d(TAG, "onTouchEvent  ACTION_MOVE:");
+                break;
+
+            default:break;
+        }
+
+        return super.onTouchEvent(event);
     }
 }
