@@ -5,4 +5,6 @@
     <color name="colorAccent">#00BFFF</color>
     <color name="primary_dark_material_dark_1">#00BFFF</color>
     <color name="transparent">#00000000</color>
+    <color name="main_bg">#E0EEEE</color>
+    <color name="recycler_item">#FFFAFA</color>
 </resources>

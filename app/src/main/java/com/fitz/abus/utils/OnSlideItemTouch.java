@@ -60,25 +60,34 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
         theItem = (theItem) rv.getAdapter();
         int moveX = (int) e.getX();
-        //Log.d(TAG, "X:" + moveX);
+
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN: {
-                lastX = moveX;
-
+                Log.d(TAG, "onInterceptTouchEvent,ACTION_DOWN");
                 View view = rv.findChildViewUnder(e.getX(), e.getY());
                 if (view != null) {
+                    Log.d(TAG, "view != null");
                     curHolder = (FragmentListAdapter.MainViewHolder) rv.getChildViewHolder(view);
-                    //Log.d(TAG, "ACTION_DOWN," + curHolder.getLayoutPosition());
                     MAX_WIDTH = curHolder.itemView.findViewById(R.id.item_menu).getWidth();
 
                     curHolder.getItem_content().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            //Log.d(TAG, "Item_content click");
+                            Log.d(TAG, "Item_content click");
                             onItemClick();
-                            theItem.itemCilcked(curHolder);
                         }
                     });
+
+                    curHolder.getSearch().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d(TAG, "getSearch click");
+                            onItemClick();
+                            theItem.itemSearchCilcked(curHolder);
+                        }
+                    });
+
+
                     // 这里有个奇葩的bug，在浴霸pro上，滑出删除button点击，接收不到click事件，item似乎被 rv 遮挡。
                     /*curHolder.getItem_delete().setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -88,6 +97,7 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                             theItem.itemDeleted(curHolder);
                         }
                     });*/
+
                 } else {
                     curHolder = null;
                 }
@@ -105,8 +115,8 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
-                int offsetX = moveX - lastX;
-                //Log.d(TAG, "offsetX:" + offsetX);
+                Log.d(TAG, "onInterceptTouchEvent,ACTION_MOVE");
+
                 //扩展: 通过具体速度的判断,还可以实现像QQ那样的右滑出现侧边菜单
                 if (flag) {
                     velocityTracker.addMovement(e);
@@ -137,8 +147,12 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
     @Override
     public void onTouchEvent(RecyclerView rv, MotionEvent e) {
         switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:{
+                Log.d(TAG, "onTouchEvent,ACTION_DOWN");
+
+            }
             case MotionEvent.ACTION_MOVE: {
-                //Log.d(TAG, "onTouchEvent,ACTION_MOVE");
+                Log.d(TAG, "onTouchEvent,ACTION_MOVE");
                 if (null != curHolder && curHolder.root.getScrollX() >= 0 && dealEvent) {
                     onScroll(e);
                 }
@@ -235,7 +249,7 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
      * 让 FragmentListAdapter 同步响应点击事件
      */
     public interface theItem {
-        void itemCilcked(FragmentListAdapter.MainViewHolder mainViewHolder);
+        void itemSearchCilcked(FragmentListAdapter.MainViewHolder mainViewHolder);
 
         void itemDeleted(FragmentListAdapter.MainViewHolder mainViewHolder);
     }

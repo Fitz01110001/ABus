@@ -67,7 +67,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
                 tipDialog.dismiss();
-                mainViewHolder.rtDetials.setVisibility(View.VISIBLE);
+                mainViewHolder.item_Detials.setVisibility(View.VISIBLE);
+                mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_up));
                 arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
                 mainViewHolder.setPlate(arriveBaseBean.getCars().get(0).getTerminal());
                 mainViewHolder.setDistance(arriveBaseBean.getCars().get(0).getDistance());
@@ -79,8 +80,9 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             public void onCallError(String meg) {
                 super.onCallError(meg);
                 tipDialog.dismiss();
-                mainViewHolder.rtDetials.setVisibility(View.GONE);
+                mainViewHolder.item_Detials.setVisibility(View.GONE);
                 Toast.makeText(mcontext, "等待发车", Toast.LENGTH_SHORT).show();
+                mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_down));
             }
         };
     }
@@ -108,6 +110,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         mainViewHolder.tvLineName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d(TAG,"tvLineName click");
                 Intent intent = new Intent(mcontext, BusStopListActivity.class);
                 BusBaseSHBean busBaseSHBean = new BusBaseSHBean();
                 busBaseSHBean.setLine_name(currentBusLineDB.getLineName());
@@ -134,6 +137,20 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             }
         });
 
+        mainViewHolder.item_Detials.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"item_Detials click");
+                httpQuest(currentBusLineDB);
+            }
+        });
+
+        mainViewHolder.ibSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG,"ibSearch click");
+            }
+        });
 
     }
 
@@ -144,10 +161,17 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     }
 
     @Override
-    public void itemCilcked(MainViewHolder mainViewHolder) {
-        this.mainViewHolder = mainViewHolder;
-        BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
-        new FitzHttpUtils().getArriveBaseSH(b.getLineName(), b.getLineID(), b.getStationID(), b.getDirection(), mMainCallBack);
+    public void itemSearchCilcked(MainViewHolder mainViewHolder) {
+        Log.d(TAG,"itemSearchCilcked click");
+        if(mainViewHolder.showSearch){
+            this.mainViewHolder = mainViewHolder;
+            BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
+            httpQuest(b);
+        }else {
+            mainViewHolder.item_Detials.setVisibility(View.GONE);
+            mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_down));
+        }
+        mainViewHolder.showSearch = !mainViewHolder.showSearch;
     }
 
     @Override
@@ -157,6 +181,10 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         Log.d(TAG, "item_delete this:" + b.toString());
         FitzDBUtils.getInstance().deleteBus(b);
         EventBus.getDefault().post(new MessageEvent("item_delete"));
+    }
+
+    private void httpQuest(BusLineDB b){
+        new FitzHttpUtils().getArriveBaseSH(b.getLineName(), b.getLineID(), b.getStationID(), b.getDirection(), mMainCallBack);
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
@@ -170,9 +198,11 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         protected TextView tvRemainTime;
         protected TextView tvDistance;
         protected TextView tvPlate;
-        protected View rtDetials;
+        protected View item_Detials;
         protected ViewGroup item_content;
         protected ImageButton item_delete;
+        protected ImageButton ibSearch;
+        protected boolean showSearch = true;
 
         public MainViewHolder(View v) {
             super(v);
@@ -186,9 +216,10 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             tvRemainTime = v.findViewById(R.id.tv_remainTime);
             tvDistance = v.findViewById(R.id.tv_distance);
             tvPlate = v.findViewById(R.id.tv_plate);
-            rtDetials = v.findViewById(R.id.arrival);
+            item_Detials = v.findViewById(R.id.arrival);
             item_content = v.findViewById(R.id.item_content);
             item_delete = v.findViewById(R.id.item_delete);
+            ibSearch = v.findViewById(R.id.item_search);
         }
 
         public void setTvLineName(String LineName) {
@@ -233,6 +264,10 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
 
         public ViewGroup getItem_content(){
             return item_content;
+        }
+
+        public ImageButton getSearch(){
+            return ibSearch;
         }
     }
 }

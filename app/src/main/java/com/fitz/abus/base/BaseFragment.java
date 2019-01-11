@@ -23,6 +23,7 @@ import com.fitz.abus.fitzview.FitzRecyclerView;
 import com.fitz.abus.utils.FitzDBUtils;
 import com.fitz.abus.utils.MessageEvent;
 import com.fitz.abus.utils.OnSlideItemTouch;
+import com.fitz.abus.utils.SpacesItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -94,7 +95,7 @@ public class BaseFragment extends Fragment {
         //设置Adapter
         fg_container.setAdapter(fragmentListAdapter);
         //设置分隔线
-        fg_container.addItemDecoration(new DividerItemDecoration(mActivity, OrientationHelper.VERTICAL));
+        fg_container.addItemDecoration(new SpacesItemDecoration(20));
         //设置增加或删除条目的动画
         fg_container.setItemAnimator(new DefaultItemAnimator());
         fg_container.addOnItemTouchListener(new OnSlideItemTouch(mActivity));

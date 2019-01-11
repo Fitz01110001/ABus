@@ -49,8 +49,6 @@ public class FitzSlideItemLayout extends RelativeLayout {
         }
     }
 
-
-
     @Override
     public void computeScroll() {
         super.computeScroll();

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/main_bg"
     tools:context=".activity.MainActivity">
 
     <com.fitz.abus.fitzview.FitzActionBar
@@ -30,6 +31,7 @@
         android:paddingRight="16dp"
         android:paddingBottom="10dp"
         android:text="刷新"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,10 +41,6 @@
         android:id="@+id/main_fragment_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

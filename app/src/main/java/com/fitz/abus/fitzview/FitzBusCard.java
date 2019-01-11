@@ -142,9 +142,4 @@ public class FitzBusCard extends TableLayout {
         }
     }
 
-    @OnClick(R.id.button)
-    public void onViewClicked() {
-        // TODO: 2018/12/22 切换bus方向需求待评估 
-
-    }
 }
