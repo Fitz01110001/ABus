@@ -135,14 +135,6 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
             }
             case MotionEvent.ACTION_MOVE: {
                 Log.d(TAG, "onInterceptTouchEvent,ACTION_MOVE");
-                curHolder.getItem_delete().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d(TAG, "Item_delete click");
-                        curHolder.root.scrollTo(0, 0);
-                        theItem.itemDeleted(curHolder);
-                    }
-                });
                 //扩展: 通过具体速度的判断,还可以实现像QQ那样的右滑出现侧边菜单
                 if (flag) {
                     velocityTracker.addMovement(e);
