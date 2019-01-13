@@ -5,16 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.activity.BusStopListActivity;
 import com.fitz.abus.bean.BusBaseSHBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,13 +27,29 @@ import java.util.List;
  */
 public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAdapter.FitzViewHolder> {
 
-    private Context mcontext;
-    private List<BusBaseSHBean> mList;
+    private Context context;
+    private List<BusBaseSHBean> mListSh = new ArrayList<>();
+    private List<String> mListWh = new ArrayList<>();
 
-    public BusLineRecycleAdapter(Context context, List<BusBaseSHBean> list) {
-        mcontext = context;
-        mList = list;
+    /**
+     * for sh
+     */
+    public BusLineRecycleAdapter(Context context, BusBaseSHBean busBaseSHBean) {
+        this.context = context;
+        if (busBaseSHBean.nonNull()) {
+            mListSh.clear();
+            mListSh.add(busBaseSHBean);
+        }
     }
+
+    /**
+     * for wh
+     */
+    public BusLineRecycleAdapter(Context context, List<String> list) {
+        this.context = context;
+        mListWh = list;
+    }
+
 
     @NonNull
     @Override
@@ -42,28 +59,59 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
     }
 
     @Override
-    public void onBindViewHolder(FitzViewHolder holder, int i) {
-        Log.d("BusLineRecycleAdapter", "onBindViewHolder");
-        Log.d("BusLineRecycleAdapter", "count" + getItemCount());
-        final int pos = i;
-        holder.tv_line_name.setText(mList.get(i).getLine_name());
+    public void onBindViewHolder(FitzViewHolder holder, final int i) {
+        holder.tv_line_name.setText(getLineName(i));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("BusLineRecycleAdapter", "click" + "position:" + pos);
-                Intent intent = new Intent(mcontext, BusStopListActivity.class);
-                Bundle b = new Bundle();
-                b.putParcelable("busbaseSH", mList.get(pos));
-                intent.putExtras(b);
-                mcontext.startActivity(intent);
+                Intent intent = new Intent(context, BusStopListActivity.class);
+                switch (FitzApplication.getInstance().getDefaultCityKey()) {
+                    case FitzApplication.keySH:
+                        Bundle b = new Bundle();
+                        b.putParcelable(BusStopListActivity.EXTRAS_SH, mListSh.get(i));
+                        intent.putExtras(b);
+                        break;
+                    case FitzApplication.keyWH:
+                        intent.putExtra(BusStopListActivity.EXTRAS_WH,mListWh.get(i));
+                        break;
+                    case FitzApplication.keyNJ:
+                        break;
+                    default:
+                        return;
+                }
+                context.startActivity(intent);
             }
         });
     }
 
+    private String getLineName(int i){
+        switch (FitzApplication.getInstance().getDefaultCityKey()) {
+            case FitzApplication.keySH:
+                return mListSh.get(i).getLine_name();
+            case FitzApplication.keyWH:
+                return mListWh.get(i);
+            case FitzApplication.keyNJ:
+                break;
+            default:
+                return null;
+        }
+        return null;
+    }
+
     @Override
     public int getItemCount() {
-        return mList.size();
+        switch (FitzApplication.getInstance().getDefaultCityKey()) {
+            case FitzApplication.keySH:
+                return mListSh.size();
+            case FitzApplication.keyWH:
+                return mListWh.size();
+            case FitzApplication.keyNJ:
+                break;
+            default:
+                return 0;
+        }
+        return 0;
     }
 
     public class FitzViewHolder extends RecyclerView.ViewHolder {

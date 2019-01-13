@@ -15,4 +15,5 @@
     <string name="input_line_hint">Please enter the line name</string>
     <string name="line">line</string>
     <string name="city_nj">NanJing</string>
+    <string name="TipWord">Please wait for a moment...</string>
 </resources>

@@ -54,16 +54,19 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         BaseFragment fg = new BaseFragment();
         Bundle args = new Bundle();
         String tag = FitzApplication.getInstance().getDefaultCityKey();
         args.putString(ARG_TAG, tag);
         fg.setArguments(args);
         fitzBusFragmentUtils.replaceFragment(fg, tag);
-        //fitzBusFragmentUtils.replaceFragment();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @OnClick(R.id.main_button_add)

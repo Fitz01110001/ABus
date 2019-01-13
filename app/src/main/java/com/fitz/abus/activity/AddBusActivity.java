@@ -12,18 +12,17 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.BusLineRecycleAdapter;
 import com.fitz.abus.base.BaseActivity;
 import com.fitz.abus.bean.BusBaseSHBean;
+import com.fitz.abus.bean.BusBaseWHBean;
 import com.fitz.abus.fitzview.FitzActionBar;
 import com.fitz.abus.fitzview.FitzRecyclerView;
 import com.fitz.abus.utils.FitzHttpUtils;
 import com.google.gson.Gson;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 
@@ -42,20 +41,12 @@ public class AddBusActivity extends BaseActivity {
     @BindView(R.id.add_recycler_view) FitzRecyclerView addRecyclerView;
     private Context mcontext;
     private static FitzHttpUtils.AbstractHttpCallBack mBusBaseCallBack;
-    private static List<BusBaseSHBean> list = new ArrayList<>();
     private static QMUITipDialog tipDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mcontext = this;
-
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         mBusBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             /**
              * 查询前准备
@@ -63,10 +54,7 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
-                tipDialog = new QMUITipDialog.Builder(mcontext)
-                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                        .setTipWord("查询中")
-                        .create();
+                tipDialog = new QMUITipDialog.Builder(mcontext).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING).setTipWord("查询中").create();
                 tipDialog.show();
                 addTextViewInputPrompt.setText("等一哈不要急");
             }
@@ -80,8 +68,24 @@ public class AddBusActivity extends BaseActivity {
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
                 tipDialog.dismiss();
-                BusBaseSHBean busBaseSHBean = new Gson().fromJson(data, BusBaseSHBean.class);
-                handleSuccess(busBaseSHBean);
+                switch (FitzApplication.getInstance().getDefaultCityKey()) {
+                    case FitzApplication.keySH:
+                        BusBaseSHBean busBaseSHBean = new Gson().fromJson(data, BusBaseSHBean.class);
+                        addRecyclerView.setAdapter(new BusLineRecycleAdapter(mcontext, busBaseSHBean));
+                        handleSuccess();
+                        break;
+                    case FitzApplication.keyWH:
+                        BusBaseWHBean busBaseWHBean = new Gson().fromJson(data, BusBaseWHBean.class);
+                        addRecyclerView.setAdapter(new BusLineRecycleAdapter(mcontext, busBaseWHBean.getResult().getList()));
+                        handleSuccess();
+                        break;
+                    case FitzApplication.keyNJ:
+                        break;
+
+                    default:
+
+                        break;
+                }
             }
 
             /**
@@ -99,33 +103,46 @@ public class AddBusActivity extends BaseActivity {
                 addTextViewInputPrompt.setText("shit happens !!!\n");
             }
         };
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         // 键盘搜索点击响应
         addTextViewInputLine.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    //
-                    new FitzHttpUtils().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
-                    return true;
+                    switch (FitzApplication.getInstance().getDefaultCityKey()) {
+                        case FitzApplication.keySH:
+                            new FitzHttpUtils().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
+                            return true;
+                        case FitzApplication.keyWH:
+                            new FitzHttpUtils().postBusBaseWH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
+                            break;
+
+                        case FitzApplication.keyNJ:
+                            break;
+
+                        default:
+
+                            break;
+                    }
+
                 }
                 return false;
             }
         });
     }
 
-    private void handleSuccess(BusBaseSHBean busBaseSHBean) {
-        if (busBaseSHBean.nonNull()) {
-            list.clear();
-            list.add(busBaseSHBean);
-        }
+    private void handleSuccess() {
         if (addRecyclerView.getVisibility() != View.VISIBLE) {
             addTextViewInputPrompt.setVisibility(View.GONE);
             addRecyclerView.setVisibility(View.VISIBLE);
             initRecycleView();
         }
-        //设置Adapter
-        addRecyclerView.setAdapter(new BusLineRecycleAdapter(mcontext, list));
-
     }
 
     private void initRecycleView() {
@@ -178,6 +195,5 @@ public class AddBusActivity extends BaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        mBusBaseCallBack = null;
     }
 }

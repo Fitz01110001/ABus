@@ -116,6 +116,38 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                         }
                     });
 
+                    curHolder.getItem_Detials().setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            switch (event.getAction()) {
+                                case MotionEvent.ACTION_DOWN:
+                                    Log.d(TAG, "Item_Detials touch");
+                                    onItemClick();
+                                    theItem.itemDetials(curHolder);
+                                    return true;
+                                default:
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+
+                    curHolder.getTvLineName().setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            switch (event.getAction()) {
+                                case MotionEvent.ACTION_DOWN:
+                                    Log.d(TAG, "Item_lineName touch");
+                                    onItemClick();
+                                    theItem.itemLineName(curHolder);
+                                    return true;
+                                default:
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+
 
                 } else {
                     curHolder = null;
@@ -270,5 +302,9 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
         void itemSearchCilcked(FragmentListAdapter.MainViewHolder mainViewHolder);
 
         void itemDeleted(FragmentListAdapter.MainViewHolder mainViewHolder);
+
+        void itemDetials(FragmentListAdapter.MainViewHolder mainViewHolder);
+
+        void itemLineName(FragmentListAdapter.MainViewHolder mainViewHolder);
     }
 }

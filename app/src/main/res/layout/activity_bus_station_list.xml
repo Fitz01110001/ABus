@@ -17,7 +17,7 @@
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_home_black_24dp" />
+        app:srcCompat="@drawable/home" />
 
     <com.fitz.abus.fitzview.FitzActionBar
         android:id="@+id/bus_station_list_fitzactionbar"
@@ -29,10 +29,11 @@
     </com.fitz.abus.fitzview.FitzActionBar>
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/busbase_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bus_station_list_fitzactionbar">
@@ -55,18 +56,17 @@
             android:id="@+id/tv_to"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:text="开往："
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_end_stop"
-            app:layout_constraintStart_toEndOf="@+id/tv_line_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_start"
             app:layout_constraintTop_toTopOf="@+id/tv_end_stop" />
 
         <TextView
             android:id="@+id/tv_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="20dp"
             android:text="始发："
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/tv_start_stop"
@@ -78,13 +78,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:text="TextView"
             android:textSize="15sp"
             app:layout_constraintEnd_toStartOf="@+id/bus_station_switch"
             app:layout_constraintStart_toEndOf="@+id/tv_to"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/tv_line_name" />
 
         <TextView
             android:id="@+id/tv_end_stop"
@@ -93,7 +91,6 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:text="TextView"
             android:textSize="15sp"
             app:layout_constraintEnd_toStartOf="@+id/bus_station_switch"
             app:layout_constraintStart_toEndOf="@+id/tv_start"
@@ -133,14 +130,14 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+        app:layout_constraintTop_toBottomOf="@+id/busbase_group">
 
     </com.fitz.abus.fitzview.FitzRecyclerView>
 

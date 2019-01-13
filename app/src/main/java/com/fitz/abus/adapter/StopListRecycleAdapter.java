@@ -135,6 +135,8 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         };
     }
 
+
+
     private void saveBus(){
         BusLineDB busLineDB = new BusLineDB();
         busLineDB.setCityID(FitzApplication.getInstance().getDefaultCityKey());
@@ -181,7 +183,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 setSelectedIndex(i);
                 stopName = mList.get(i).getZdmc();
                 Log.d(TAG, "name:" + mList.get(i).getZdmc() + " id:" + mList.get(i).getId());
-                direction = FitzApplication.directionSH ? 0 : 1;
+                direction = FitzApplication.direction ? 0 : 1;
                 Log.d(TAG, "direction:" + direction);
                 stopId = mList.get(i).getId();
                 new FitzHttpUtils().getArriveBaseSH(busName, lineId, stopId, direction, mArriveBaseCallBack);

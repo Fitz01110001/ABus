@@ -16,4 +16,5 @@
     <string name="input_line_hint">请输入线路名称</string>
     <string name="line">路</string>
     <string name="city_nj">南京</string>
+    <string name="TipWord">查询中，请稍等</string>
 </resources>

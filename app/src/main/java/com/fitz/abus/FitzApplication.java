@@ -24,7 +24,10 @@ import java.util.List;
  */
 public class FitzApplication extends Application {
 
-    /** 存储区号-城市，每个城市需要单独适配 */
+    private boolean isDebug = true;
+    /**
+     * 存储区号-城市，每个城市需要单独适配
+     */
     public static final HashMap<String, Integer> Cities = new HashMap<String, Integer>() {
         {
             put("021", R.string.city_sh);
@@ -37,14 +40,14 @@ public class FitzApplication extends Application {
      * json 中 direction = true 对应 lineResults0
      * 查询时 direction = true 对应 direction 0
      */
-    public static boolean directionSH = true;
+    public static boolean direction = true;
+    public static final String keySH = "021";
+    public static final String keyWH = "0553";
+    public static final String keyNJ = "025";
     protected static FitzApplication application;
     protected static DaoSession daoSession;
-    private final String firstBootDefaultCity = "021";
-    private final List<String> cities = new ArrayList<>(
-            Arrays.asList("021",
-                    "0553",
-                    "025"));
+    private static final String firstBootDefaultCity = "021";
+    private final List<String> cities = new ArrayList<>(Arrays.asList("021", "0553", "025"));
     private String TAG = "FitzApplication";
     private String defaultCityKey;
     private SharedPreferences preferences;
@@ -79,6 +82,7 @@ public class FitzApplication extends Application {
     }
 
     public String getDefaultCityKey() {
+        FLOG("getDefaultCityKey:" + defaultCityKey);
         return defaultCityKey;
     }
 
@@ -87,6 +91,7 @@ public class FitzApplication extends Application {
      */
     public void setDefaultCityKey(String defaultCityKey) {
         this.defaultCityKey = defaultCityKey;
+        FLOG("setDefaultCityKey:" + defaultCityKey);
         preferences = getApplicationContext().getSharedPreferences(KEY, MODE_PRIVATE);
         editor = preferences.edit();
         editor.putString(KEY, defaultCityKey);
@@ -95,8 +100,11 @@ public class FitzApplication extends Application {
         }
     }
 
-    /** 从Cities中取出对应区号的城市名称 */
+    /**
+     * 从Cities中取出对应区号的城市名称
+     */
     public String getDefaultCityName() {
+        FLOG("getDefaultCityName:" + getResources().getString(Cities.get(defaultCityKey)));
         return getResources().getString(Cities.get(defaultCityKey));
     }
 
@@ -131,6 +139,12 @@ public class FitzApplication extends Application {
     private String readDefaultCityKey() {
         preferences = getApplicationContext().getSharedPreferences(KEY, MODE_PRIVATE);
         return preferences.getString(KEY, firstBootDefaultCity);
+    }
+
+    public void FLOG(String msg) {
+        if (isDebug) {
+            Log.d(TAG, msg);
+        }
     }
 
 }

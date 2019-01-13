@@ -1,20 +1,17 @@
 package com.fitz.abus.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.FragmentListAdapter;
@@ -50,7 +47,6 @@ public class BaseFragment extends Fragment {
     public Activity mActivity;
     private String defaultCityKey;
     private View mRootView;
-    private LinearLayout linearLayout;
     private FitzRecyclerView fg_container;
     private static FragmentListAdapter fragmentListAdapter;
     private Unbinder mUnBinder;
@@ -80,10 +76,7 @@ public class BaseFragment extends Fragment {
         fg_container = mRootView.findViewById(R.id.fg_container);
         fragmentListAdapter = new FragmentListAdapter(mActivity, currentBusList);
         initRecycleView();
-        /*linearLayout = mRootView.findViewById(R.id.fg_container);
-        for (BusLineDB busline : currentBusList) {
-            addBusCard(busline);
-        }*/
+
     }
 
     private void initRecycleView() {

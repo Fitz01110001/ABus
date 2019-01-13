@@ -29,4 +29,8 @@ public class Stops {
         return zdmc;
     }
 
+    @Override
+    public String toString() {
+        return getZdmc();
+    }
 }

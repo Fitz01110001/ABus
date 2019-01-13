@@ -13,7 +13,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
@@ -143,12 +142,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                             mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());
                         }
                     });
-            /*mListPopup.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    onDismiss();
-                }
-            });*/
         }
         mListPopup.setAnimStyle(QMUIPopup.ANIM_GROW_FROM_CENTER);
         mListPopup.setPreferredDirection(QMUIPopup.DIRECTION_TOP);
@@ -165,7 +158,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     protected void setMyActionBar(int res) {
-        mFitzActionBar = (FitzActionBar) findViewById(res);
+        mFitzActionBar = findViewById(res);
         mFitzActionBar.setData(mActionBarClickListener, isBackVisible(), isCityVisible(), isOptionVisible());
     }
 
@@ -182,9 +175,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.options_add:
-                        // to-do bug
                         Intent intent = new Intent(getContext(), AddBusActivity.class);
-                        //intent.addFlags();
                         startActivity(intent);
                         break;
                     case R.id.options_settings:

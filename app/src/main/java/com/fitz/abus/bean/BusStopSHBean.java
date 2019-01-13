@@ -26,7 +26,7 @@ public class BusStopSHBean {
         return lineResults0;
     }
 
-    public boolean nonNull(){
+    public boolean hasResults(){
         return getLineResults1() != null && getLineResults0() != null;
     }
 }
