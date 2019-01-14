@@ -11,47 +11,30 @@ import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.List;
 
+
 @Entity
 public class BusBaseInfoDB implements Parcelable {
 
 
-    @Id(autoincrement = true)
-    private Long id;
-    @NotNull
-    private String cityID;
-    @NotNull
-    private String lineId;
-    @NotNull
-    private String busName;
-    @NotNull
-    private String stationID;
-    @NotNull
-    private String stationName;
-    @NotNull
-    private int direction;
-    @NotNull
-    private String startStopDirection0;
-    @NotNull
-    private String endStopDirection0;
-    @NotNull
-    private String startEndTimeDirection0;
-    @NotNull
-    private String startStopDirection1;
-    @NotNull
-    private String endStopDirection1;
-    @NotNull
-    private String startEndTimeDirection1;
-    @Transient
-    private List<Stops> shStationList0;
-    @Transient
-    private List<Stops> shStationList1;
-    @Transient
-    private List<List<String>> whStationList0;
-    @Transient
-    private List<List<String>> whStationList1;
+    @Id(autoincrement = true) private Long id;
+    @NotNull private String cityID;
+    @NotNull private String lineId;
+    @NotNull private String busName;
+    @NotNull private String stationID;
+    @NotNull private String stationName;
+    @NotNull private int direction;
+    @NotNull private String startStopDirection0;
+    @NotNull private String endStopDirection0;
+    @NotNull private String startEndTimeDirection0;
+    @NotNull private String startStopDirection1;
+    @NotNull private String endStopDirection1;
+    @NotNull private String startEndTimeDirection1;
+    @Transient private List<Stops> shStationList0;
+    @Transient private List<Stops> shStationList1;
+    @Transient private List<List<String>> whStationList0;
+    @Transient private List<List<String>> whStationList1;
 
     protected BusBaseInfoDB(Parcel in) {
-        if (in.readByte() == 0) { id = null; } else { id = in.readLong(); }
         cityID = in.readString();
         lineId = in.readString();
         busName = in.readString();
@@ -89,6 +72,7 @@ public class BusBaseInfoDB implements Parcelable {
     @Generated(hash = 1933659747)
     public BusBaseInfoDB() {
     }
+    
 
     public static final Creator<BusBaseInfoDB> CREATOR = new Creator<BusBaseInfoDB>() {
         @Override
@@ -104,8 +88,8 @@ public class BusBaseInfoDB implements Parcelable {
 
     @Override
     public String toString() {
-        return "id:" + id + ",cityID:" + cityID + ",lineId:" + lineId + ",busName:" + busName + ",stationID:" + stationID + ",stationName:"
-                + stationName;
+        return "id:" + id + ",cityID:" + cityID + ",lineId:" + lineId + ",busName:" + busName + ",stationID:" + stationID + ",stationName:" +
+               stationName;
     }
 
     public Long getId() {
@@ -252,10 +236,6 @@ public class BusBaseInfoDB implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        if (id == null) { parcel.writeByte((byte) 0); } else {
-            parcel.writeByte((byte) 1);
-            parcel.writeLong(id);
-        }
         parcel.writeString(cityID);
         parcel.writeString(lineId);
         parcel.writeString(busName);
