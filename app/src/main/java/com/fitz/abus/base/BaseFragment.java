@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.FragmentListAdapter;
-import com.fitz.abus.bean.BusLineDB;
+import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.fitzview.FitzRecyclerView;
 import com.fitz.abus.utils.FitzDBUtils;
 import com.fitz.abus.utils.MessageEvent;
@@ -41,7 +41,7 @@ import butterknife.Unbinder;
  */
 public class BaseFragment extends Fragment {
 
-    public static final String TAG = "fitz"+BaseFragment.class.getSimpleName();
+    public static final String TAG = "fitzBaseFragment";
     private static final boolean isDebug = true;
     private static final String ARG_TAG = "arg_tag";
     public Activity mActivity;
@@ -50,7 +50,7 @@ public class BaseFragment extends Fragment {
     private FitzRecyclerView fg_container;
     private static FragmentListAdapter fragmentListAdapter;
     private Unbinder mUnBinder;
-    private List<BusLineDB> currentBusList = new ArrayList<>();
+    private List<BusBaseInfoDB> currentBusList = new ArrayList<>();
     private final String DELETE = "item_delete";
 
     @Override
@@ -113,14 +113,10 @@ public class BaseFragment extends Fragment {
         EventBus.getDefault().unregister(this);
     }
 
-    /*public void addBusCard(BusLineDB busline) {
-        FitzBusCard card = new FitzBusCard(mActivity, busline);
-        linearLayout.addView(card);
-    }*/
-
     private void updateList(){
         currentBusList.clear();
         currentBusList.addAll(FitzDBUtils.getInstance().queryRawBusWhereCityID(defaultCityKey));
+        FLOG("updateList currentBusList:"+currentBusList);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

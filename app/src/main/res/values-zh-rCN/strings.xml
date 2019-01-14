@@ -17,4 +17,5 @@
     <string name="line">路</string>
     <string name="city_nj">南京</string>
     <string name="TipWord">查询中，请稍等</string>
+    <string name="waiting">等待发车</string>
 </resources>

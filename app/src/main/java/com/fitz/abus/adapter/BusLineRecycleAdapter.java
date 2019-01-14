@@ -69,7 +69,7 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
                 switch (FitzApplication.getInstance().getDefaultCityKey()) {
                     case FitzApplication.keySH:
                         Bundle b = new Bundle();
-                        b.putParcelable(BusStopListActivity.EXTRAS_SH, mListSh.get(i));
+                        b.putParcelable(BusStopListActivity.EXTRAS_BBS_SH, mListSh.get(i));
                         intent.putExtras(b);
                         break;
                     case FitzApplication.keyWH:
@@ -120,7 +120,7 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
 
         public FitzViewHolder(View v) {
             super(v);
-            tv_line_name = v.findViewById(R.id.line_name);
+            tv_line_name = v.findViewById(R.id.busName);
             tv_end_stop = v.findViewById(R.id.end_stop);
         }
     }

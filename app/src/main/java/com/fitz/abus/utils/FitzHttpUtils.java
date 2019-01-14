@@ -379,21 +379,27 @@ public class FitzHttpUtils {
         /**
          * 查询前准备
          */
-        public void onCallBefore() {}
+        public void onCallBefore() {
+            Log.d(TAG, "onCallBefore");
+        }
 
         /**
          * 获取成功
          *
          * @param data 结果
          */
-        public void onCallSuccess(String data) {}
+        public void onCallSuccess(String data) {
+            Log.d(TAG, "onCallSuccess");
+        }
 
         /**
          * 获取失败
          *
          * @param meg 错误
          */
-        public void onCallError(String meg) {}
+        public void onCallError(String meg) {
+            Log.d(TAG, "onCallError");
+        }
     }
 
     public void FLOG(String msg) {

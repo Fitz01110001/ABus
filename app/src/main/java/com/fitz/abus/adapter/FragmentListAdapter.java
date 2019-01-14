@@ -17,8 +17,7 @@ import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.activity.BusStopListActivity;
 import com.fitz.abus.bean.ArriveBaseBean;
-import com.fitz.abus.bean.BusBaseSHBean;
-import com.fitz.abus.bean.BusLineDB;
+import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.fitzview.FitzSlideItemLayout;
 import com.fitz.abus.utils.FitzDBUtils;
 import com.fitz.abus.utils.FitzHttpUtils;
@@ -41,36 +40,34 @@ import java.util.List;
 public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapter.MainViewHolder> implements OnSlideItemTouch.theItem {
 
     private static final String TAG = "FragmentListAdapter";
+    private static QMUITipDialog tipDialog;
     private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
     protected ArriveBaseBean arriveBaseBean;
-    private Context mcontext;
-    private List<BusLineDB> mList;
+    private Context context;
+    private List<BusBaseInfoDB> mList;
     private MainViewHolder mainViewHolder;
     private FitzHttpUtils.AbstractHttpCallBack mMainCallBack;
-    private static QMUITipDialog tipDialog;
 
-    public FragmentListAdapter(Context context, List<BusLineDB> list) {
-        mcontext = context;
+    public FragmentListAdapter(final Context context, List<BusBaseInfoDB> list) {
+        this.context = context;
         mList = list;
-        tipDialog = new QMUITipDialog.Builder(mcontext).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                                                       .setTipWord(context.getResources().getString(R.string.TipWord))
-                                                       .create();
+        tipDialog = new QMUITipDialog.Builder(this.context).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                                                           .setTipWord(context.getResources().getString(R.string.TipWord))
+                                                           .create();
         mMainCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
-                Log.d(TAG, "onCallBefore");
                 tipDialog.show();
             }
 
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
-                Log.d(TAG, "onCallSuccess");
                 tipDialog.dismiss();
                 mainViewHolder.showSearch = false;
                 mainViewHolder.item_Detials.setVisibility(View.VISIBLE);
-                mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_up));
+                mainViewHolder.ibSearch.setImageDrawable(FragmentListAdapter.this.context.getDrawable(R.drawable.search_up));
                 arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
                 mainViewHolder.setPlate(arriveBaseBean.getCars()
                                                       .get(0)
@@ -89,13 +86,12 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             @Override
             public void onCallError(String meg) {
                 super.onCallError(meg);
-                Log.d(TAG, "onCallError");
                 tipDialog.dismiss();
                 mainViewHolder.showSearch = true;
                 mainViewHolder.item_Detials.setVisibility(View.GONE);
-                Toast.makeText(mcontext, "等待发车", Toast.LENGTH_SHORT)
+                Toast.makeText(context, context.getResources().getString(R.string.waiting), Toast.LENGTH_SHORT)
                      .show();
-                mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_down));
+                mainViewHolder.ibSearch.setImageDrawable(FragmentListAdapter.this.context.getDrawable(R.drawable.search_down));
             }
         };
     }
@@ -110,18 +106,16 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final MainViewHolder mainViewHolder, final int i) {
-        final BusLineDB currentBusLineDB = mList.get(i);
-        Log.d(TAG, "the " + i + " currentBusLineDB:" + currentBusLineDB.toString());
-        if (currentBusLineDB != null) {
-            mainViewHolder.setTvLineName(currentBusLineDB.getLineName());
-            mainViewHolder.setStationName(currentBusLineDB.getStationName());
-            mainViewHolder.setSETime(currentBusLineDB.getStartEarlyTime() + " - " + currentBusLineDB.getStartLateTime());
-            mainViewHolder.setStartStop(currentBusLineDB.getStartStop());
-            mainViewHolder.setEndStop(currentBusLineDB.getEndStop());
+        final BusBaseInfoDB busBaseInfoDB = mList.get(i);
+        Log.d(TAG, "the " + i + " currentBusBaseInfoDB:" + busBaseInfoDB.toString());
+        if (busBaseInfoDB != null) {
+            mainViewHolder.setTvLineName(busBaseInfoDB.getBusName());
+            mainViewHolder.setStationName(busBaseInfoDB.getStationName());
+            mainViewHolder.setSETime(busBaseInfoDB.getStartEndTimeDirection0());
+            mainViewHolder.setStartStop(busBaseInfoDB.getStartStopDirection0());
+            mainViewHolder.setEndStop(busBaseInfoDB.getEndStopDirection0());
         }
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -133,19 +127,19 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         Log.d(TAG, "itemSearchCilcked click");
         if (mainViewHolder.showSearch) {
             this.mainViewHolder = mainViewHolder;
-            BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
+            BusBaseInfoDB b = mList.get(mainViewHolder.getAdapterPosition());
             httpQuest(b);
         } else {
             mainViewHolder.showSearch = true;
             mainViewHolder.item_Detials.setVisibility(View.GONE);
-            mainViewHolder.ibSearch.setImageDrawable(mcontext.getDrawable(R.drawable.search_down));
+            mainViewHolder.ibSearch.setImageDrawable(context.getDrawable(R.drawable.search_down));
         }
     }
 
     @Override
     public void itemDeleted(MainViewHolder mainViewHolder) {
         this.mainViewHolder = mainViewHolder;
-        BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
+        BusBaseInfoDB b = mList.get(mainViewHolder.getAdapterPosition());
         Log.d(TAG, "item_delete this:" + b.toString());
         FitzDBUtils.getInstance()
                    .deleteBus(b);
@@ -155,33 +149,25 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
 
     @Override
     public void itemDetials(MainViewHolder mainViewHolder) {
-        BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
+        BusBaseInfoDB b = mList.get(mainViewHolder.getAdapterPosition());
         httpQuest(b);
     }
 
     @Override
     public void itemLineName(MainViewHolder mainViewHolder) {
-        BusLineDB b = mList.get(mainViewHolder.getAdapterPosition());
-        Intent intent = new Intent(mcontext, BusStopListActivity.class);
+        BusBaseInfoDB b = mList.get(mainViewHolder.getAdapterPosition());
+        Log.d(TAG,"itemLineName BusBaseInfoDB:"+b.toString());
+        Intent intent = new Intent(context, BusStopListActivity.class);
         intent.putExtras(busLineDB2Bundle(b));
-        mcontext.startActivity(intent);
+        context.startActivity(intent);
     }
 
-    private Bundle busLineDB2Bundle(BusLineDB b) {
+    private Bundle busLineDB2Bundle(BusBaseInfoDB busBaseInfoDB) {
         Bundle bundle = new Bundle();
         switch (FitzApplication.getInstance()
                                .getDefaultCityKey()) {
             case FitzApplication.keySH:
-                BusBaseSHBean busBaseSHBean = new BusBaseSHBean();
-                busBaseSHBean.setLine_name(b.getLineName());
-                busBaseSHBean.setLineId(b.getLineID());
-                busBaseSHBean.setStartStop(b.getStartStop());
-                busBaseSHBean.setEnd_stop(b.getEndStop());
-                busBaseSHBean.setStartEarlytime(b.getStartEarlyTime());
-                busBaseSHBean.setStartLatetime(b.getStartLateTime());
-                busBaseSHBean.setEndEarlytime(b.getEndEarlyTime());
-                busBaseSHBean.setEndLatetime(b.getEndLateTime());
-                bundle.putParcelable(BusStopListActivity.EXTRAS_SH, busBaseSHBean);
+                bundle.putParcelable(BusStopListActivity.EXTRAS_BBI_SH, busBaseInfoDB);
                 break;
             case FitzApplication.keyWH:
 
@@ -192,13 +178,13 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
 
             default:
 
-            break;
+                break;
         }
         return bundle;
     }
 
-    private void httpQuest(BusLineDB b) {
-        new FitzHttpUtils().getArriveBaseSH(b.getLineName(), b.getLineID(), b.getStationID(), b.getDirection(), mMainCallBack);
+    private void httpQuest(BusBaseInfoDB b) {
+        new FitzHttpUtils().getArriveBaseSH(b.getBusName(), b.getLineId(), b.getStationID(), b.getDirection(), mMainCallBack);
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
@@ -236,10 +222,6 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             ibSearch = v.findViewById(R.id.item_search);
         }
 
-        public void setTvLineName(String LineName) {
-            tvLineName.setText(LineName);
-        }
-
         public void setStationName(String StationName) {
             tvStationName.setText(StationName);
         }
@@ -274,6 +256,10 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
 
         public TextView getTvLineName() {
             return tvLineName;
+        }
+
+        public void setTvLineName(String LineName) {
+            tvLineName.setText(LineName);
         }
 
         public View getItem_delete() {

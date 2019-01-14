@@ -16,8 +16,10 @@ import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.BusLineRecycleAdapter;
 import com.fitz.abus.base.BaseActivity;
+import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.bean.BusBaseSHBean;
 import com.fitz.abus.bean.BusBaseWHBean;
+import com.fitz.abus.bean.BusStopSHBean;
 import com.fitz.abus.fitzview.FitzActionBar;
 import com.fitz.abus.fitzview.FitzRecyclerView;
 import com.fitz.abus.utils.FitzHttpUtils;
@@ -35,13 +37,18 @@ import butterknife.BindView;
  */
 public class AddBusActivity extends BaseActivity {
 
-    @BindView(R.id.add_fitzactionbar) FitzActionBar addFitzactionbar;
-    @BindView(R.id.add_textview_inputLine) EditText addTextViewInputLine;
-    @BindView(R.id.add_textview_input_prompt) TextView addTextViewInputPrompt;
-    @BindView(R.id.add_recycler_view) FitzRecyclerView addRecyclerView;
-    private Context mcontext;
     private static FitzHttpUtils.AbstractHttpCallBack mBusBaseCallBack;
     private static QMUITipDialog tipDialog;
+    private static BusBaseInfoDB busBaseInfoDB;
+    @BindView(R.id.add_fitzactionbar)
+    FitzActionBar addFitzactionbar;
+    @BindView(R.id.add_textview_inputLine)
+    EditText addTextViewInputLine;
+    @BindView(R.id.add_textview_input_prompt)
+    TextView addTextViewInputPrompt;
+    @BindView(R.id.add_recycler_view)
+    FitzRecyclerView addRecyclerView;
+    private Context mcontext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +78,7 @@ public class AddBusActivity extends BaseActivity {
                 switch (FitzApplication.getInstance().getDefaultCityKey()) {
                     case FitzApplication.keySH:
                         BusBaseSHBean busBaseSHBean = new Gson().fromJson(data, BusBaseSHBean.class);
+                        FLOG("callsuccess busBaseSHBean:" + busBaseSHBean.toString());
                         addRecyclerView.setAdapter(new BusLineRecycleAdapter(mcontext, busBaseSHBean));
                         handleSuccess();
                         break;
@@ -137,24 +145,24 @@ public class AddBusActivity extends BaseActivity {
         });
     }
 
+    private void shGson2BusBaseInfo(BusStopSHBean busStopSHBean) {
+
+    }
+
     private void handleSuccess() {
         if (addRecyclerView.getVisibility() != View.VISIBLE) {
             addTextViewInputPrompt.setVisibility(View.GONE);
             addRecyclerView.setVisibility(View.VISIBLE);
-            initRecycleView();
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mcontext);
+            //设置布局管理器
+            addRecyclerView.setLayoutManager(layoutManager);
+            //设置为垂直布局，这也是默认的
+            layoutManager.setOrientation(OrientationHelper.VERTICAL);
+            //设置分隔线
+            addRecyclerView.addItemDecoration(new DividerItemDecoration(mcontext, OrientationHelper.VERTICAL));
+            //设置增加或删除条目的动画
+            addRecyclerView.setItemAnimator(new DefaultItemAnimator());
         }
-    }
-
-    private void initRecycleView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(mcontext);
-        //设置布局管理器
-        addRecyclerView.setLayoutManager(layoutManager);
-        //设置为垂直布局，这也是默认的
-        layoutManager.setOrientation(OrientationHelper.VERTICAL);
-        //设置分隔线
-        addRecyclerView.addItemDecoration(new DividerItemDecoration(mcontext, OrientationHelper.VERTICAL));
-        //设置增加或删除条目的动画
-        addRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override

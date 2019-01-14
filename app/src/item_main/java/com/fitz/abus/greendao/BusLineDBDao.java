@@ -20,7 +20,7 @@ public class BusLineDBDao extends AbstractDao<BusLineDB, Long> {
     public static final String TABLENAME = "BUS_LINE_DB";
 
     /**
-     * Properties of entity BusLineDB.<br/>
+     * Properties of entity BusBaseInfoDB.<br/>
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {

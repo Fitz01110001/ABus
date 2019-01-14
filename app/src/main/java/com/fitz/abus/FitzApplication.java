@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.fitz.abus.bean.BusLineDB;
+import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.greendao.DaoMaster;
 import com.fitz.abus.greendao.DaoSession;
 import com.fitz.abus.utils.FitzDBUtils;
@@ -52,9 +52,9 @@ public class FitzApplication extends Application {
     private String defaultCityKey;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
-    private List<BusLineDB> favoriteBusListSH = new ArrayList<>();
-    private List<BusLineDB> favoriteBusListWH = new ArrayList<>();
-    private List<BusLineDB> favoriteBusListNJ = new ArrayList<>();
+    private List<BusBaseInfoDB> favoriteBusListSH = new ArrayList<>();
+    private List<BusBaseInfoDB> favoriteBusListWH = new ArrayList<>();
+    private List<BusBaseInfoDB> favoriteBusListNJ = new ArrayList<>();
 
     /**
      * 单例
@@ -65,19 +65,19 @@ public class FitzApplication extends Application {
         return daoSession;
     }
 
-    public List<BusLineDB> getFavoriteBusListWH() {
+    public List<BusBaseInfoDB> getFavoriteBusListWH() {
         return favoriteBusListWH;
     }
 
-    public void setFavoriteBusListWH(List<BusLineDB> favoriteBusListWH) {
+    public void setFavoriteBusListWH(List<BusBaseInfoDB> favoriteBusListWH) {
         this.favoriteBusListWH = favoriteBusListWH;
     }
 
-    public List<BusLineDB> getFavoriteBusListSH() {
+    public List<BusBaseInfoDB> getFavoriteBusListSH() {
         return favoriteBusListSH;
     }
 
-    public void setFavoriteBusListSH(List<BusLineDB> favoriteBusListSH) {
+    public void setFavoriteBusListSH(List<BusBaseInfoDB> favoriteBusListSH) {
         this.favoriteBusListSH = favoriteBusListSH;
     }
 
