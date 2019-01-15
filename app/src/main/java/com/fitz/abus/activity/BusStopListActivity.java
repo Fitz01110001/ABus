@@ -18,6 +18,7 @@ import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.StopListRecycleAdapter;
 import com.fitz.abus.base.BaseActivity;
+import com.fitz.abus.bean.ArriveBusInfo;
 import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.bean.BusBaseSHBean;
 import com.fitz.abus.bean.BusStopSHBean;
@@ -54,26 +55,16 @@ public class BusStopListActivity extends BaseActivity {
     protected static BusStopWHBean busStopWHBean;
     private static StopListRecycleAdapter stopListRecycleAdapter;
     private static QMUITipDialog tipDialog;
-    @BindView(R.id.bus_station_list_fitzactionbar)
-    FitzActionBar busStationListFitzactionbar;
-    @BindView(R.id.tv_line_name)
-    TextView busStationTvBusName;
-    @BindView(R.id.tv_start_stop)
-    TextView busStationTvStartStop;
-    @BindView(R.id.tv_end_stop)
-    TextView busStationTvEndStop;
-    @BindView(R.id.bus_station_switch)
-    ImageButton busStationSwitch;
-    @BindView(R.id.tv_seTime)
-    TextView busStationSeTime;
-    @BindView(R.id.bus_station_stop_list)
-    FitzRecyclerView busStationStopList;
-    @BindView(R.id.return_main)
-    FloatingActionButton returnMain;
-    @BindView(R.id.busbase_group)
-    ConstraintLayout busbaseGroup;
-    private List<Stops> list_sh = new ArrayList<>();
-    private List<List<String>> list_wh = new ArrayList<>();
+    @BindView(R.id.bus_station_list_fitzactionbar) FitzActionBar busStationListFitzactionbar;
+    @BindView(R.id.tv_line_name) TextView busStationTvBusName;
+    @BindView(R.id.tv_start_stop) TextView busStationTvStartStop;
+    @BindView(R.id.tv_end_stop) TextView busStationTvEndStop;
+    @BindView(R.id.bus_station_switch) ImageButton busStationSwitch;
+    @BindView(R.id.tv_seTime) TextView busStationSeTime;
+    @BindView(R.id.bus_station_stop_list) FitzRecyclerView busStationStopList;
+    @BindView(R.id.return_main) FloatingActionButton returnMain;
+    @BindView(R.id.busbase_group) ConstraintLayout busbaseGroup;
+    private static List<ArriveBusInfo> arriveBusInfoList = new ArrayList<>();
     private Context context;
     private FitzHttpUtils.AbstractHttpCallBack mBusStationCallBack;
 
@@ -84,8 +75,10 @@ public class BusStopListActivity extends BaseActivity {
         busBaseInfoDB = new BusBaseInfoDB();
         // 每次进入应该把方向重置
         FitzApplication.direction = true;
-        tipDialog = new QMUITipDialog.Builder(context).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                                                      .setTipWord(context.getResources().getString(R.string.TipWord)).create();
+        tipDialog = new QMUITipDialog.Builder(context)
+                .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                .setTipWord(context.getResources().getString(R.string.TipWord))
+                .create();
 
         mBusStationCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
@@ -149,24 +142,30 @@ public class BusStopListActivity extends BaseActivity {
     }
 
     private void handleSuccess() {
+        arriveBusInfoList.clear();
+        arriveBusInfoList.addAll(convertJsonList2ArriveBusInfo(busBaseInfoDB));
+        stopListRecycleAdapter = new StopListRecycleAdapter(context, busBaseInfoDB, arriveBusInfoList);
+        initRecycleView();
+    }
+
+    private List<ArriveBusInfo> convertJsonList2ArriveBusInfo(BusBaseInfoDB busBaseInfoDB) {
+        List<ArriveBusInfo> list = new ArrayList<>();
         switch (FitzApplication.getInstance().getDefaultCityKey()) {
             case FitzApplication.keySH:
-                list_sh.clear();
-                list_sh.addAll(busBaseInfoDB.getShStationList0());
-                stopListRecycleAdapter = new StopListRecycleAdapter(context, busBaseInfoDB);
-                stopListRecycleAdapter.bindSH(list_sh);
+                for (Stops s : FitzApplication.direction ? busBaseInfoDB.getShStationList0() : busBaseInfoDB.getShStationList1()) {
+                    list.add(new ArriveBusInfo(s.getZdmc(), s.getId()));
+                }
                 break;
             case FitzApplication.keyWH:
-                list_wh.clear();
-                list_wh.addAll(busBaseInfoDB.getWhStationList0());
-                stopListRecycleAdapter = new StopListRecycleAdapter(context, busBaseInfoDB);
-                stopListRecycleAdapter.bindWH(list_wh);
+                for (List<String> l : FitzApplication.direction ? busBaseInfoDB.getWhStationList0() : busBaseInfoDB.getWhStationList1()) {
+                    list.add(new ArriveBusInfo(l.get(1), l.get(0)));
+                }
                 break;
             case FitzApplication.keyNJ:
                 break;
             default:
         }
-        initRecycleView();
+        return list;
     }
 
     private void initRecycleView() {
@@ -210,9 +209,9 @@ public class BusStopListActivity extends BaseActivity {
      */
     private void updateBusInfo(boolean direction) {
         busbaseGroup.setVisibility(View.VISIBLE);
-        String s = busBaseInfoDB.getBusName()
-                                .contains(getResources().getString(R.string.line)) ? busBaseInfoDB.getBusName() : busBaseInfoDB.getBusName() +
-                getResources()
+        String s = busBaseInfoDB
+                .getBusName()
+                .contains(getResources().getString(R.string.line)) ? busBaseInfoDB.getBusName() : busBaseInfoDB.getBusName() + getResources()
                 .getString(R.string.line);
         busStationTvBusName.setText(s);
         busStationSeTime.setText(direction ? busBaseInfoDB.getStartEndTimeDirection0() : busBaseInfoDB.getStartEndTimeDirection1());
@@ -253,22 +252,11 @@ public class BusStopListActivity extends BaseActivity {
 
     @OnClick(R.id.bus_station_switch)
     public void onViewClicked() {
-        FLOG("onViewClicked");
+        FLOG("switch direction");
         FitzApplication.direction = !FitzApplication.direction;
         updateBusInfo(FitzApplication.direction);
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
-                list_sh.clear();
-                list_sh.addAll(FitzApplication.direction ? busBaseInfoDB.getShStationList0() : busBaseInfoDB.getShStationList1());
-                break;
-            case FitzApplication.keyWH:
-                list_wh.clear();
-                list_wh.addAll(FitzApplication.direction ? busBaseInfoDB.getWhStationList0() : busBaseInfoDB.getWhStationList1());
-                break;
-            case FitzApplication.keyNJ:
-                break;
-            default:
-        }
+        arriveBusInfoList.clear();
+        arriveBusInfoList.addAll(convertJsonList2ArriveBusInfo(busBaseInfoDB));
         // 去除选中图标，更新list
         stopListRecycleAdapter.setSelectedIndex(-1);
     }

@@ -336,7 +336,7 @@ public class FitzHttpUtils {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String data = response.body().toString();
+                String data = response.body().string();
                 Log.d(TAG, "postArriveBaseWH  onResponse data:" + data);
                 if (response.isSuccessful() && hasResault(data)) {
                     onSuccess(callBack, data);

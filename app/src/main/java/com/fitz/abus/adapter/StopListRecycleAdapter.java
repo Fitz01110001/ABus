@@ -15,9 +15,9 @@ import android.widget.Toast;
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.bean.ArriveBaseSHBean;
+import com.fitz.abus.bean.ArriveBusInfo;
 import com.fitz.abus.bean.ArriveInfoWHBean;
 import com.fitz.abus.bean.BusBaseInfoDB;
-import com.fitz.abus.bean.Stops;
 import com.fitz.abus.utils.FitzDBUtils;
 import com.fitz.abus.utils.FitzHttpUtils;
 import com.google.gson.Gson;
@@ -25,6 +25,7 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,36 +41,32 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private static final String TAG = "fitzStopListRecycleAdapter";
     private static final int FAST_CLICK_DELAY_TIME = 1000;
     private static QMUITipDialog tipDialog;
-    private static String currentStopName = "";
-    private static String stopId = "";
+    //private static String currentStopName = "";
+    //private static String stopId = "";
     private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
     protected ArriveBaseSHBean arriveBaseSHBean;
     protected ArriveInfoWHBean arriveInfoWHBean;
     private Context context;
     private BusBaseInfoDB busBaseInfoDB;
-    private List<Stops> list_sh = null;
     private List<List<String>> list_wh = null;
+    List<ArriveBusInfo> arriveBusInfoList = new ArrayList<>();
     private int selectedIndex = -1;
     private int direction;
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
     private long lastClickTime = 0L;
 
 
-    public StopListRecycleAdapter(Context context, final BusBaseInfoDB busBaseInfoDB) {
+    public StopListRecycleAdapter(Context context, final BusBaseInfoDB busBaseInfoDB, List<ArriveBusInfo> list) {
         this.context = context;
         this.busBaseInfoDB = busBaseInfoDB;
-    }
+        arriveBusInfoList = list;
 
-    public void bindSH(List<Stops> list) {
-        list_sh = list;
         mArriveBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
-                tipDialog = new QMUITipDialog.Builder(StopListRecycleAdapter.this.context)
-                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                        .setTipWord("查询中")
-                        .create();
+                tipDialog = new QMUITipDialog.Builder(StopListRecycleAdapter.this.context).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                                                                                          .setTipWord("查询中").create();
                 tipDialog.show();
             }
 
@@ -79,52 +76,54 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 Log.d(TAG, data);
                 tipDialog.dismiss();
                 arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
-                new QMUIDialog.MessageDialogBuilder(StopListRecycleAdapter.this.context)
-                        .setTitle(busBaseInfoDB.getStationName())
-                        .setMessage("车牌:" + arriveBaseSHBean.getCars().get(0).getTerminal() + "\n" +
-                                            "距离:" + arriveBaseSHBean.getCars().get(0).getDistance() + "\n" +
-                                            "还有:" + arriveBaseSHBean.getCars().get(0).getStopdis() + "站")
-                        .addAction("取消", new QMUIDialogAction.ActionListener() {
-                            @Override
-                            public void onClick(QMUIDialog dialog, int index) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .addAction("收藏", new QMUIDialogAction.ActionListener() {
-                            @Override
-                            public void onClick(QMUIDialog dialog, int index) {
-                                dialog.dismiss();
-                                saveBus();
-                                Toast.makeText(StopListRecycleAdapter.this.context, "已收藏此站", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .create(QMUI_DIAGLOG_STYLE).show();
+                new QMUIDialog.MessageDialogBuilder(StopListRecycleAdapter.this.context).setTitle(busBaseInfoDB.getStationName())
+                                                                                        .setMessage("车牌:" + arriveBaseSHBean.getCars().get(0)
+                                                                                                                            .getTerminal() + "\n" +
+                                                                                                    "距离:" + arriveBaseSHBean
+                                                                                                            .getCars().get(0)
+                                                                                                            .getDistance() + "\n" + "还有:" +
+                                                                                                    arriveBaseSHBean
+                                                                                                            .getCars().get(0).getStopdis() + "站")
+                                                                                        .addAction("取消", new QMUIDialogAction.ActionListener() {
+                                                                                            @Override
+                                                                                            public void onClick(QMUIDialog dialog, int index) {
+                                                                                                dialog.dismiss();
+                                                                                            }
+                                                                                        }).addAction("收藏", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        dialog.dismiss();
+                        saveBus();
+                        Toast.makeText(StopListRecycleAdapter.this.context, "已收藏此站", Toast.LENGTH_SHORT).show();
+                    }
+                }).create(QMUI_DIAGLOG_STYLE).show();
             }
 
             @Override
             public void onCallError(String meg) {
                 super.onCallError(meg);
                 tipDialog.dismiss();
-                new QMUIDialog.MessageDialogBuilder(StopListRecycleAdapter.this.context)
-                        .setTitle(busBaseInfoDB.getStationName())
-                        .setMessage("等待发车")
-                        .addAction("取消", new QMUIDialogAction.ActionListener() {
-                            @Override
-                            public void onClick(QMUIDialog dialog, int index) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .addAction("收藏", new QMUIDialogAction.ActionListener() {
-                            @Override
-                            public void onClick(QMUIDialog dialog, int index) {
-                                dialog.dismiss();
-                                saveBus();
-                                Toast.makeText(StopListRecycleAdapter.this.context, "已收藏此站", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .create(QMUI_DIAGLOG_STYLE).show();
+                new QMUIDialog.MessageDialogBuilder(StopListRecycleAdapter.this.context).setTitle(busBaseInfoDB.getStationName()).setMessage("等待发车")
+                                                                                        .addAction("取消", new QMUIDialogAction.ActionListener() {
+                                                                                            @Override
+                                                                                            public void onClick(QMUIDialog dialog, int index) {
+                                                                                                dialog.dismiss();
+                                                                                            }
+                                                                                        }).addAction("收藏", new QMUIDialogAction.ActionListener() {
+                    @Override
+                    public void onClick(QMUIDialog dialog, int index) {
+                        dialog.dismiss();
+                        saveBus();
+                        Toast.makeText(StopListRecycleAdapter.this.context, "已收藏此站", Toast.LENGTH_SHORT).show();
+                    }
+                }).create(QMUI_DIAGLOG_STYLE).show();
             }
         };
+    }
+
+/*    public void bindSH(List<Stops> list) {
+
+
     }
 
     public void bindWH(List<List<String>> list) {
@@ -133,10 +132,8 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
             @Override
             public void onCallBefore() {
                 super.onCallBefore();
-                tipDialog = new QMUITipDialog.Builder(StopListRecycleAdapter.this.context)
-                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                        .setTipWord("查询中")
-                        .create();
+                tipDialog = new QMUITipDialog.Builder(StopListRecycleAdapter.this.context).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                                                                                          .setTipWord("查询中").create();
                 tipDialog.show();
 
             }
@@ -146,8 +143,8 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 super.onCallSuccess(data);
                 Log.d(TAG, data);
                 tipDialog.dismiss();
-                arriveInfoWHBean = new Gson().fromJson(data,ArriveInfoWHBean.class);
-                
+                arriveInfoWHBean = new Gson().fromJson(data, ArriveInfoWHBean.class);
+                Log.d(TAG, "onCallSuccess  arriveInfoWHBean:" + arriveInfoWHBean.getResult().toString());
 
             }
 
@@ -158,7 +155,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
             }
         };
-    }
+    }*/
 
     private void saveBus() {
         busBaseInfoDB.setCityID(FitzApplication.getInstance().getDefaultCityKey());
@@ -174,23 +171,8 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     @Override
     public void onBindViewHolder(@NonNull final StationViewHolder holder, final int i) {
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
-                currentStopName = list_sh.get(i).getZdmc();
-                stopId = list_sh.get(i).getId();
-                break;
-            case FitzApplication.keyWH:
-                currentStopName = list_wh.get(i).get(1);
-                stopId = list_wh.get(i).get(0);
-                break;
-            case FitzApplication.keyNJ:
-                break;
-            default:
-                currentStopName = "";
-                stopId = "";
-                break;
-        }
-
+        final String currentStopName = arriveBusInfoList.get(i).getBusName();
+        final String stopId = arriveBusInfoList.get(i).getStationId();
         holder.stop_name.setText((i + 1) + " " + currentStopName);
         if (selectedIndex == i) {
             holder.checkButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.circle_selected));
@@ -211,17 +193,17 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 busBaseInfoDB.setStationID(stopId);
                 Log.d(TAG, "name:" + currentStopName + " id:" + stopId);
                 direction = FitzApplication.direction ? 0 : 1;
-                startNetQuest(busBaseInfoDB);
+                startNetQuest(i, busBaseInfoDB);
 
             }
         });
     }
 
-    private void startNetQuest(BusBaseInfoDB busBaseInfoDB) {
+    private void startNetQuest(int i, BusBaseInfoDB busBaseInfoDB) {
         switch (FitzApplication.getInstance().getDefaultCityKey()) {
             case FitzApplication.keySH:
-                new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB.getStationID(), direction,
-                                                    mArriveBaseCallBack);
+                new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB
+                        .getStationID(), direction, mArriveBaseCallBack);
                 break;
             case FitzApplication.keyWH:
                 new FitzHttpUtils().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), mArriveBaseCallBack);
@@ -243,16 +225,8 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     @Override
     public int getItemCount() {
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
-                return list_sh.size();
-            case FitzApplication.keyWH:
-                return list_wh.size();
-            case FitzApplication.keyNJ:
+        return  arriveBusInfoList.size();
 
-            default:
-                return 0;
-        }
     }
 
     public class StationViewHolder extends RecyclerView.ViewHolder {
@@ -265,4 +239,5 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
             checkButton = v.findViewById(R.id.stop_check_state);
         }
     }
+
 }
