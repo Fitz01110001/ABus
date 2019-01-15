@@ -14,7 +14,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okio.Timeout;
 
 /**
  * @ProjectName: ABus
@@ -31,7 +30,6 @@ public class FitzHttpUtils {
      */
     public static final int TIMEOUT = 5 * 1000;
     private static final String TAG = "FitzHttpUtils";
-    private final boolean isDebug = true;
     private static final String URL_SH = "http://apps.eshimin.com/traffic/gjc/";
     private static final String URL_WH = "http://220.180.139.42:8980/SmartBusServer/Main";
     private static final String JSON_TYPE = "application/json;charset=UTF-8";
@@ -39,6 +37,7 @@ public class FitzHttpUtils {
     private static final MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
     private static final String EMPTY = "{ }";
     private static final String ERROR = "error";
+    private final boolean isDebug = true;
     private OkHttpClient.Builder mOkHttpClientBuilder;
     private OkHttpClient mOkHttpClient;
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -297,8 +296,8 @@ public class FitzHttpUtils {
         });
     }
 
-    public void postBusLineDetails(String lineName, final AbstractHttpCallBack callBack) {
-        String requestBody = "{\"cmd\":\"lineDetail\",\"params\":{\"lineName\":\"" + lineName + "\"}}";
+    public void postBusLineDetails(String busLine, final AbstractHttpCallBack callBack) {
+        String requestBody = "{\"cmd\":\"lineDetail\",\"params\":{\"lineName\":\"" + busLine + "\"}}";
         final Request request = new Request.Builder().url(URL_WH).post(RequestBody.create(mediaType, requestBody)).build();
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
@@ -320,6 +319,32 @@ public class FitzHttpUtils {
             }
         });
 
+    }
+
+    public void postArriveBaseWH(String busLine, String stationId, final AbstractHttpCallBack callBack) {
+        Log.d(TAG,"busLine:"+busLine+" stationId:"+stationId);
+        String requestBody = "{\"cmd\": \"getArriveInfo\",\"params\": {\"lineName\": \"" + busLine + "\",\"stationId\": \"" + stationId + "\"," +
+                "\"type\": 1}}";
+        final Request request = new Request.Builder().url(URL_WH).post(RequestBody.create(mediaType, requestBody)).build();
+        Call call = mOkHttpClient.newCall(request);
+        OnStart(callBack);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                OnError(callBack,e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String data = response.body().toString();
+                Log.d(TAG, "postArriveBaseWH  onResponse data:" + data);
+                if (response.isSuccessful() && hasResault(data)) {
+                    onSuccess(callBack, data);
+                } else {
+                    OnError(callBack, response.message());
+                }
+            }
+        });
     }
 
     /**
@@ -375,6 +400,12 @@ public class FitzHttpUtils {
         }
     }
 
+    public void FLOG(String msg) {
+        if (isDebug) {
+            Log.d(TAG, msg);
+        }
+    }
+
     public static abstract class AbstractHttpCallBack {
         /**
          * 查询前准备
@@ -399,12 +430,6 @@ public class FitzHttpUtils {
          */
         public void onCallError(String meg) {
             Log.d(TAG, "onCallError");
-        }
-    }
-
-    public void FLOG(String msg) {
-        if (isDebug) {
-            Log.d(TAG, msg);
         }
     }
 }

@@ -14,7 +14,8 @@ import android.widget.Toast;
 
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
-import com.fitz.abus.bean.ArriveBaseBean;
+import com.fitz.abus.bean.ArriveBaseSHBean;
+import com.fitz.abus.bean.ArriveInfoWHBean;
 import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.bean.Stops;
 import com.fitz.abus.utils.FitzDBUtils;
@@ -39,23 +40,28 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private static final String TAG = "fitzStopListRecycleAdapter";
     private static final int FAST_CLICK_DELAY_TIME = 1000;
     private static QMUITipDialog tipDialog;
+    private static String currentStopName = "";
+    private static String stopId = "";
     private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
-    protected ArriveBaseBean arriveBaseBean;
+    protected ArriveBaseSHBean arriveBaseSHBean;
+    protected ArriveInfoWHBean arriveInfoWHBean;
     private Context context;
     private BusBaseInfoDB busBaseInfoDB;
-    private List<Stops> list_sh;
-    private List<List<String>> list_wh;
+    private List<Stops> list_sh = null;
+    private List<List<String>> list_wh = null;
     private int selectedIndex = -1;
     private int direction;
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
     private long lastClickTime = 0L;
 
 
-    public StopListRecycleAdapter(Context context, final BusBaseInfoDB busBaseInfoDB, List<Stops> list) {
+    public StopListRecycleAdapter(Context context, final BusBaseInfoDB busBaseInfoDB) {
         this.context = context;
-        list_sh = list;
         this.busBaseInfoDB = busBaseInfoDB;
+    }
 
+    public void bindSH(List<Stops> list) {
+        list_sh = list;
         mArriveBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
             public void onCallBefore() {
@@ -72,12 +78,12 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 super.onCallSuccess(data);
                 Log.d(TAG, data);
                 tipDialog.dismiss();
-                arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
+                arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
                 new QMUIDialog.MessageDialogBuilder(StopListRecycleAdapter.this.context)
                         .setTitle(busBaseInfoDB.getStationName())
-                        .setMessage("车牌:" + arriveBaseBean.getCars().get(0).getTerminal() + "\n" +
-                                            "距离:" + arriveBaseBean.getCars().get(0).getDistance() + "\n" +
-                                            "还有:" + arriveBaseBean.getCars().get(0).getStopdis() + "站")
+                        .setMessage("车牌:" + arriveBaseSHBean.getCars().get(0).getTerminal() + "\n" +
+                                            "距离:" + arriveBaseSHBean.getCars().get(0).getDistance() + "\n" +
+                                            "还有:" + arriveBaseSHBean.getCars().get(0).getStopdis() + "站")
                         .addAction("取消", new QMUIDialogAction.ActionListener() {
                             @Override
                             public void onClick(QMUIDialog dialog, int index) {
@@ -121,6 +127,38 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         };
     }
 
+    public void bindWH(List<List<String>> list) {
+        list_wh = list;
+        mArriveBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
+            @Override
+            public void onCallBefore() {
+                super.onCallBefore();
+                tipDialog = new QMUITipDialog.Builder(StopListRecycleAdapter.this.context)
+                        .setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
+                        .setTipWord("查询中")
+                        .create();
+                tipDialog.show();
+
+            }
+
+            @Override
+            public void onCallSuccess(String data) {
+                super.onCallSuccess(data);
+                Log.d(TAG, data);
+                tipDialog.dismiss();
+                arriveInfoWHBean = new Gson().fromJson(data,ArriveInfoWHBean.class);
+                
+
+            }
+
+            @Override
+            public void onCallError(String meg) {
+                super.onCallError(meg);
+                tipDialog.dismiss();
+
+            }
+        };
+    }
 
     private void saveBus() {
         busBaseInfoDB.setCityID(FitzApplication.getInstance().getDefaultCityKey());
@@ -136,9 +174,24 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     @Override
     public void onBindViewHolder(@NonNull final StationViewHolder holder, final int i) {
-        final String currentStopName = list_sh.get(i).getZdmc();
-        final String stopId = list_sh.get(i).getId();
-        holder.stop_name.setText((i + 1) + "\t" + currentStopName);
+        switch (FitzApplication.getInstance().getDefaultCityKey()) {
+            case FitzApplication.keySH:
+                currentStopName = list_sh.get(i).getZdmc();
+                stopId = list_sh.get(i).getId();
+                break;
+            case FitzApplication.keyWH:
+                currentStopName = list_wh.get(i).get(1);
+                stopId = list_wh.get(i).get(0);
+                break;
+            case FitzApplication.keyNJ:
+                break;
+            default:
+                currentStopName = "";
+                stopId = "";
+                break;
+        }
+
+        holder.stop_name.setText((i + 1) + " " + currentStopName);
         if (selectedIndex == i) {
             holder.checkButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.circle_selected));
         } else {
@@ -158,10 +211,29 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 busBaseInfoDB.setStationID(stopId);
                 Log.d(TAG, "name:" + currentStopName + " id:" + stopId);
                 direction = FitzApplication.direction ? 0 : 1;
-                new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB.getStationID(), direction,
-                                                    mArriveBaseCallBack);
+                startNetQuest(busBaseInfoDB);
+
             }
         });
+    }
+
+    private void startNetQuest(BusBaseInfoDB busBaseInfoDB) {
+        switch (FitzApplication.getInstance().getDefaultCityKey()) {
+            case FitzApplication.keySH:
+                new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB.getStationID(), direction,
+                                                    mArriveBaseCallBack);
+                break;
+            case FitzApplication.keyWH:
+                new FitzHttpUtils().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), mArriveBaseCallBack);
+                break;
+            case FitzApplication.keyNJ:
+                break;
+            default:
+
+                break;
+        }
+
+
     }
 
     public void setSelectedIndex(int position) {
@@ -171,7 +243,16 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     @Override
     public int getItemCount() {
-        return list_sh.size();
+        switch (FitzApplication.getInstance().getDefaultCityKey()) {
+            case FitzApplication.keySH:
+                return list_sh.size();
+            case FitzApplication.keyWH:
+                return list_wh.size();
+            case FitzApplication.keyNJ:
+
+            default:
+                return 0;
+        }
     }
 
     public class StationViewHolder extends RecyclerView.ViewHolder {

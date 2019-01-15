@@ -85,8 +85,7 @@ public class BusStopListActivity extends BaseActivity {
         // 每次进入应该把方向重置
         FitzApplication.direction = true;
         tipDialog = new QMUITipDialog.Builder(context).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                .setTipWord(context.getResources().getString(R.string.TipWord)).create();
-
+                                                      .setTipWord(context.getResources().getString(R.string.TipWord)).create();
 
         mBusStationCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
             @Override
@@ -103,12 +102,12 @@ public class BusStopListActivity extends BaseActivity {
                     case FitzApplication.keySH:
                         BusStopSHBean busStopSHBean = new Gson().fromJson(data, BusStopSHBean.class);
                         setBusInfoSH(null, busStopSHBean);
-                        handleSuccess(busStopSHBean);
+                        handleSuccess();
                         break;
                     case FitzApplication.keyWH:
                         busStopWHBean = new Gson().fromJson(data, BusStopWHBean.class);
                         setBusInfoWH();
-                        handleSuccess(busStopWHBean);
+                        handleSuccess();
                         break;
                     case FitzApplication.keyNJ:
                         break;
@@ -131,9 +130,9 @@ public class BusStopListActivity extends BaseActivity {
                     BusBaseSHBean busBaseSHBean = getIntent().getExtras().getParcelable(EXTRAS_BBS_SH);
                     setBusInfoSH(busBaseSHBean, null);
                     new FitzHttpUtils().getBusStopSH(busBaseSHBean.getLine_name(), busBaseSHBean.getLineId(), mBusStationCallBack);
-                }else if (getIntent().getExtras().containsKey(EXTRAS_BBI_SH)) {
+                } else if (getIntent().getExtras().containsKey(EXTRAS_BBI_SH)) {
                     busBaseInfoDB = getIntent().getExtras().getParcelable(EXTRAS_BBI_SH);
-                    FLOG("busBaseInfoDB:"+busBaseInfoDB.toString());
+                    FLOG("busBaseInfoDB:" + busBaseInfoDB.toString());
                     new FitzHttpUtils().getBusStopSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), mBusStationCallBack);
                 }
                 break;
@@ -149,23 +148,26 @@ public class BusStopListActivity extends BaseActivity {
         }
     }
 
-    private void handleSuccess(BusStopSHBean busStopSHBean) {
-        if (busStopSHBean.hasResults()) {
-            list_sh.clear();
-            list_sh.addAll(busBaseInfoDB.getShStationList0());
-            stopListRecycleAdapter = new StopListRecycleAdapter(context, busBaseInfoDB, list_sh);
-            initRecycleView();
+    private void handleSuccess() {
+        switch (FitzApplication.getInstance().getDefaultCityKey()) {
+            case FitzApplication.keySH:
+                list_sh.clear();
+                list_sh.addAll(busBaseInfoDB.getShStationList0());
+                stopListRecycleAdapter = new StopListRecycleAdapter(context, busBaseInfoDB);
+                stopListRecycleAdapter.bindSH(list_sh);
+                break;
+            case FitzApplication.keyWH:
+                list_wh.clear();
+                list_wh.addAll(busBaseInfoDB.getWhStationList0());
+                stopListRecycleAdapter = new StopListRecycleAdapter(context, busBaseInfoDB);
+                stopListRecycleAdapter.bindWH(list_wh);
+                break;
+            case FitzApplication.keyNJ:
+                break;
+            default:
         }
+        initRecycleView();
     }
-
-    private void handleSuccess(BusStopWHBean busStopWHBean) {
-        list_wh.clear();
-        list_wh.addAll(busBaseInfoDB.getWhStationList0());
-        FLOG("list_wh:" + list_wh);
-        //stopListRecycleAdapter = new StopListRecycleAdapter(context, busBaseInfoDB, list_sh);
-        //initRecycleView();
-    }
-
 
     private void initRecycleView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -184,7 +186,6 @@ public class BusStopListActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
@@ -209,7 +210,11 @@ public class BusStopListActivity extends BaseActivity {
      */
     private void updateBusInfo(boolean direction) {
         busbaseGroup.setVisibility(View.VISIBLE);
-        busStationTvBusName.setText(busBaseInfoDB.getBusName() + getResources().getString(R.string.line));
+        String s = busBaseInfoDB.getBusName()
+                                .contains(getResources().getString(R.string.line)) ? busBaseInfoDB.getBusName() : busBaseInfoDB.getBusName() +
+                getResources()
+                .getString(R.string.line);
+        busStationTvBusName.setText(s);
         busStationSeTime.setText(direction ? busBaseInfoDB.getStartEndTimeDirection0() : busBaseInfoDB.getStartEndTimeDirection1());
         busStationTvStartStop.setText(direction ? busBaseInfoDB.getStartStopDirection0() : busBaseInfoDB.getStartStopDirection1());
         busStationTvEndStop.setText(direction ? busBaseInfoDB.getEndStopDirection0() : busBaseInfoDB.getEndStopDirection1());
@@ -242,8 +247,8 @@ public class BusStopListActivity extends BaseActivity {
         busBaseInfoDB.setEndStopDirection0(busStopWHBean.getResult().getUpLine().split("开往")[1]);
 
         busBaseInfoDB.setStartEndTimeDirection1(busStopWHBean.getResult().getStartendTime().split(",")[1]);
-        busBaseInfoDB.setStartStopDirection1(busStopWHBean.getResult().getUpLine().split("开往")[0]);
-        busBaseInfoDB.setEndStopDirection1(busStopWHBean.getResult().getDownLine().split("开往")[0]);
+        busBaseInfoDB.setStartStopDirection1(busStopWHBean.getResult().getUpLine().split("开往")[1]);
+        busBaseInfoDB.setEndStopDirection1(busStopWHBean.getResult().getDownLine().split("开往")[1]);
     }
 
     @OnClick(R.id.bus_station_switch)
@@ -251,8 +256,19 @@ public class BusStopListActivity extends BaseActivity {
         FLOG("onViewClicked");
         FitzApplication.direction = !FitzApplication.direction;
         updateBusInfo(FitzApplication.direction);
-        list_sh.clear();
-        list_sh.addAll(FitzApplication.direction ? busBaseInfoDB.getShStationList0() : busBaseInfoDB.getShStationList1());
+        switch (FitzApplication.getInstance().getDefaultCityKey()) {
+            case FitzApplication.keySH:
+                list_sh.clear();
+                list_sh.addAll(FitzApplication.direction ? busBaseInfoDB.getShStationList0() : busBaseInfoDB.getShStationList1());
+                break;
+            case FitzApplication.keyWH:
+                list_wh.clear();
+                list_wh.addAll(FitzApplication.direction ? busBaseInfoDB.getWhStationList0() : busBaseInfoDB.getWhStationList1());
+                break;
+            case FitzApplication.keyNJ:
+                break;
+            default:
+        }
         // 去除选中图标，更新list
         stopListRecycleAdapter.setSelectedIndex(-1);
     }

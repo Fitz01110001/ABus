@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.activity.BusStopListActivity;
-import com.fitz.abus.bean.ArriveBaseBean;
+import com.fitz.abus.bean.ArriveBaseSHBean;
 import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.fitzview.FitzSlideItemLayout;
 import com.fitz.abus.utils.FitzDBUtils;
@@ -42,7 +42,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     private static final String TAG = "FragmentListAdapter";
     private static QMUITipDialog tipDialog;
     private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
-    protected ArriveBaseBean arriveBaseBean;
+    protected ArriveBaseSHBean arriveBaseSHBean;
     private Context context;
     private List<BusBaseInfoDB> mList;
     private MainViewHolder mainViewHolder;
@@ -68,19 +68,19 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                 mainViewHolder.showSearch = false;
                 mainViewHolder.item_Detials.setVisibility(View.VISIBLE);
                 mainViewHolder.ibSearch.setImageDrawable(FragmentListAdapter.this.context.getDrawable(R.drawable.search_up));
-                arriveBaseBean = new Gson().fromJson(data, ArriveBaseBean.class);
-                mainViewHolder.setPlate(arriveBaseBean.getCars()
-                                                      .get(0)
-                                                      .getTerminal());
-                mainViewHolder.setDistance(arriveBaseBean.getCars()
-                                                         .get(0)
-                                                         .getDistance());
-                mainViewHolder.setRemainTime(arriveBaseBean.getCars()
-                                                           .get(0)
-                                                           .getTime());
-                mainViewHolder.setStopdis(arriveBaseBean.getCars()
+                arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
+                mainViewHolder.setPlate(arriveBaseSHBean.getCars()
                                                         .get(0)
-                                                        .getStopdis());
+                                                        .getTerminal());
+                mainViewHolder.setDistance(arriveBaseSHBean.getCars()
+                                                           .get(0)
+                                                           .getDistance());
+                mainViewHolder.setRemainTime(arriveBaseSHBean.getCars()
+                                                             .get(0)
+                                                             .getTime());
+                mainViewHolder.setStopdis(arriveBaseSHBean.getCars()
+                                                          .get(0)
+                                                          .getStopdis());
             }
 
             @Override
