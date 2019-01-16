@@ -73,7 +73,7 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
                         intent.putExtras(b);
                         break;
                     case FitzApplication.keyWH:
-                        intent.putExtra(BusStopListActivity.EXTRAS_WH,mListWh.get(i));
+                        intent.putExtra(BusStopListActivity.EXTRAS_BUSNAME_WH,mListWh.get(i));
                         break;
                     case FitzApplication.keyNJ:
                         break;

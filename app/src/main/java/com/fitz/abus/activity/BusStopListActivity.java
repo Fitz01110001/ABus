@@ -45,9 +45,17 @@ import butterknife.OnClick;
  */
 public class BusStopListActivity extends BaseActivity {
 
+    /**
+     * 对应搜索列表启动方式
+     */
     public static final String EXTRAS_BBS_SH = "busBaseSHBeanDB";
+    public static final String EXTRAS_BUSNAME_WH = "busNameWH";
+    /**
+     * 对应主页点击线路名启动方式
+     */
     public static final String EXTRAS_BBI_SH = "busBaseInfoDB";
-    public static final String EXTRAS_WH = "busbaseWH";
+    public static final String EXTRAS_BBI_WH = "busBaseInfoWH";
+
     /**
      * 上海的 busbase 是作为intent参数传入的，设为静态以便切换方向可用
      */
@@ -55,16 +63,25 @@ public class BusStopListActivity extends BaseActivity {
     protected static BusStopWHBean busStopWHBean;
     private static StopListRecycleAdapter stopListRecycleAdapter;
     private static QMUITipDialog tipDialog;
-    @BindView(R.id.bus_station_list_fitzactionbar) FitzActionBar busStationListFitzactionbar;
-    @BindView(R.id.tv_line_name) TextView busStationTvBusName;
-    @BindView(R.id.tv_start_stop) TextView busStationTvStartStop;
-    @BindView(R.id.tv_end_stop) TextView busStationTvEndStop;
-    @BindView(R.id.bus_station_switch) ImageButton busStationSwitch;
-    @BindView(R.id.tv_seTime) TextView busStationSeTime;
-    @BindView(R.id.bus_station_stop_list) FitzRecyclerView busStationStopList;
-    @BindView(R.id.return_main) FloatingActionButton returnMain;
-    @BindView(R.id.busbase_group) ConstraintLayout busbaseGroup;
     private static List<ArriveBusInfo> arriveBusInfoList = new ArrayList<>();
+    @BindView(R.id.bus_station_list_fitzactionbar)
+    FitzActionBar busStationListFitzactionbar;
+    @BindView(R.id.tv_line_name)
+    TextView busStationTvBusName;
+    @BindView(R.id.tv_start_stop)
+    TextView busStationTvStartStop;
+    @BindView(R.id.tv_end_stop)
+    TextView busStationTvEndStop;
+    @BindView(R.id.bus_station_switch)
+    ImageButton busStationSwitch;
+    @BindView(R.id.tv_seTime)
+    TextView busStationSeTime;
+    @BindView(R.id.bus_station_stop_list)
+    FitzRecyclerView busStationStopList;
+    @BindView(R.id.return_main)
+    FloatingActionButton returnMain;
+    @BindView(R.id.busbase_group)
+    ConstraintLayout busbaseGroup;
     private Context context;
     private FitzHttpUtils.AbstractHttpCallBack mBusStationCallBack;
 
@@ -130,9 +147,12 @@ public class BusStopListActivity extends BaseActivity {
                 }
                 break;
             case FitzApplication.keyWH:
-                String lineName = getIntent().getExtras().getString(EXTRAS_WH);
-                if (lineName != null) {
-                    new FitzHttpUtils().postBusLineDetails(lineName, mBusStationCallBack);
+                if (getIntent().getExtras().containsKey(EXTRAS_BUSNAME_WH)) {
+                    String busName = getIntent().getExtras().getString(EXTRAS_BUSNAME_WH);
+                    new FitzHttpUtils().postBusLineDetails(busName, mBusStationCallBack);
+                } else if (getIntent().getExtras().containsKey(EXTRAS_BBI_WH)) {
+                    busBaseInfoDB = getIntent().getExtras().getParcelable(EXTRAS_BBI_WH);
+                    new FitzHttpUtils().postBusLineDetails(busBaseInfoDB.getBusName(), mBusStationCallBack);
                 }
                 break;
             case FitzApplication.keyNJ:
@@ -240,7 +260,8 @@ public class BusStopListActivity extends BaseActivity {
         busBaseInfoDB.setWhStationList0(busStopWHBean.getResult().getUpLineStationList());
         busBaseInfoDB.setWhStationList1(busStopWHBean.getResult().getDownLineStationList());
         busBaseInfoDB.setBusName(busStopWHBean.getResult().getLineName());
-        FLOG("businfoWH:" + busStopWHBean.getResult().toString());
+        //该属性只有上海使用，不为空即可
+        busBaseInfoDB.setLineId(busStopWHBean.getResult().getLineName());
         busBaseInfoDB.setStartEndTimeDirection0(busStopWHBean.getResult().getStartendTime().split(",")[0]);
         busBaseInfoDB.setStartStopDirection0(busStopWHBean.getResult().getDownLine().split("开往")[1]);
         busBaseInfoDB.setEndStopDirection0(busStopWHBean.getResult().getUpLine().split("开往")[1]);

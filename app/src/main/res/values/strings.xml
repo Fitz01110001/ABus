@@ -13,8 +13,15 @@
     <string name="input_prompt_sh" >Please enter the full line name,Such as \"763路\"、\"46路区间\"</string>
     <string name="input_prompt_wh">Please enter the line name, just the number</string>
     <string name="input_line_hint">Please enter the line name</string>
-    <string name="line" translatable="false">line</string>
+    <string name="line">line</string>
     <string name="city_nj">NanJing</string>
     <string name="TipWord">Please wait for a moment...</string>
     <string name="waiting">Waiting for departure</string>
+    <string name="plate">Plate</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="distance">Distance</string>
+    <string name="remaining">Remaining</string>
+    <string name="station">station</string>
+    <string name="stations">stations</string>
 </resources>

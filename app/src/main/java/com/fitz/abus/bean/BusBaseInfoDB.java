@@ -18,6 +18,7 @@ public class BusBaseInfoDB implements Parcelable {
 
     @Id(autoincrement = true) private Long id;
     @NotNull private String cityID;
+    // 仅上海使用
     @NotNull private String lineId;
     @NotNull private String busName;
     @NotNull private String stationID;

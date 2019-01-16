@@ -170,9 +170,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                 bundle.putParcelable(BusStopListActivity.EXTRAS_BBI_SH, busBaseInfoDB);
                 break;
             case FitzApplication.keyWH:
-
+                bundle.putParcelable(BusStopListActivity.EXTRAS_BBI_WH, busBaseInfoDB);
                 break;
-
             case FitzApplication.keyNJ:
                 break;
 

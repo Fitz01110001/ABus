@@ -27,6 +27,8 @@ import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @ProjectName: ABus
@@ -46,17 +48,17 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
     protected ArriveBaseSHBean arriveBaseSHBean;
     protected ArriveInfoWHBean arriveInfoWHBean;
+    List<ArriveBusInfo> arriveBusInfoList = new ArrayList<>();
     private Context context;
     private BusBaseInfoDB busBaseInfoDB;
     private List<List<String>> list_wh = null;
-    List<ArriveBusInfo> arriveBusInfoList = new ArrayList<>();
     private int selectedIndex = -1;
     private int direction;
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
     private long lastClickTime = 0L;
 
 
-    public StopListRecycleAdapter(Context context, final BusBaseInfoDB busBaseInfoDB, List<ArriveBusInfo> list) {
+    public StopListRecycleAdapter(final Context context, final BusBaseInfoDB busBaseInfoDB, List<ArriveBusInfo> list) {
         this.context = context;
         this.busBaseInfoDB = busBaseInfoDB;
         arriveBusInfoList = list;
@@ -75,28 +77,82 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 super.onCallSuccess(data);
                 Log.d(TAG, data);
                 tipDialog.dismiss();
-                arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
+                String plate = "";
+                String distance = "";
+                String remainingStation = "";
+                switch (FitzApplication.getInstance().getDefaultCityKey()) {
+                    case FitzApplication.keySH:
+                        arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
+                        plate = arriveBaseSHBean.getCars().get(0)
+                                                .getTerminal();
+                        distance = arriveBaseSHBean
+                                .getCars().get(0)
+                                .getDistance();
+                        remainingStation = arriveBaseSHBean
+                                .getCars()
+                                .get(0)
+                                .getStopdis();
+                        break;
+                    case FitzApplication.keyWH:
+                        arriveInfoWHBean = new Gson().fromJson(data, ArriveInfoWHBean.class);
+                        plate = arriveInfoWHBean.getResult().getPlate();
+                        distance = arriveInfoWHBean.getResult().getDistance();
+                        remainingStation = arriveInfoWHBean.getResult().getWillArriveTime();
+                        //获取数字
+                        Pattern pattern = Pattern.compile("\\d+");
+                        Matcher matcher = pattern.matcher(remainingStation);
+                        while (matcher.find()) {
+                            remainingStation = matcher.group(0);
+                        }
+                        break;
+                    case FitzApplication.keyNJ:
+                        break;
+                    default:
+                }
+                String message = context.getResources()
+                                        .getString(R.string.plate) + plate + "\n" +
+                        context.getResources()
+                               .getString(R.string.distance) +
+                        distance + "\n" + context
+                        .getResources()
+                        .getString(R.string.remaining) +
+                        remainingStation + (Integer.parseInt
+                        (remainingStation) > 2 ? context
+                        .getResources()
+                        .getString(R.string.stations) : context.getResources()
+                                                               .getString(R.string.station));
+
                 new QMUIDialog.MessageDialogBuilder(StopListRecycleAdapter.this.context).setTitle(busBaseInfoDB.getStationName())
-                                                                                        .setMessage("车牌:" + arriveBaseSHBean.getCars().get(0)
-                                                                                                                            .getTerminal() + "\n" +
-                                                                                                    "距离:" + arriveBaseSHBean
-                                                                                                            .getCars().get(0)
-                                                                                                            .getDistance() + "\n" + "还有:" +
-                                                                                                    arriveBaseSHBean
-                                                                                                            .getCars().get(0).getStopdis() + "站")
-                                                                                        .addAction("取消", new QMUIDialogAction.ActionListener() {
-                                                                                            @Override
-                                                                                            public void onClick(QMUIDialog dialog, int index) {
-                                                                                                dialog.dismiss();
-                                                                                            }
-                                                                                        }).addAction("收藏", new QMUIDialogAction.ActionListener() {
-                    @Override
-                    public void onClick(QMUIDialog dialog, int index) {
-                        dialog.dismiss();
-                        saveBus();
-                        Toast.makeText(StopListRecycleAdapter.this.context, "已收藏此站", Toast.LENGTH_SHORT).show();
-                    }
-                }).create(QMUI_DIAGLOG_STYLE).show();
+                                                                                        .setMessage(message)
+                                                                                        .addAction(context.getResources()
+                                                                                                          .getString(R.string.cancel), new
+                                                                                                           QMUIDialogAction.ActionListener() {
+                                                                                                               @Override
+                                                                                                               public void onClick(QMUIDialog
+                                                                                                                                           dialog,
+                                                                                                                                   int index) {
+                                                                                                                   dialog.dismiss();
+                                                                                                               }
+                                                                                                           })
+                                                                                        .addAction(context.getResources()
+                                                                                                          .getString(R.string.save), new
+                                                                                                           QMUIDialogAction.ActionListener() {
+                                                                                                               @Override
+                                                                                                               public void onClick(QMUIDialog
+                                                                                                                                           dialog,
+                                                                                                                                   int index) {
+                                                                                                                   dialog.dismiss();
+                                                                                                                   saveBus();
+                                                                                                                   Toast.makeText
+                                                                                                                           (StopListRecycleAdapter
+                                                                                                                                    .this.context,
+                                                                                                                            "已收藏此站", Toast
+                                                                                                                                    .LENGTH_SHORT)
+                                                                                                                        .show();
+                                                                                                               }
+                                                                                                           })
+                                                                                        .create(QMUI_DIAGLOG_STYLE)
+                                                                                        .show();
             }
 
             @Override
@@ -121,42 +177,6 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         };
     }
 
-/*    public void bindSH(List<Stops> list) {
-
-
-    }
-
-    public void bindWH(List<List<String>> list) {
-        list_wh = list;
-        mArriveBaseCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
-            @Override
-            public void onCallBefore() {
-                super.onCallBefore();
-                tipDialog = new QMUITipDialog.Builder(StopListRecycleAdapter.this.context).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
-                                                                                          .setTipWord("查询中").create();
-                tipDialog.show();
-
-            }
-
-            @Override
-            public void onCallSuccess(String data) {
-                super.onCallSuccess(data);
-                Log.d(TAG, data);
-                tipDialog.dismiss();
-                arriveInfoWHBean = new Gson().fromJson(data, ArriveInfoWHBean.class);
-                Log.d(TAG, "onCallSuccess  arriveInfoWHBean:" + arriveInfoWHBean.getResult().toString());
-
-            }
-
-            @Override
-            public void onCallError(String meg) {
-                super.onCallError(meg);
-                tipDialog.dismiss();
-
-            }
-        };
-    }*/
-
     private void saveBus() {
         busBaseInfoDB.setCityID(FitzApplication.getInstance().getDefaultCityKey());
         FitzDBUtils.getInstance().insertBus(busBaseInfoDB);
@@ -173,6 +193,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     public void onBindViewHolder(@NonNull final StationViewHolder holder, final int i) {
         final String currentStopName = arriveBusInfoList.get(i).getBusName();
         final String stopId = arriveBusInfoList.get(i).getStationId();
+        Log.d(TAG, "currentStopName:" + currentStopName + " stopId:" + stopId);
         holder.stop_name.setText((i + 1) + " " + currentStopName);
         if (selectedIndex == i) {
             holder.checkButton.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.circle_selected));
@@ -191,22 +212,21 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 setSelectedIndex(i);
                 busBaseInfoDB.setStationName(currentStopName);
                 busBaseInfoDB.setStationID(stopId);
-                Log.d(TAG, "name:" + currentStopName + " id:" + stopId);
                 direction = FitzApplication.direction ? 0 : 1;
-                startNetQuest(i, busBaseInfoDB);
-
+                Log.d(TAG, "click name:" + currentStopName + " id:" + stopId + " direction:" + direction);
+                startNetQuest(busBaseInfoDB);
             }
         });
     }
 
-    private void startNetQuest(int i, BusBaseInfoDB busBaseInfoDB) {
+    private void startNetQuest(BusBaseInfoDB busBaseInfoDB) {
         switch (FitzApplication.getInstance().getDefaultCityKey()) {
             case FitzApplication.keySH:
                 new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB
                         .getStationID(), direction, mArriveBaseCallBack);
                 break;
             case FitzApplication.keyWH:
-                new FitzHttpUtils().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), mArriveBaseCallBack);
+                new FitzHttpUtils().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), direction, mArriveBaseCallBack);
                 break;
             case FitzApplication.keyNJ:
                 break;
@@ -214,8 +234,6 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
                 break;
         }
-
-
     }
 
     public void setSelectedIndex(int position) {
@@ -225,7 +243,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     @Override
     public int getItemCount() {
-        return  arriveBusInfoList.size();
+        return arriveBusInfoList.size();
 
     }
 

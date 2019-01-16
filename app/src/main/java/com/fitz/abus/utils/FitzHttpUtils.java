@@ -321,10 +321,10 @@ public class FitzHttpUtils {
 
     }
 
-    public void postArriveBaseWH(String busLine, String stationId, final AbstractHttpCallBack callBack) {
+    public void postArriveBaseWH(String busLine, String stationId, int direction,final AbstractHttpCallBack callBack) {
         Log.d(TAG,"busLine:"+busLine+" stationId:"+stationId);
         String requestBody = "{\"cmd\": \"getArriveInfo\",\"params\": {\"lineName\": \"" + busLine + "\",\"stationId\": \"" + stationId + "\"," +
-                "\"type\": 1}}";
+                "\"type\": "+(direction+1)+"}}";
         final Request request = new Request.Builder().url(URL_WH).post(RequestBody.create(mediaType, requestBody)).build();
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
