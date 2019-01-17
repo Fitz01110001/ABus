@@ -25,7 +25,6 @@ import com.qmuiteam.qmui.widget.dialog.QMUIDialog;
 import com.qmuiteam.qmui.widget.dialog.QMUIDialogAction;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,12 +42,10 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private static final String TAG = "fitzStopListRecycleAdapter";
     private static final int FAST_CLICK_DELAY_TIME = 1000;
     private static QMUITipDialog tipDialog;
-    //private static String currentStopName = "";
-    //private static String stopId = "";
     private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
     protected ArriveBaseSHBean arriveBaseSHBean;
     protected ArriveInfoWHBean arriveInfoWHBean;
-    List<ArriveBusInfo> arriveBusInfoList = new ArrayList<>();
+    private List<ArriveBusInfo> arriveBusInfoList;
     private Context context;
     private BusBaseInfoDB busBaseInfoDB;
     private List<List<String>> list_wh = null;
