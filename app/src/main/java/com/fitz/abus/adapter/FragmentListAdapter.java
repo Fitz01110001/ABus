@@ -3,6 +3,8 @@ package com.fitz.abus.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +19,7 @@ import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.activity.BusStopListActivity;
 import com.fitz.abus.bean.ArriveBaseSHBean;
+import com.fitz.abus.bean.ArriveInfoWHBean;
 import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.fitzview.FitzSlideItemLayout;
 import com.fitz.abus.utils.FitzDBUtils;
@@ -39,18 +42,34 @@ import java.util.List;
  */
 public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapter.MainViewHolder> implements OnSlideItemTouch.theItem {
 
+    public static final int MSG_REFRESH = 1;
     private static final String TAG = "FragmentListAdapter";
     private static QMUITipDialog tipDialog;
+    private static TimerThread timerThread;
     private final int QMUI_DIAGLOG_STYLE = com.qmuiteam.qmui.R.style.QMUI_Dialog;
-    protected ArriveBaseSHBean arriveBaseSHBean;
     private Context context;
     private List<BusBaseInfoDB> mList;
     private MainViewHolder mainViewHolder;
     private FitzHttpUtils.AbstractHttpCallBack mMainCallBack;
+    private Handler handler;
+
 
     public FragmentListAdapter(final Context context, List<BusBaseInfoDB> list) {
         this.context = context;
         mList = list;
+        handler = new Handler() {
+            @Override
+            public void handleMessage(final Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case MSG_REFRESH:
+                        httpQuest((BusBaseInfoDB) msg.obj);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
         tipDialog = new QMUITipDialog.Builder(this.context).setIconType(QMUITipDialog.Builder.ICON_TYPE_LOADING)
                                                            .setTipWord(context.getResources().getString(R.string.TipWord))
                                                            .create();
@@ -68,19 +87,27 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                 mainViewHolder.showSearch = false;
                 mainViewHolder.item_Detials.setVisibility(View.VISIBLE);
                 mainViewHolder.ibSearch.setImageDrawable(FragmentListAdapter.this.context.getDrawable(R.drawable.search_up));
-                arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
-                mainViewHolder.setPlate(arriveBaseSHBean.getCars()
-                                                        .get(0)
-                                                        .getTerminal());
-                mainViewHolder.setDistance(arriveBaseSHBean.getCars()
-                                                           .get(0)
-                                                           .getDistance());
-                mainViewHolder.setRemainTime(arriveBaseSHBean.getCars()
-                                                             .get(0)
-                                                             .getTime());
-                mainViewHolder.setStopdis(arriveBaseSHBean.getCars()
-                                                          .get(0)
-                                                          .getStopdis());
+                switch (FitzApplication.getInstance().getDefaultCityKey()) {
+                    case FitzApplication.keySH:
+                        ArriveBaseSHBean arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
+                        mainViewHolder.setPlate(arriveBaseSHBean.getCars().get(0).getTerminal());
+                        mainViewHolder.setDistance(arriveBaseSHBean.getCars().get(0).getDistance());
+                        mainViewHolder.setRemainTime(arriveBaseSHBean.getCars().get(0).getTime());
+                        mainViewHolder.setStopdis(arriveBaseSHBean.getCars().get(0).getStopdis());
+                        break;
+                    case FitzApplication.keyWH:
+                        ArriveInfoWHBean arriveInfoWHBean = new Gson().fromJson(data, ArriveInfoWHBean.class);
+                        mainViewHolder.setPlate(arriveInfoWHBean.getResult().getPlate());
+                        mainViewHolder.setDistance(arriveInfoWHBean.getResult().getDistance());
+                        mainViewHolder.setRemainTime("");
+                        mainViewHolder.setStopdis(arriveInfoWHBean.getResult().getWillArriveTime());
+                        break;
+                    case FitzApplication.keyNJ:
+                        break;
+                    default:
+                        return;
+                }
+
             }
 
             @Override
@@ -128,11 +155,13 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         if (mainViewHolder.showSearch) {
             this.mainViewHolder = mainViewHolder;
             BusBaseInfoDB b = mList.get(mainViewHolder.getAdapterPosition());
+            //new TimerThread(b).start();
             httpQuest(b);
         } else {
             mainViewHolder.showSearch = true;
             mainViewHolder.item_Detials.setVisibility(View.GONE);
             mainViewHolder.ibSearch.setImageDrawable(context.getDrawable(R.drawable.search_down));
+
         }
     }
 
@@ -156,7 +185,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     @Override
     public void itemLineName(MainViewHolder mainViewHolder) {
         BusBaseInfoDB b = mList.get(mainViewHolder.getAdapterPosition());
-        Log.d(TAG,"itemLineName BusBaseInfoDB:"+b.toString());
+        Log.d(TAG, "itemLineName BusBaseInfoDB:" + b.toString());
         Intent intent = new Intent(context, BusStopListActivity.class);
         intent.putExtras(busLineDB2Bundle(b));
         context.startActivity(intent);
@@ -183,7 +212,45 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     }
 
     private void httpQuest(BusBaseInfoDB b) {
-        new FitzHttpUtils().getArriveBaseSH(b.getBusName(), b.getLineId(), b.getStationID(), b.getDirection(), mMainCallBack);
+        Log.d(TAG, "BusBaseInfoDB:" + b.toString());
+        switch (FitzApplication.getInstance().getDefaultCityKey()) {
+            case FitzApplication.keySH:
+                new FitzHttpUtils().getArriveBaseSH(b.getBusName(), b.getLineId(), b.getStationID(), b.getDirection(), mMainCallBack);
+                break;
+            case FitzApplication.keyWH:
+                new FitzHttpUtils().postArriveBaseWH(b.getBusName(), b.getStationID(), b.getDirection(), mMainCallBack);
+                break;
+            case FitzApplication.keyNJ:
+                break;
+            default:
+                return;
+        }
+
+    }
+
+    public class TimerThread extends Thread {
+
+        protected BusBaseInfoDB busBaseInfoDB;
+
+        public TimerThread(BusBaseInfoDB busBaseInfoDB) {
+            this.busBaseInfoDB = busBaseInfoDB;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            do {
+                try {
+                    Message msg = new Message();
+                    msg.what = MSG_REFRESH;
+                    msg.obj = busBaseInfoDB;
+                    handler.sendMessage(msg);
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } while (true);
+        }
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {

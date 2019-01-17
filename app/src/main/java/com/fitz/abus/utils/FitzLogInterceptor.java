@@ -24,7 +24,7 @@ public class FitzLogInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         long startTime = System.currentTimeMillis();
-        okhttp3.Response response = chain.proceed(chain.request());
+        okhttp3.Response response = chain.proceed(request);
         long endTime = System.currentTimeMillis();
         long duration=endTime-startTime;
         okhttp3.MediaType mediaType = response.body().contentType();

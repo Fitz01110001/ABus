@@ -55,10 +55,6 @@ public class BusStopListActivity extends BaseActivity {
      */
     public static final String EXTRAS_BBI_SH = "busBaseInfoDB";
     public static final String EXTRAS_BBI_WH = "busBaseInfoWH";
-
-    /**
-     * 上海的 busbase 是作为intent参数传入的，设为静态以便切换方向可用
-     */
     protected static BusBaseInfoDB busBaseInfoDB;
     protected static BusStopWHBean busStopWHBean;
     private static StopListRecycleAdapter stopListRecycleAdapter;

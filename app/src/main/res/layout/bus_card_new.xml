@@ -30,6 +30,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:ellipsize="marquee"
         android:gravity="center|start"
@@ -37,23 +38,22 @@
         android:singleLine="true"
         android:text="上海南站"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_line_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toEndOf="@+id/tv_line_name"
+        app:layout_constraintTop_toTopOf="@+id/tv_line_name"
         tools:text="                      " />
 
     <TextView
         android:id="@+id/tv_seTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="05:00-22:00"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="@+id/iv_bound_for"
-        app:layout_constraintHorizontal_bias="0.529"
-        app:layout_constraintStart_toStartOf="@+id/iv_bound_for"
-        app:layout_constraintTop_toBottomOf="@+id/tv_line_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_stationName"
+        app:layout_constraintTop_toBottomOf="@+id/tv_stationName"
         tools:text="              " />
 
     <TextView
@@ -62,33 +62,35 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
         android:text="出发站"
         android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/iv_bound_for"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_seTime" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_line_name" />
 
     <TextView
         android:id="@+id/tv_end_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="10dp"
         android:text="终点站"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_bound_for"
         app:layout_constraintTop_toTopOf="@+id/iv_bound_for" />
 
     <ImageView
         android:id="@+id/iv_bound_for"
-        android:layout_width="0dp"
+        android:layout_width="50dp"
         android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/tv_start_stop"
-        app:layout_constraintEnd_toStartOf="@+id/tv_end_stop"
-        app:layout_constraintStart_toEndOf="@+id/tv_start_stop"
+        app:layout_constraintEnd_toEndOf="@+id/item_search"
+        app:layout_constraintStart_toStartOf="@+id/item_search"
         app:layout_constraintTop_toTopOf="@+id/tv_start_stop"
         app:srcCompat="@drawable/bound_for" />
 

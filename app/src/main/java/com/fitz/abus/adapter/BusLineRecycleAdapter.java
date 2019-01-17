@@ -50,7 +50,6 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
         mListWh = list;
     }
 
-
     @NonNull
     @Override
     public FitzViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {

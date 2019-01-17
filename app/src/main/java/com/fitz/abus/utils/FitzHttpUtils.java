@@ -69,7 +69,9 @@ public class FitzHttpUtils {
      * }
      */
     public void getBusBaseSH(String busLine, final AbstractHttpCallBack callBack) {
-        final Request request = new Request.Builder().url(URL_SH + "getBusBase?name=" + busLine + "%E8%B7%AF\n").build();
+        String q = "getBusBase?name=" + busLine + "%E8%B7%AF\n";
+        final Request request = new Request.Builder().url(URL_SH + q).build();
+        Log.d(TAG, "getArriveBaseSH q:" + q);
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
@@ -132,7 +134,9 @@ public class FitzHttpUtils {
      * }
      */
     public void getBusStopSH(String busLine, String lineid, final AbstractHttpCallBack callBack) {
-        final Request request = new Request.Builder().url(URL_SH + "getBusStop?name=" + busLine + "%E8%B7%AF&lineid=" + lineid + "\n").build();
+        String q = "getBusStop?name=" + busLine + "%E8%B7%AF&lineid=" + lineid + "\n";
+        final Request request = new Request.Builder().url(URL_SH + q).build();
+        Log.d(TAG, "getArriveBaseSH q:" + q);
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
@@ -187,9 +191,11 @@ public class FitzHttpUtils {
      * }
      */
     public void getArriveBaseSH(String busName, String lineid, String stopid, int direction, final AbstractHttpCallBack callBack) {
+        String q = "getArriveBase?name=" + busName + "%E8%B7%AF&lineid=" + lineid + "&stopid=" + stopid + "&direction=" + direction + "\n";
         final Request request = new Request.Builder()
-                .url(URL_SH + "getArriveBase?name=" + busName + "%E8%B7%AF&lineid=" + lineid + "&stopid=" + stopid + "&direction=" + direction + "\n")
+                .url(URL_SH + q)
                 .build();
+        Log.d(TAG, "getArriveBaseSH q:" + q);
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
@@ -253,6 +259,7 @@ public class FitzHttpUtils {
      */
     public void postBusBaseWH(String busLine, final AbstractHttpCallBack callBack) {
         String requestBody = "{\"cmd\": \"searchLine\",\"params\": {\"lineName\": \"" + busLine + "\"}}";
+        Log.d(TAG, "postBusBaseWH requestBody:" + requestBody);
         final Request request = new Request.Builder().url(URL_WH).post(RequestBody.create(mediaType, requestBody)).build();
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
@@ -298,6 +305,7 @@ public class FitzHttpUtils {
 
     public void postBusLineDetails(String busLine, final AbstractHttpCallBack callBack) {
         String requestBody = "{\"cmd\":\"lineDetail\",\"params\":{\"lineName\":\"" + busLine + "\"}}";
+        Log.d(TAG, "postBusLineDetails requestBody:" + requestBody);
         final Request request = new Request.Builder().url(URL_WH).post(RequestBody.create(mediaType, requestBody)).build();
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
@@ -321,17 +329,17 @@ public class FitzHttpUtils {
 
     }
 
-    public void postArriveBaseWH(String busLine, String stationId, int direction,final AbstractHttpCallBack callBack) {
-        Log.d(TAG,"busLine:"+busLine+" stationId:"+stationId);
+    public void postArriveBaseWH(String busLine, String stationId, int direction, final AbstractHttpCallBack callBack) {
         String requestBody = "{\"cmd\": \"getArriveInfo\",\"params\": {\"lineName\": \"" + busLine + "\",\"stationId\": \"" + stationId + "\"," +
-                "\"type\": "+(direction+1)+"}}";
+                "\"type\": " + (direction + 1) + "}}";
+        Log.d(TAG, "postArriveBaseWH requestBody:" + requestBody);
         final Request request = new Request.Builder().url(URL_WH).post(RequestBody.create(mediaType, requestBody)).build();
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                OnError(callBack,e.getMessage());
+                OnError(callBack, e.getMessage());
             }
 
             @Override

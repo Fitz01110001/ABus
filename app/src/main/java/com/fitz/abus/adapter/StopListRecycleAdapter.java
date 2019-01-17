@@ -53,7 +53,6 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private BusBaseInfoDB busBaseInfoDB;
     private List<List<String>> list_wh = null;
     private int selectedIndex = -1;
-    private int direction;
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
     private long lastClickTime = 0L;
 
@@ -210,9 +209,10 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 lastClickTime = System.currentTimeMillis();
                 //更新选中状态
                 setSelectedIndex(i);
+                int direction = FitzApplication.direction ? 0 : 1;
                 busBaseInfoDB.setStationName(currentStopName);
                 busBaseInfoDB.setStationID(stopId);
-                direction = FitzApplication.direction ? 0 : 1;
+                busBaseInfoDB.setDirection(direction);
                 Log.d(TAG, "click name:" + currentStopName + " id:" + stopId + " direction:" + direction);
                 startNetQuest(busBaseInfoDB);
             }
@@ -223,10 +223,10 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         switch (FitzApplication.getInstance().getDefaultCityKey()) {
             case FitzApplication.keySH:
                 new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB
-                        .getStationID(), direction, mArriveBaseCallBack);
+                        .getStationID(), busBaseInfoDB.getDirection(), mArriveBaseCallBack);
                 break;
             case FitzApplication.keyWH:
-                new FitzHttpUtils().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), direction, mArriveBaseCallBack);
+                new FitzHttpUtils().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), busBaseInfoDB.getDirection(), mArriveBaseCallBack);
                 break;
             case FitzApplication.keyNJ:
                 break;
