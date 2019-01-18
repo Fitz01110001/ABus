@@ -27,8 +27,10 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import butterknife.ButterKnife;
@@ -61,6 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private FitzActionBar mFitzActionBar;
     private Context context;
     private FitzBusFragmentUtils fitzBusFragmentUtils;
+    private Map<String,BaseFragment> fragmentMap;
 
     /** actionbar 点击事件控制 */
     private View.OnClickListener mActionBarClickListener = new View.OnClickListener() {
@@ -104,7 +107,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         context = this;
         mUnbinder = ButterKnife.bind(this);
         fitzBusFragmentUtils = new FitzBusFragmentUtils((AppCompatActivity) context);
-
+        fragmentMap = new HashMap<String,BaseFragment>(FitzApplication.Cities.size());
         //设置状态栏颜色
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorAccent, null));
 
@@ -131,12 +134,16 @@ public abstract class BaseActivity extends AppCompatActivity {
                     QMUIDisplayHelper.dp2px(getContext(), 200), new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            BaseFragment fg = new BaseFragment();
-                            Bundle args = new Bundle();
                             String tag = cityID.get(i);
-                            args.putString(ARG_TAG, tag);
-                            fg.setArguments(args);
-                            fitzBusFragmentUtils.replaceFragment(fg, tag);
+                            if(fragmentMap.get(tag) == null){
+                                BaseFragment fg = new BaseFragment();
+                                Bundle args = new Bundle();
+                                args.putString(ARG_TAG, tag);
+                                fg.setArguments(args);
+                                fitzBusFragmentUtils.replaceFragment(fg, tag);
+                            }else {
+                                fitzBusFragmentUtils.replaceFragment(fragmentMap.get(tag), tag);
+                            }
                             mListPopup.dismiss();
                             FitzApplication.getInstance().setDefaultCityKey(cityID.get(i));
                             mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());

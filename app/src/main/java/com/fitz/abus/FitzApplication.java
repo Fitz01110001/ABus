@@ -46,7 +46,7 @@ public class FitzApplication extends Application {
     public static final String keyNJ = "025";
     protected static FitzApplication application;
     protected static DaoSession daoSession;
-    private static final String firstBootDefaultCity = "021";
+    private static final String FIRST_BOOT_DEFAULT_CITY = "021";
     private final List<String> cities = new ArrayList<>(Arrays.asList("021", "0553", "025"));
     private String TAG = "FitzApplication";
     private String defaultCityKey;
@@ -134,11 +134,11 @@ public class FitzApplication extends Application {
     }
 
     /**
-     * 应用启动获取默认城市，若是首次打开，选择 firstBootDefaultCity 设定值。
+     * 应用启动获取默认城市，若是首次打开，选择 FIRST_BOOT_DEFAULT_CITY 设定值。
      */
     private String readDefaultCityKey() {
         preferences = getApplicationContext().getSharedPreferences(KEY, MODE_PRIVATE);
-        return preferences.getString(KEY, firstBootDefaultCity);
+        return preferences.getString(KEY, FIRST_BOOT_DEFAULT_CITY);
     }
 
     public void FLOG(String msg) {

@@ -26,14 +26,15 @@
         android:elevation="0dp"
         android:ems="20"
         android:gravity="center"
-        android:theme="@style/MyEditText"
-        android:imeOptions="actionSearch"
         android:hint="@string/input_line_hint"
+        android:imeOptions="actionSearch"
         android:inputType="textCapCharacters|textCapWords|number"
         android:textCursorDrawable="@color/colorAccent"
+        android:theme="@style/MyEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_fitzactionbar" />
+
 
     <com.fitz.abus.fitzview.FitzRecyclerView
         android:id="@+id/add_recycler_view"

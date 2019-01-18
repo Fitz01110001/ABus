@@ -210,13 +210,13 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 busBaseInfoDB.setStationName(currentStopName);
                 busBaseInfoDB.setStationID(stopId);
                 busBaseInfoDB.setDirection(direction);
-                Log.d(TAG, "click name:" + currentStopName + " id:" + stopId + " direction:" + direction);
                 startNetQuest(busBaseInfoDB);
             }
         });
     }
 
     private void startNetQuest(BusBaseInfoDB busBaseInfoDB) {
+        Log.d(TAG,"startNetQuest:"+busBaseInfoDB.toString());
         switch (FitzApplication.getInstance().getDefaultCityKey()) {
             case FitzApplication.keySH:
                 new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB

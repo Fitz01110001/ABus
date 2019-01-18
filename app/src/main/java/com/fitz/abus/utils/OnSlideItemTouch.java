@@ -20,6 +20,10 @@ import com.fitz.abus.adapter.FragmentListAdapter;
  */
 public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
 
+    /**
+     * 最大临界速度,即向右滑动速度超过此值时将关闭Item
+     */
+    private final int MAX_VELOCITY = 100;
     private String TAG = "OnSlideItemTouch";
     private VelocityTracker velocityTracker = VelocityTracker.obtain();
     private FragmentListAdapter.MainViewHolder curHolder;
@@ -42,17 +46,12 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
      * 是否应该进行事件处理
      */
     private boolean dealEvent = true;
-    /**
-     * 最大临界速度,即向右滑动速度超过此值时将关闭Item
-     */
-    private final int MAX_VELOCITY = 100;
     private theItem theItem;
 
     public OnSlideItemTouch(Context context) {
         DisplayMetrics metrics = new DisplayMetrics();
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(metrics);
         //MAX_WIDTH = metrics.widthPixels / 5;
-
     }
 
     // TODO: 2019/1/9  这边滑动效果有点点不顺畅，需要优化
@@ -116,21 +115,6 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                         }
                     });
 
-                    curHolder.getItem_Detials().setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-                            switch (event.getAction()) {
-                                case MotionEvent.ACTION_DOWN:
-                                    Log.d(TAG, "Item_Detials touch");
-                                    onItemClick();
-                                    theItem.itemDetials(curHolder);
-                                    return true;
-                                default:
-                                    break;
-                            }
-                            return false;
-                        }
-                    });
 
                     curHolder.getTvLineName().setOnTouchListener(new View.OnTouchListener() {
                         @Override
@@ -147,7 +131,6 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                             return false;
                         }
                     });
-
 
                 } else {
                     curHolder = null;
@@ -177,7 +160,7 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
                     //如果横向滑动
                     //或者当前有打开的Item,并且手指DOWN处仍为该Item,那么应该交给onTouchEvent()处理Item的滑动事件
                     if (Math.abs(velocityTracker.getYVelocity()) <= Math.abs(velocityTracker.getXVelocity()) || (state == 1 && curHolder != null &&
-                                                                                                                curHolder == oldHolder)) {
+                            curHolder == oldHolder)) {
                         Log.d(TAG, "move true");
                         return true;
                     }
@@ -302,8 +285,6 @@ public class OnSlideItemTouch implements RecyclerView.OnItemTouchListener {
         void itemSearchCilcked(FragmentListAdapter.MainViewHolder mainViewHolder);
 
         void itemDeleted(FragmentListAdapter.MainViewHolder mainViewHolder);
-
-        void itemDetials(FragmentListAdapter.MainViewHolder mainViewHolder);
 
         void itemLineName(FragmentListAdapter.MainViewHolder mainViewHolder);
     }

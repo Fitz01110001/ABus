@@ -12,6 +12,17 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/bus_station_list_fitzactionbar">
 
+    <com.qmuiteam.qmui.widget.QMUILoadingView
+        android:id="@+id/empty_view_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:padding="5dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_stationName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_stationName" />
+
     <TextView
         android:id="@+id/tv_line_name"
         android:layout_width="wrap_content"
@@ -21,7 +32,7 @@
         android:gravity="center"
         android:padding="5dp"
         android:text="763"
-        android:textSize="50sp"
+        android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,29 +41,29 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="8dp"
         android:ellipsize="marquee"
-        android:gravity="center|start"
+        android:gravity="center"
         android:padding="5dp"
         android:singleLine="true"
         android:text="上海南站"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
+        app:layout_constraintEnd_toStartOf="@+id/empty_view_loading"
         app:layout_constraintStart_toEndOf="@+id/tv_line_name"
-        app:layout_constraintTop_toTopOf="@+id/tv_line_name"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="                      " />
 
     <TextView
         android:id="@+id/tv_seTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:text="05:00-22:00"
-        android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="@+id/tv_stationName"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="@+id/iv_bound_for"
+        app:layout_constraintStart_toStartOf="@+id/iv_bound_for"
         app:layout_constraintTop_toBottomOf="@+id/tv_stationName"
         tools:text="              " />
 
@@ -67,7 +78,7 @@
         android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/iv_bound_for"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_line_name" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_seTime" />
 
     <TextView
         android:id="@+id/tv_end_stop"
@@ -97,11 +108,12 @@
     <ImageButton
         android:id="@+id/item_search"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="30dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:background="@color/qmui_config_color_transparent"
+        android:padding="2dp"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +122,7 @@
 
     <include
         android:id="@+id/arrival"
-        layout="@layout/arrival_layout"
+        layout="@layout/arrival_layout_new"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -118,103 +130,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_search" />
-
-    <!--<TableLayout
-        android:id="@+id/bus_detials"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="horizontal"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_stationName">
-
-        <TableRow
-            android:id="@+id/row4"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="还有"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tv_stopdis"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="预计时间"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tv_remainTime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="15sp" />
-        </TableRow>
-
-
-        <TableRow
-            android:id="@+id/row5"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="距离"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tv_distance"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="15sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="车牌号"
-                android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/tv_plate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:textSize="15sp" />
-        </TableRow>
-    </TableLayout>-->
-
 
 </android.support.constraint.ConstraintLayout>

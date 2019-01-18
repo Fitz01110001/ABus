@@ -6,6 +6,8 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -75,32 +77,12 @@ public class FitzHttpUtils {
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
-            /**
-             * Called when the request could not be executed due to cancellation, a connectivity problem or
-             * timeout. Because networks can fail during an exchange, it is possible that the remote server
-             * accepted the request before the failure.
-             *
-             * @param call
-             * @param e
-             */
+
             @Override
             public void onFailure(Call call, IOException e) {
                 OnError(callBack, e.getMessage());
             }
 
-            /**
-             * Called when the HTTP response was successfully returned by the remote server. The callback may
-             * proceed to read the response body with {@link Response#body}. The response is still live until
-             * its response body is {@linkplain ResponseBody closed}. The recipient of the callback may
-             * consume the response body on another thread.
-             *
-             * <p>Note that transport-layer success (receiving a HTTP response code, headers and body) does
-             * not necessarily indicate application-layer success: {@code response} may still indicate an
-             * unhappy HTTP response code like 404 or 500.
-             *
-             * @param call
-             * @param response
-             */
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful() && isJsonData(response)) {
@@ -133,39 +115,22 @@ public class FitzHttpUtils {
      * }
      * }
      */
-    public void getBusStopSH(String busLine, String lineid, final AbstractHttpCallBack callBack) {
-        String q = "getBusStop?name=" + busLine + "%E8%B7%AF&lineid=" + lineid + "\n";
+    public void getBusStopSH(String busName, String lineid, final AbstractHttpCallBack callBack) {
+        //去掉汉字
+        Pattern pattern = Pattern.compile("[\\u4e00-\\u9fa5]");
+        Matcher matcher = pattern.matcher(busName);
+        busName = matcher.replaceAll("");
+        String q = "getBusStop?name=" + busName + "%E8%B7%AF&lineid=" + lineid + "\n";
         final Request request = new Request.Builder().url(URL_SH + q).build();
-        Log.d(TAG, "getArriveBaseSH q:" + q);
+        Log.d(TAG, "getBusStopSH q:" + q);
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
-            /**
-             * Called when the request could not be executed due to cancellation, a connectivity problem or
-             * timeout. Because networks can fail during an exchange, it is possible that the remote server
-             * accepted the request before the failure.
-             *
-             * @param call
-             * @param e
-             */
             @Override
             public void onFailure(Call call, IOException e) {
                 OnError(callBack, e.getMessage());
             }
 
-            /**
-             * Called when the HTTP response was successfully returned by the remote server. The callback may
-             * proceed to read the response body with {@link Response#body}. The response is still live until
-             * its response body is {@linkplain ResponseBody closed}. The recipient of the callback may
-             * consume the response body on another thread.
-             *
-             * <p>Note that transport-layer success (receiving a HTTP response code, headers and body) does
-             * not necessarily indicate application-layer success: {@code response} may still indicate an
-             * unhappy HTTP response code like 404 or 500.
-             *
-             * @param call
-             * @param response
-             */
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful() && isJsonData(response)) {
@@ -191,6 +156,10 @@ public class FitzHttpUtils {
      * }
      */
     public void getArriveBaseSH(String busName, String lineid, String stopid, int direction, final AbstractHttpCallBack callBack) {
+        //去掉汉字
+        Pattern pattern = Pattern.compile("[\\u4e00-\\u9fa5]");
+        Matcher matcher = pattern.matcher(busName);
+        busName = matcher.replaceAll("");
         String q = "getArriveBase?name=" + busName + "%E8%B7%AF&lineid=" + lineid + "&stopid=" + stopid + "&direction=" + direction + "\n";
         final Request request = new Request.Builder()
                 .url(URL_SH + q)
@@ -199,32 +168,11 @@ public class FitzHttpUtils {
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
-            /**
-             * Called when the request could not be executed due to cancellation, a connectivity problem or
-             * timeout. Because networks can fail during an exchange, it is possible that the remote server
-             * accepted the request before the failure.
-             *
-             * @param call
-             * @param e
-             */
             @Override
             public void onFailure(Call call, IOException e) {
                 OnError(callBack, e.getMessage());
             }
 
-            /**
-             * Called when the HTTP response was successfully returned by the remote server. The callback may
-             * proceed to read the response body with {@link Response#body}. The response is still live until
-             * its response body is {@linkplain ResponseBody closed}. The recipient of the callback may
-             * consume the response body on another thread.
-             *
-             * <p>Note that transport-layer success (receiving a HTTP response code, headers and body) does
-             * not necessarily indicate application-layer success: {@code response} may still indicate an
-             * unhappy HTTP response code like 404 or 500.
-             *
-             * @param call
-             * @param response
-             */
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 // response.body().string() 一次性数据
@@ -235,7 +183,6 @@ public class FitzHttpUtils {
                     OnError(callBack, response.message());
                 }
             }
-
         });
     }
 
@@ -264,32 +211,11 @@ public class FitzHttpUtils {
         Call call = mOkHttpClient.newCall(request);
         OnStart(callBack);
         call.enqueue(new Callback() {
-            /**
-             * Called when the request could not be executed due to cancellation, a connectivity problem or
-             * timeout. Because networks can fail during an exchange, it is possible that the remote server
-             * accepted the request before the failure.
-             *
-             * @param call
-             * @param e
-             */
             @Override
             public void onFailure(Call call, IOException e) {
                 OnError(callBack, e.getMessage());
             }
 
-            /**
-             * Called when the HTTP response was successfully returned by the remote server. The callback may
-             * proceed to read the response body with {@link Response#body}. The response is still live until
-             * its response body is {@linkplain ResponseBody closed}. The recipient of the callback may
-             * consume the response body on another thread.
-             *
-             * <p>Note that transport-layer success (receiving a HTTP response code, headers and body) does
-             * not necessarily indicate application-layer success: {@code response} may still indicate an
-             * unhappy HTTP response code like 404 or 500.
-             *
-             * @param call
-             * @param response
-             */
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String data = response.body().string();
@@ -391,6 +317,7 @@ public class FitzHttpUtils {
             handler.post(new Runnable() {
                 @Override
                 public void run() {//在主线程操作
+                    Log.d(TAG, "data:" + data);
                     callBack.onCallSuccess(data);
                 }
             });

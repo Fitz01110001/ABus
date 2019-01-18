@@ -16,24 +16,52 @@ import java.util.List;
 public class BusBaseInfoDB implements Parcelable {
 
 
-    @Id(autoincrement = true) private Long id;
-    @NotNull private String cityID;
+    public static final Creator<BusBaseInfoDB> CREATOR = new Creator<BusBaseInfoDB>() {
+        @Override
+        public BusBaseInfoDB createFromParcel(Parcel in) {
+            return new BusBaseInfoDB(in);
+        }
+
+        @Override
+        public BusBaseInfoDB[] newArray(int size) {
+            return new BusBaseInfoDB[size];
+        }
+    };
+    @Id(autoincrement = true)
+    private Long id;
+    @NotNull
+    private String cityID;
     // 仅上海使用
-    @NotNull private String lineId;
-    @NotNull private String busName;
-    @NotNull private String stationID;
-    @NotNull private String stationName;
-    @NotNull private int direction;
-    @NotNull private String startStopDirection0;
-    @NotNull private String endStopDirection0;
-    @NotNull private String startEndTimeDirection0;
-    @NotNull private String startStopDirection1;
-    @NotNull private String endStopDirection1;
-    @NotNull private String startEndTimeDirection1;
-    @Transient private List<Stops> shStationList0;
-    @Transient private List<Stops> shStationList1;
-    @Transient private List<List<String>> whStationList0;
-    @Transient private List<List<String>> whStationList1;
+    @NotNull
+    private String lineId;
+    @NotNull
+    private String busName;
+    @NotNull
+    private String stationID;
+    @NotNull
+    private String stationName;
+    @NotNull
+    private int direction;
+    @NotNull
+    private String startStopDirection0;
+    @NotNull
+    private String endStopDirection0;
+    @NotNull
+    private String startEndTimeDirection0;
+    @NotNull
+    private String startStopDirection1;
+    @NotNull
+    private String endStopDirection1;
+    @NotNull
+    private String startEndTimeDirection1;
+    @Transient
+    private List<Stops> shStationList0;
+    @Transient
+    private List<Stops> shStationList1;
+    @Transient
+    private List<List<String>> whStationList0;
+    @Transient
+    private List<List<String>> whStationList1;
 
     protected BusBaseInfoDB(Parcel in) {
         cityID = in.readString();
@@ -52,9 +80,9 @@ public class BusBaseInfoDB implements Parcelable {
 
     @Generated(hash = 1461965588)
     public BusBaseInfoDB(Long id, @NotNull String cityID, @NotNull String lineId, @NotNull String busName, @NotNull String stationID,
-            @NotNull String stationName, int direction, @NotNull String startStopDirection0, @NotNull String endStopDirection0,
-            @NotNull String startEndTimeDirection0, @NotNull String startStopDirection1, @NotNull String endStopDirection1,
-            @NotNull String startEndTimeDirection1) {
+                         @NotNull String stationName, int direction, @NotNull String startStopDirection0, @NotNull String endStopDirection0,
+                         @NotNull String startEndTimeDirection0, @NotNull String startStopDirection1, @NotNull String endStopDirection1,
+                         @NotNull String startEndTimeDirection1) {
         this.id = id;
         this.cityID = cityID;
         this.lineId = lineId;
@@ -70,27 +98,15 @@ public class BusBaseInfoDB implements Parcelable {
         this.startEndTimeDirection1 = startEndTimeDirection1;
     }
 
+
     @Generated(hash = 1933659747)
     public BusBaseInfoDB() {
     }
-    
-
-    public static final Creator<BusBaseInfoDB> CREATOR = new Creator<BusBaseInfoDB>() {
-        @Override
-        public BusBaseInfoDB createFromParcel(Parcel in) {
-            return new BusBaseInfoDB(in);
-        }
-
-        @Override
-        public BusBaseInfoDB[] newArray(int size) {
-            return new BusBaseInfoDB[size];
-        }
-    };
 
     @Override
     public String toString() {
         return "id:" + id + ",cityID:" + cityID + ",lineId:" + lineId + ",busName:" + busName + ",stationID:" + stationID + ",stationName:" +
-               stationName;
+                stationName + ",direction:" + direction;
     }
 
     public Long getId() {

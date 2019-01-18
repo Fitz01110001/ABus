@@ -110,7 +110,15 @@ public class BaseFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        FLOG("onStop");
         EventBus.getDefault().unregister(this);
+        fragmentListAdapter.release();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FLOG("onDestroy");
     }
 
     private void updateList(){
