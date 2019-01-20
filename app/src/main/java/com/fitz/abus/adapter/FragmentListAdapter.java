@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
@@ -105,7 +104,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     @Override
     public void itemSearchCilcked(MainViewHolder mainViewHolder) {
         Log.d(TAG, "itemSearchCilcked click");
-        mainViewHolder.setCallback_error(View.GONE);
+        mainViewHolder.setCallback_state(View.GONE);
         if (mainViewHolder.showSearch) {
             mainViewHolder.showSearch = false;
             mainViewHolder.item_Detials.setVisibility(View.VISIBLE);
@@ -191,14 +190,15 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             public void onCallBefore() {
                 super.onCallBefore();
                 // TODO: 2019/1/18 添加刷新动画
-                mainViewHolder.setCallback_error(View.GONE);
+                mainViewHolder.setCallback_state(View.GONE);
                 mainViewHolder.setCallback_loading(View.VISIBLE);
             }
 
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
-                mainViewHolder.setCallback_error(View.GONE);
+                mainViewHolder.setCallback_state(View.VISIBLE);
+                mainViewHolder.callback_state.setImageDrawable(context.getResources().getDrawable(R.drawable.call_success,null));
                 mainViewHolder.setCallback_loading(View.INVISIBLE);
                 if (mainViewHolder == null) {
                     return;
@@ -227,9 +227,12 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             public void onCallError(String meg) {
                 super.onCallError(meg);
                 // TODO: 2019/1/18 等待发车状态显示
-                mainViewHolder.setCallback_error(View.VISIBLE);
+                mainViewHolder.setCallback_state(View.VISIBLE);
+                mainViewHolder.callback_state.setImageDrawable(context.getResources().getDrawable(R.drawable.call_error,null));
                 mainViewHolder.setCallback_loading(View.INVISIBLE);
-                Toast.makeText(context, context.getResources().getString(R.string.waiting), Toast.LENGTH_SHORT).show();
+                mainViewHolder.setPlate("");
+                mainViewHolder.setDistance(context.getResources().getString(R.string.waiting));
+                mainViewHolder.setStopdis("");
             }
         };
         switch (FitzApplication.getInstance().getDefaultCityKey()) {
@@ -341,7 +344,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         protected ImageButton ibSearch;
         protected boolean showSearch = true;
         protected View callback_loading;
-        protected ImageView callback_error;
+        protected ImageView callback_state;
 
         public MainViewHolder(View v) {
             super(v);
@@ -359,7 +362,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             item_delete = v.findViewById(R.id.item_delete);
             ibSearch = v.findViewById(R.id.item_search);
             callback_loading = v.findViewById(R.id.empty_view_loading);
-            callback_error = v.findViewById(R.id.callback_error);
+            callback_state = v.findViewById(R.id.callback_state);
         }
 
         public void setStationName(String StationName) {
@@ -418,8 +421,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             callback_loading.setVisibility(vis);
         }
 
-        public void setCallback_error(int vis) {
-            callback_error.setVisibility(vis);
+        public void setCallback_state(int vis) {
+            callback_state.setVisibility(vis);
         }
     }
 }
