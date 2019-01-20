@@ -107,11 +107,9 @@
 
     <ImageButton
         android:id="@+id/item_search"
-        android:layout_width="0dp"
+        android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
         android:background="@color/qmui_config_color_transparent"
         android:padding="2dp"
         android:scaleType="fitCenter"
@@ -122,7 +120,7 @@
 
     <include
         android:id="@+id/arrival"
-        layout="@layout/arrival_layout_new"
+        layout="@layout/arrival_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -130,5 +128,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_search" />
+
+    <ImageView
+        android:id="@+id/callback_error"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="1dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/empty_view_loading"
+        app:layout_constraintEnd_toEndOf="@+id/empty_view_loading"
+        app:layout_constraintStart_toStartOf="@+id/empty_view_loading"
+        app:layout_constraintTop_toTopOf="@+id/empty_view_loading"
+        app:srcCompat="@drawable/error" />
 
 </android.support.constraint.ConstraintLayout>

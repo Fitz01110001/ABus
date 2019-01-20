@@ -57,7 +57,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * 是否允许全屏
      */
     private boolean mAllowFullScreen = true;
-    private String TAG = "fitz-" + this.getClass().getSimpleName();
+    private String TAG = "fitz" + this.getClass().getSimpleName();
     private Unbinder mUnbinder;
     private QMUIListPopup mListPopup;
     private FitzActionBar mFitzActionBar;
@@ -141,6 +141,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                 args.putString(ARG_TAG, tag);
                                 fg.setArguments(args);
                                 fitzBusFragmentUtils.replaceFragment(fg, tag);
+                                fragmentMap.put(tag,fg);
                             }else {
                                 fitzBusFragmentUtils.replaceFragment(fragmentMap.get(tag), tag);
                             }

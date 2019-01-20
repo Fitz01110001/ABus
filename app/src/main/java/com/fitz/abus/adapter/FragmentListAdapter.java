@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,6 @@ import com.fitz.abus.utils.FitzHttpUtils;
 import com.fitz.abus.utils.MessageEvent;
 import com.fitz.abus.utils.OnSlideItemTouch;
 import com.google.gson.Gson;
-import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -36,8 +36,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @ProjectName: ABus
@@ -49,10 +47,10 @@ import java.util.concurrent.Executors;
 public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapter.MainViewHolder> implements OnSlideItemTouch.theItem {
 
     public static final int MSG_REFRESH = 1;
-    private static final String TAG = "FragmentListAdapter";
+    private static final String TAG = "fitzFragmentListAdapter";
     private static final Boolean DEBUG = true;
+    protected TimerThread timerThread;
     private Context context;
-    private TimerThread timerThread;
     private List<BusBaseInfoDB> mList;
     private FitzHttpUtils.AbstractHttpCallBack mMainCallBack;
     private Handler handler;
@@ -107,6 +105,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
     @Override
     public void itemSearchCilcked(MainViewHolder mainViewHolder) {
         Log.d(TAG, "itemSearchCilcked click");
+        mainViewHolder.setCallback_error(View.GONE);
         if (mainViewHolder.showSearch) {
             mainViewHolder.showSearch = false;
             mainViewHolder.item_Detials.setVisibility(View.VISIBLE);
@@ -120,7 +119,6 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                 FLOG("重新查询 " + mList.get(mainViewHolder.getLayoutPosition()).toString());
                 holderThreadMap.get(mainViewHolder).setReFresh(true);
             }
-
         } else {
             mainViewHolder.item_Detials.setVisibility(View.INVISIBLE);
             if (holderThreadMap.get(mainViewHolder) != null) {
@@ -129,7 +127,6 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             mainViewHolder.showSearch = true;
             mainViewHolder.item_Detials.setVisibility(View.GONE);
             mainViewHolder.ibSearch.setImageDrawable(context.getDrawable(R.drawable.search_down));
-
         }
     }
 
@@ -139,7 +136,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         Log.d(TAG, "item_delete this:" + b.toString());
         FitzDBUtils.getInstance().deleteBus(b);
         EventBus.getDefault().post(new MessageEvent("item_delete"));
-        if(holderThreadMap.get(mainViewHolder) != null){
+        if (holderThreadMap.get(mainViewHolder) != null) {
             holderThreadMap.get(mainViewHolder).setReFresh(false);
         }
     }
@@ -172,6 +169,21 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         return bundle;
     }
 
+    private void startTimerThread(MainViewHolder mainViewHolder){
+        Log.d(TAG, "startTimerThread");
+        if (mainViewHolder.item_Detials.getVisibility() == View.VISIBLE) {
+            if (holderThreadMap.get(mainViewHolder) == null || !holderThreadMap.get(mainViewHolder).isAlive()) {
+                TimerThread timerThread = new TimerThread(mainViewHolder, mList.get(mainViewHolder.getAdapterPosition()));
+                timerThread.start();
+                holderThreadMap.put(mainViewHolder, timerThread);
+                FLOG("新建查询 " + mList.get(mainViewHolder.getLayoutPosition()).toString());
+            } else {
+                FLOG("重新查询 " + mList.get(mainViewHolder.getLayoutPosition()).toString());
+                holderThreadMap.get(mainViewHolder).setReFresh(true);
+            }
+        }
+    }
+
     private void httpQuest(final MainViewHolder mainViewHolder, BusBaseInfoDB b) {
         Log.d(TAG, "BusBaseInfoDB:" + b.toString());
         mMainCallBack = new FitzHttpUtils.AbstractHttpCallBack() {
@@ -179,22 +191,24 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             public void onCallBefore() {
                 super.onCallBefore();
                 // TODO: 2019/1/18 添加刷新动画
-                mainViewHolder.setLoadingAnimiation(View.VISIBLE);
+                mainViewHolder.setCallback_error(View.GONE);
+                mainViewHolder.setCallback_loading(View.VISIBLE);
             }
 
             @Override
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
-                mainViewHolder.setLoadingAnimiation(View.INVISIBLE);
-                if(mainViewHolder == null){
+                mainViewHolder.setCallback_error(View.GONE);
+                mainViewHolder.setCallback_loading(View.INVISIBLE);
+                if (mainViewHolder == null) {
                     return;
                 }
                 switch (FitzApplication.getInstance().getDefaultCityKey()) {
                     case FitzApplication.keySH:
                         ArriveBaseSHBean arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
                         mainViewHolder.setPlate(arriveBaseSHBean.getCars().get(0).getTerminal());
-                        mainViewHolder.setDistance(arriveBaseSHBean.getCars().get(0).getDistance());
-                        mainViewHolder.setStopdis(arriveBaseSHBean.getCars().get(0).getStopdis());
+                        mainViewHolder.setDistance(arriveBaseSHBean.getCars().get(0).getDistance() + "米");
+                        mainViewHolder.setStopdis(arriveBaseSHBean.getCars().get(0).getStopdis() + "站");
                         break;
                     case FitzApplication.keyWH:
                         ArriveInfoWHBean arriveInfoWHBean = new Gson().fromJson(data, ArriveInfoWHBean.class);
@@ -213,7 +227,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             public void onCallError(String meg) {
                 super.onCallError(meg);
                 // TODO: 2019/1/18 等待发车状态显示
-                mainViewHolder.setLoadingAnimiation(View.INVISIBLE);
+                mainViewHolder.setCallback_error(View.VISIBLE);
+                mainViewHolder.setCallback_loading(View.INVISIBLE);
                 Toast.makeText(context, context.getResources().getString(R.string.waiting), Toast.LENGTH_SHORT).show();
             }
         };
@@ -238,6 +253,30 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         }
     }
 
+    /**
+     * 切换 fragment 后一定要中断已开启的线程
+     */
+    public void release() {
+        FLOG("release");
+        Set<MainViewHolder> keys = holderThreadMap.keySet();
+        Iterator<MainViewHolder> iterator = keys.iterator();
+        while (iterator.hasNext()) {
+            holderThreadMap.get(iterator.next()).setReFresh(false);
+        }
+    }
+
+    /**
+     * fragment从后台回复后，重新开启打开的线程
+     * */
+    public void resume(){
+        FLOG("resume");
+        Set<MainViewHolder> keys = holderThreadMap.keySet();
+        Iterator<MainViewHolder> iterator = keys.iterator();
+        while (iterator.hasNext()) {
+            startTimerThread(iterator.next());
+        }
+    }
+
     public class TimerThread extends Thread {
 
         protected BusBaseInfoDB busBaseInfoDB;
@@ -258,7 +297,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
 
         public void setReFresh(Boolean reFresh) {
             this.reFresh = reFresh;
-            FLOG("停止 " + " 查询");
+            FLOG("setReFresh：" + reFresh);
         }
 
         public void bind(MainViewHolder mainViewHolder, BusBaseInfoDB busBaseInfoDB) {
@@ -281,7 +320,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                     e.printStackTrace();
                 }
             }
-            FLOG("停止查询");
+            FLOG("停止查询" + (busBaseInfoDB == null ? "" : busBaseInfoDB.toString()));
             interrupt();
         }
     }
@@ -301,7 +340,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         protected ImageButton item_delete;
         protected ImageButton ibSearch;
         protected boolean showSearch = true;
-        protected View loading;
+        protected View callback_loading;
+        protected ImageView callback_error;
 
         public MainViewHolder(View v) {
             super(v);
@@ -318,7 +358,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             item_content = v.findViewById(R.id.item_content);
             item_delete = v.findViewById(R.id.item_delete);
             ibSearch = v.findViewById(R.id.item_search);
-            loading = v.findViewById(R.id.empty_view_loading);
+            callback_loading = v.findViewById(R.id.empty_view_loading);
+            callback_error = v.findViewById(R.id.callback_error);
         }
 
         public void setStationName(String StationName) {
@@ -373,19 +414,12 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             return item_Detials;
         }
 
-        public void setLoadingAnimiation(int vis){
-            loading.setVisibility(vis);
+        public void setCallback_loading(int vis) {
+            callback_loading.setVisibility(vis);
         }
-    }
 
-    /**
-     * 切换 fragment 后一定要中断已开启的线程
-     * */
-    public void release(){
-        Set<MainViewHolder> keys =  holderThreadMap.keySet();
-        Iterator<MainViewHolder> iterator = keys.iterator();
-        while(iterator.hasNext()){
-            holderThreadMap.get(iterator.next()).setReFresh(false);
+        public void setCallback_error(int vis) {
+            callback_error.setVisibility(vis);
         }
     }
 }

@@ -51,17 +51,18 @@ public class MainActivity extends BaseActivity {
         mContext = this;
         appCompatActivity = this;
         fitzBusFragmentUtils = new FitzBusFragmentUtils(appCompatActivity);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         BaseFragment fg = new BaseFragment();
         Bundle args = new Bundle();
         String tag = FitzApplication.getInstance().getDefaultCityKey();
         args.putString(ARG_TAG, tag);
         fg.setArguments(args);
         fitzBusFragmentUtils.replaceFragment(fg, tag);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //fragment切换控制应放到oncreate中，避免锁屏，切换后台，重新切换fg，浪费资源
     }
 
     @Override
@@ -73,7 +74,6 @@ public class MainActivity extends BaseActivity {
     public void onViewClicked() {
 
     }
-
 
     @Override
     protected Context getContext() {

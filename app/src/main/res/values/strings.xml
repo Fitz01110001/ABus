@@ -17,11 +17,12 @@
     <string name="city_nj">NanJing</string>
     <string name="TipWord">Please wait for a moment...</string>
     <string name="waiting">Waiting for departure</string>
-    <string name="plate">Plate</string>
+    <string name="plate">Plate:</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
-    <string name="distance">Distance</string>
-    <string name="remaining">Remaining</string>
+    <string name="distance">Distance:</string>
+    <string name="remaining">Remaining:</string>
     <string name="station">station</string>
     <string name="stations">stations</string>
+    <string name="noData">Void</string>
 </resources>

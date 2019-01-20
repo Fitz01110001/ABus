@@ -57,14 +57,15 @@ public class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FLOG("onCreate");
+        EventBus.getDefault().register(this);
         mActivity = getActivity();
         defaultCityKey = getArguments().getString(ARG_TAG);
-        updateList();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        FLOG("onCreateView");
         mRootView = inflater.inflate(getLayoutResId(), container, false);
         mUnBinder = ButterKnife.bind(this, mRootView);
         return mRootView;
@@ -73,10 +74,10 @@ public class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        FLOG("onViewCreated");
         fg_container = mRootView.findViewById(R.id.fg_container);
         fragmentListAdapter = new FragmentListAdapter(mActivity, currentBusList);
         initRecycleView();
-
     }
 
     private void initRecycleView() {
@@ -98,21 +99,30 @@ public class BaseFragment extends Fragment {
     public void onStart() {
         super.onStart();
         FLOG("onStart");
-        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         FLOG("onResume");
+        if(fragmentListAdapter != null){
+            fragmentListAdapter.resume();
+        }
+        updateList();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        FLOG("onPause");
     }
 
     @Override
     public void onStop() {
         super.onStop();
         FLOG("onStop");
-        EventBus.getDefault().unregister(this);
         fragmentListAdapter.release();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -124,6 +134,7 @@ public class BaseFragment extends Fragment {
     private void updateList(){
         currentBusList.clear();
         currentBusList.addAll(FitzDBUtils.getInstance().queryRawBusWhereCityID(defaultCityKey));
+        fragmentListAdapter.notifyDataSetChanged();
         FLOG("updateList currentBusList:"+currentBusList);
     }
 
@@ -132,7 +143,6 @@ public class BaseFragment extends Fragment {
         FLOG("onMessageEvent");
         if(DELETE.equals(event.message)){
             updateList();
-            fragmentListAdapter.notifyDataSetChanged();
         }
     }
 
