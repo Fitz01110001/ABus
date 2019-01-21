@@ -26,4 +26,5 @@
     <string name="station">站</string>
     <string name="stations">站</string>
     <string name="noData">暂无</string>
+    <string name="not_found">暂未查询到此线路</string>
 </resources>

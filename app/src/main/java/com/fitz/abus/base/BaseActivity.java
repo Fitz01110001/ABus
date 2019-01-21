@@ -63,7 +63,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private FitzActionBar mFitzActionBar;
     private Context context;
     private FitzBusFragmentUtils fitzBusFragmentUtils;
-    private Map<String,BaseFragment> fragmentMap;
+    private Map<String, BaseFragment> fragmentMap;
 
     /** actionbar 点击事件控制 */
     private View.OnClickListener mActionBarClickListener = new View.OnClickListener() {
@@ -107,7 +107,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         context = this;
         mUnbinder = ButterKnife.bind(this);
         fitzBusFragmentUtils = new FitzBusFragmentUtils((AppCompatActivity) context);
-        fragmentMap = new HashMap<String,BaseFragment>(FitzApplication.Cities.size());
+        fragmentMap = new HashMap<String, BaseFragment>(FitzApplication.Cities.size());
         //设置状态栏颜色
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorAccent, null));
 
@@ -131,18 +131,18 @@ public abstract class BaseActivity extends AppCompatActivity {
 
             mListPopup = new QMUIListPopup(getContext(), QMUIPopup.DIRECTION_NONE, adapter);
             mListPopup.create(QMUIDisplayHelper.dp2px(getContext(), 150),
-                    QMUIDisplayHelper.dp2px(getContext(), 200), new AdapterView.OnItemClickListener() {
+                              QMUIDisplayHelper.dp2px(getContext(), 200), new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             String tag = cityID.get(i);
-                            if(fragmentMap.get(tag) == null){
+                            if (fragmentMap.get(tag) == null) {
                                 BaseFragment fg = new BaseFragment();
                                 Bundle args = new Bundle();
                                 args.putString(ARG_TAG, tag);
                                 fg.setArguments(args);
                                 fitzBusFragmentUtils.replaceFragment(fg, tag);
-                                fragmentMap.put(tag,fg);
-                            }else {
+                                fragmentMap.put(tag, fg);
+                            } else {
                                 fitzBusFragmentUtils.replaceFragment(fragmentMap.get(tag), tag);
                             }
                             mListPopup.dismiss();
@@ -167,7 +167,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void setMyActionBar(int res) {
         mFitzActionBar = findViewById(res);
-        mFitzActionBar.setData(mActionBarClickListener, isBackVisible(), isCityVisible(), isOptionVisible());
+        mFitzActionBar.setData(mActionBarClickListener, isBackVisible(), isCityVisible(), isOptionVisible(), isLocationImageVisible());
     }
 
     /** 选项button 弹出popmenu */
@@ -209,7 +209,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-
     /** 获取子类 context */
     protected abstract Context getContext();
 
@@ -230,6 +229,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /** 获取当前activity包含的 actionbar res */
     protected abstract int getContentActionBarResId();
+
+    protected abstract int isLocationImageVisible();
 
     @Override
     protected void onStart() {

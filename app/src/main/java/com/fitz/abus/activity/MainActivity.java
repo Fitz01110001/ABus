@@ -96,6 +96,12 @@ public class MainActivity extends BaseActivity {
         return R.id.fitzactionbar;
     }
 
+    @Override
+    protected int isLocationImageVisible() {
+        return View.VISIBLE;
+    }
+
+
     /** 不显示返回按键 */
     @Override
     protected int isBackVisible() {

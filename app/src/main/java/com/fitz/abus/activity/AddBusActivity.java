@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.BusLineRecycleAdapter;
+import com.fitz.abus.adapter.StopListRecycleAdapter;
 import com.fitz.abus.base.BaseActivity;
 import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.bean.BusBaseSHBean;
@@ -23,8 +25,11 @@ import com.fitz.abus.bean.BusStopSHBean;
 import com.fitz.abus.fitzview.FitzActionBar;
 import com.fitz.abus.fitzview.FitzRecyclerView;
 import com.fitz.abus.utils.FitzHttpUtils;
+import com.fitz.abus.utils.SpacesItemDecoration;
 import com.google.gson.Gson;
 import com.qmuiteam.qmui.widget.dialog.QMUITipDialog;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -39,7 +44,6 @@ public class AddBusActivity extends BaseActivity {
 
     private static FitzHttpUtils.AbstractHttpCallBack mBusBaseCallBack;
     private static QMUITipDialog tipDialog;
-    private static BusBaseInfoDB busBaseInfoDB;
     @BindView(R.id.add_fitzactionbar)
     FitzActionBar addFitzactionbar;
     @BindView(R.id.add_textview_inputLine)
@@ -95,7 +99,6 @@ public class AddBusActivity extends BaseActivity {
                         break;
                 }
             }
-
             /**
              * 获取失败
              *
@@ -108,7 +111,7 @@ public class AddBusActivity extends BaseActivity {
                 // TODO: 2018/12/26 应用在后台是可能出现空指针
                 addTextViewInputPrompt.setVisibility(View.VISIBLE);
                 addRecyclerView.setVisibility(View.GONE);
-                addTextViewInputPrompt.setText("shit happens !!!\n");
+                addTextViewInputPrompt.setText(getContext().getResources().getString(R.string.not_found));
             }
         };
     }
@@ -117,7 +120,6 @@ public class AddBusActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         // 键盘搜索点击响应
         addTextViewInputLine.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -129,40 +131,33 @@ public class AddBusActivity extends BaseActivity {
                             return true;
                         case FitzApplication.keyWH:
                             new FitzHttpUtils().postBusBaseWH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
-                            break;
-
+                            return true;
                         case FitzApplication.keyNJ:
                             break;
-
                         default:
-
                             break;
                     }
-
                 }
                 return false;
             }
         });
     }
 
-    private void shGson2BusBaseInfo(BusStopSHBean busStopSHBean) {
-
-    }
-
     private void handleSuccess() {
         if (addRecyclerView.getVisibility() != View.VISIBLE) {
             addTextViewInputPrompt.setVisibility(View.GONE);
             addRecyclerView.setVisibility(View.VISIBLE);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(mcontext);
-            //设置布局管理器
-            addRecyclerView.setLayoutManager(layoutManager);
-            //设置为垂直布局，这也是默认的
-            layoutManager.setOrientation(OrientationHelper.VERTICAL);
-            //设置分隔线
-            addRecyclerView.addItemDecoration(new DividerItemDecoration(mcontext, OrientationHelper.VERTICAL));
-            //设置增加或删除条目的动画
-            addRecyclerView.setItemAnimator(new DefaultItemAnimator());
         }
+        //LinearLayoutManager layoutManager = new LinearLayoutManager(mcontext);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        //设置布局管理器
+        addRecyclerView.setLayoutManager(layoutManager);
+        //设置为垂直布局，这也是默认的
+        layoutManager.setOrientation(OrientationHelper.VERTICAL);
+        //设置分隔线
+        addRecyclerView.addItemDecoration(new SpacesItemDecoration(5,5,10,10));
+        //设置增加或删除条目的动画
+        addRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override
@@ -178,6 +173,11 @@ public class AddBusActivity extends BaseActivity {
     @Override
     protected int getContentActionBarResId() {
         return R.id.add_fitzactionbar;
+    }
+
+    @Override
+    protected int isLocationImageVisible() {
+        return View.GONE;
     }
 
     @Override

@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/item_bg"
+    android:elevation="5dp"
     android:orientation="horizontal"
     android:paddingBottom="10dp"
     app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.fitz.abus.fitzview.FitzAlwaysMarqueeTextView
         android:id="@+id/tv_stationName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -67,16 +68,16 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_stationName"
         tools:text="              " />
 
-    <TextView
+    <com.fitz.abus.fitzview.FitzAlwaysMarqueeTextView
         android:id="@+id/tv_start_stop"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="8dp"
         android:ellipsize="marquee"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:gravity="center"
         android:singleLine="true"
         android:text="出发站"
         android:textSize="15sp"
@@ -84,15 +85,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_seTime" />
 
-    <TextView
+    <com.fitz.abus.fitzview.FitzAlwaysMarqueeTextView
         android:id="@+id/tv_end_stop"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginEnd="10dp"
         android:ellipsize="marquee"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:gravity="center"
         android:singleLine="true"
         android:text="终点站"
         android:textSize="15sp"
@@ -102,7 +103,7 @@
 
     <ImageView
         android:id="@+id/iv_bound_for"
-        android:layout_width="50dp"
+        android:layout_width="40dp"
         android:layout_height="0dp"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"

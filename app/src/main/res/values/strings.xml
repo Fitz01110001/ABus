@@ -25,4 +25,5 @@
     <string name="station">station</string>
     <string name="stations">stations</string>
     <string name="noData">Void</string>
+    <string name="not_found">This line has not been found yet</string>
 </resources>

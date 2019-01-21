@@ -91,8 +91,13 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
             mainViewHolder.setTvLineName(busBaseInfoDB.getBusName());
             mainViewHolder.setStationName(busBaseInfoDB.getStationName());
             mainViewHolder.setSETime(busBaseInfoDB.getStartEndTimeDirection0());
-            mainViewHolder.setStartStop(busBaseInfoDB.getStartStopDirection0());
-            mainViewHolder.setEndStop(busBaseInfoDB.getEndStopDirection0());
+            if(busBaseInfoDB.getDirection() == 0){
+                mainViewHolder.setStartStop(busBaseInfoDB.getStartStopDirection0());
+                mainViewHolder.setEndStop(busBaseInfoDB.getEndStopDirection0());
+            }else {
+                mainViewHolder.setStartStop(busBaseInfoDB.getStartStopDirection1());
+                mainViewHolder.setEndStop(busBaseInfoDB.getEndStopDirection1());
+            }
         }
     }
 
@@ -138,6 +143,7 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         if (holderThreadMap.get(mainViewHolder) != null) {
             holderThreadMap.get(mainViewHolder).setReFresh(false);
         }
+        notifyItemRemoved(mainViewHolder.getAdapterPosition());
     }
 
     @Override

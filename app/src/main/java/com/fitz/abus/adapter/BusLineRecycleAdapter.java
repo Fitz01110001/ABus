@@ -17,6 +17,7 @@ import com.fitz.abus.bean.BusBaseSHBean;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @ProjectName: ABus
@@ -30,6 +31,7 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
     private Context context;
     private List<BusBaseSHBean> mListSh = new ArrayList<>();
     private List<String> mListWh = new ArrayList<>();
+    private List<Integer> heightList;
 
     /**
      * for sh
@@ -40,6 +42,7 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
             mListSh.clear();
             mListSh.add(busBaseSHBean);
         }
+        initHighList(mListSh.size());
     }
 
     /**
@@ -48,6 +51,15 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
     public BusLineRecycleAdapter(Context context, List<String> list) {
         this.context = context;
         mListWh = list;
+        initHighList(mListWh.size());
+    }
+
+    private void initHighList(int size) {
+        heightList = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            int height = new Random().nextInt(200) + 100;
+            heightList.add(height);
+        }
     }
 
     @NonNull
@@ -60,7 +72,9 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
     @Override
     public void onBindViewHolder(FitzViewHolder holder, final int i) {
         holder.tv_line_name.setText(getLineName(i));
-
+        ViewGroup.LayoutParams params = holder.tv_line_name.getLayoutParams();
+        params.height = heightList.get(i);
+        holder.tv_line_name.setLayoutParams(params);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,7 +86,7 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
                         intent.putExtras(b);
                         break;
                     case FitzApplication.keyWH:
-                        intent.putExtra(BusStopListActivity.EXTRAS_BUSNAME_WH,mListWh.get(i));
+                        intent.putExtra(BusStopListActivity.EXTRAS_BUSNAME_WH, mListWh.get(i));
                         break;
                     case FitzApplication.keyNJ:
                         break;
@@ -84,7 +98,7 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
         });
     }
 
-    private String getLineName(int i){
+    private String getLineName(int i) {
         switch (FitzApplication.getInstance().getDefaultCityKey()) {
             case FitzApplication.keySH:
                 return mListSh.get(i).getLine_name();

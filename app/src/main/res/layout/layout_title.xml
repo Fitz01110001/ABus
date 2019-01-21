@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fitz_action_bar"
     android:layout_width="match_parent"
     android:layout_height="50dp"
@@ -11,12 +12,14 @@
         android:id="@+id/action_bar_button_back"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentStart="true"
         android:background="@color/transparent"
         android:padding="15dp"
         android:scaleType="fitCenter"
         android:src="@drawable/back_arrow"
-        android:visibility="gone" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
@@ -26,23 +29,40 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:clickable="true"
-        android:maxWidth="200dp"
-        android:minHeight="24dp"
+        android:gravity="center"
         android:scrollHorizontally="false"
-        android:text=""
+        android:text="上海"
         android:textColor="@android:color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageButton
         android:id="@+id/action_bar_button_options"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
         android:adjustViewBounds="false"
         android:background="@color/transparent"
         android:padding="15dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/options" />
+        android:src="@drawable/options"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/imageView_location"
+        android:layout_width="20dp"
+        android:layout_height="0dp"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/action_bar_tv_city"
+        app:layout_constraintStart_toEndOf="@+id/action_bar_tv_city"
+        app:layout_constraintTop_toTopOf="@+id/action_bar_tv_city"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/location" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,11 +1,11 @@
 package com.fitz.abus.fitzview;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,15 +14,15 @@ import com.fitz.abus.R;
 
 public class FitzActionBar extends RelativeLayout {
 
+    protected TextView mTextView_City;
+    protected Context context;
     private boolean isDebug = true;
     private String TAG = "FitzActionBar";
     private View contentView;
-    protected TextView mTextView_City;
-    protected Drawable mDrawable_location;
+    private ImageView imageView_location;
     private ImageButton mImageButton_back;
     private ImageButton mImageButton_options;
     private View.OnClickListener mActionBarClickListener;
-    private Context mContext;
 
     public FitzActionBar(Context context) {
         super(context, null);
@@ -32,13 +32,11 @@ public class FitzActionBar extends RelativeLayout {
     public FitzActionBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         FLOG("FitzActionBar");
-        mContext = context;
+        this.context = context;
         initActionBar();
     }
 
-
-
-    public void setData(View.OnClickListener viewClickListener, int backVisible, int cityVisible, int optionsVisible) {
+    public void setData(View.OnClickListener viewClickListener, int backVisible, int cityVisible, int optionsVisible, int locationImageVisible) {
         FLOG("setData");
         mActionBarClickListener = viewClickListener;
         mImageButton_back.setOnClickListener(mActionBarClickListener);
@@ -48,23 +46,26 @@ public class FitzActionBar extends RelativeLayout {
         mTextView_City.setVisibility(cityVisible);
         mImageButton_options.setVisibility(optionsVisible);
         mTextView_City.setText(FitzApplication.getInstance().getDefaultCityName());
+        imageView_location.setVisibility(locationImageVisible);
     }
-
 
     private void initActionBar() {
         FLOG("initActionBar");
         contentView = inflate(getContext(), R.layout.layout_title, this);
         mTextView_City = contentView.findViewById(R.id.action_bar_tv_city);
-        mDrawable_location = getResources().getDrawable(R.drawable.location, null);
-        mDrawable_location.setBounds(0, 0, 40, 40);
-        mTextView_City.setCompoundDrawables(null, null, mDrawable_location, null);
         mImageButton_back = contentView.findViewById(R.id.action_bar_button_back);
         mImageButton_options = contentView.findViewById(R.id.action_bar_button_options);
-
+        imageView_location = contentView.findViewById(R.id.imageView_location);
     }
 
-    public void setDefaultCityTV(String cityName){
+    public void setDefaultCityTV(String cityName) {
         mTextView_City.setText(cityName);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        FLOG("mTextView_City.getMeasuredHeight()" + mTextView_City.getMeasuredHeight());
     }
 
     public void FLOG(String msg) {

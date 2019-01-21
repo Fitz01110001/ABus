@@ -333,5 +333,10 @@ public class BusStopListActivity extends BaseActivity {
         return R.id.bus_station_list_fitzactionbar;
     }
 
+    @Override
+    protected int isLocationImageVisible() {
+        return View.GONE;
+    }
+
 
 }

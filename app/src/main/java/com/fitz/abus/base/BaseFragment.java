@@ -89,7 +89,7 @@ public class BaseFragment extends Fragment {
         //设置Adapter
         fg_container.setAdapter(fragmentListAdapter);
         //设置分隔线
-        fg_container.addItemDecoration(new SpacesItemDecoration(20));
+        fg_container.addItemDecoration(new SpacesItemDecoration(0,0,10,10));
         //设置增加或删除条目的动画
         fg_container.setItemAnimator(new DefaultItemAnimator());
         fg_container.addOnItemTouchListener(new OnSlideItemTouch(mActivity));

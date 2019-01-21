@@ -48,7 +48,6 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     private List<ArriveBusInfo> arriveBusInfoList;
     private Context context;
     private BusBaseInfoDB busBaseInfoDB;
-    private List<List<String>> list_wh = null;
     private int selectedIndex = -1;
     private FitzHttpUtils.AbstractHttpCallBack mArriveBaseCallBack;
     private long lastClickTime = 0L;
