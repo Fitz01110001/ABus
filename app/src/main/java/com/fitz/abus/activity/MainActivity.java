@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity {
     TextView actionBarTvCity;
     @BindView(R.id.action_bar_button_options)
     ImageButton actionBarButtonOptions;
-    @BindView(R.id.fitzactionbar)
+    @BindView(R.id.main_fitzactionbar)
     FitzActionBar fitzactionbar;
     @BindView(R.id.main_ConstraintLayout)
     ConstraintLayout mainConstraintLayout;
@@ -82,7 +82,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public int getContentViewResId() {
-        return R.layout.activity_main;
+        return R.layout.main_activity_layout;
     }
 
     /** 主界面可以点击城市列表 */
@@ -93,7 +93,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected int getContentActionBarResId() {
-        return R.id.fitzactionbar;
+        return R.id.main_fitzactionbar;
     }
 
     @Override

@@ -17,6 +17,7 @@ import android.widget.PopupMenu;
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.activity.AddBusActivity;
+import com.fitz.abus.activity.SettingsActivity;
 import com.fitz.abus.fitzview.FitzActionBar;
 import com.fitz.abus.utils.FitzBusFragmentUtils;
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
@@ -183,11 +184,12 @@ public abstract class BaseActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.options_add:
-                        Intent intent = new Intent(getContext(), AddBusActivity.class);
-                        startActivity(intent);
+                        Intent intent1 = new Intent(getContext(), AddBusActivity.class);
+                        startActivity(intent1);
                         break;
                     case R.id.options_settings:
-                        FLOG("click options_settings");
+                        Intent intent2 = new Intent(getContext(), SettingsActivity.class);
+                        startActivity(intent2);
                         break;
                     case R.id.options_about:
                         FLOG("click options_about");
