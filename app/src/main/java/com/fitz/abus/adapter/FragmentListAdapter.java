@@ -157,14 +157,14 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
 
     private Bundle busLineDB2Bundle(BusBaseInfoDB busBaseInfoDB) {
         Bundle bundle = new Bundle();
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
+        switch (FitzApplication.getInstance().getDefaultCityCode()) {
+            case FitzApplication.city_code_SH:
                 bundle.putParcelable(BusStopListActivity.EXTRAS_BBI_SH, busBaseInfoDB);
                 break;
-            case FitzApplication.keyWH:
+            case FitzApplication.city_code_WH:
                 bundle.putParcelable(BusStopListActivity.EXTRAS_BBI_WH, busBaseInfoDB);
                 break;
-            case FitzApplication.keyNJ:
+            case FitzApplication.city_code_NJ:
                 break;
 
             default:
@@ -209,20 +209,20 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                 if (mainViewHolder == null) {
                     return;
                 }
-                switch (FitzApplication.getInstance().getDefaultCityKey()) {
-                    case FitzApplication.keySH:
+                switch (FitzApplication.getInstance().getDefaultCityCode()) {
+                    case FitzApplication.city_code_SH:
                         ArriveBaseSHBean arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
                         mainViewHolder.setPlate(arriveBaseSHBean.getCars().get(0).getTerminal());
                         mainViewHolder.setDistance(arriveBaseSHBean.getCars().get(0).getDistance() + "米");
                         mainViewHolder.setStopdis(arriveBaseSHBean.getCars().get(0).getStopdis() + "站");
                         break;
-                    case FitzApplication.keyWH:
+                    case FitzApplication.city_code_WH:
                         ArriveInfoWHBean arriveInfoWHBean = new Gson().fromJson(data, ArriveInfoWHBean.class);
                         mainViewHolder.setPlate(arriveInfoWHBean.getResult().getPlate());
                         mainViewHolder.setDistance(arriveInfoWHBean.getResult().getDistance());
                         mainViewHolder.setStopdis(arriveInfoWHBean.getResult().getWillArriveTime());
                         break;
-                    case FitzApplication.keyNJ:
+                    case FitzApplication.city_code_NJ:
                         break;
                     default:
                         return;
@@ -241,14 +241,14 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                 mainViewHolder.setStopdis("");
             }
         };
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
+        switch (FitzApplication.getInstance().getDefaultCityCode()) {
+            case FitzApplication.city_code_SH:
                 new FitzHttpUtils().getArriveBaseSH(b.getBusName(), b.getLineId(), b.getStationID(), b.getDirection(), mMainCallBack);
                 break;
-            case FitzApplication.keyWH:
+            case FitzApplication.city_code_WH:
                 new FitzHttpUtils().postArriveBaseWH(b.getBusName(), b.getStationID(), b.getDirection(), mMainCallBack);
                 break;
-            case FitzApplication.keyNJ:
+            case FitzApplication.city_code_NJ:
                 break;
             default:
                 return;
@@ -324,7 +324,9 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                     msg.what = MSG_REFRESH;
                     msg.obj = new Object[]{mainViewHolder, busBaseInfoDB};
                     handler.sendMessage(msg);
-                    Thread.sleep(5000);
+                    if(FitzApplication.getInstance().isAutoRefresh()){
+                        Thread.sleep(FitzApplication.getInstance().getRefreshTime());
+                    }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
