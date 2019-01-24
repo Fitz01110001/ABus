@@ -108,7 +108,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         context = this;
         mUnbinder = ButterKnife.bind(this);
         fitzBusFragmentUtils = new FitzBusFragmentUtils((AppCompatActivity) context);
-        fragmentMap = new HashMap<String, BaseFragment>(FitzApplication.Cities.size());
+        fragmentMap = new HashMap<String, BaseFragment>(FitzApplication.CITY_CODE_NAME_MAP.size());
         //设置状态栏颜色
         getWindow().setStatusBarColor(getResources().getColor(R.color.colorAccent, null));
 
@@ -119,15 +119,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     /** 城市TV 弹出 QMUI popmenu */
     private void showQMUIpopupMenu(View v) {
         if (mListPopup == null) {
-            Collection<Integer> collectionCityName = FitzApplication.Cities.values();
+            Collection<Integer> collectionCityName = FitzApplication.CITY_CODE_NAME_MAP.values();
             final List<Integer> cityNameResID = new ArrayList<>(collectionCityName);
             List<String> cityName = new ArrayList<>();
             for (Iterator<Integer> it = cityNameResID.iterator(); it.hasNext(); ) {
                 cityName.add(getResources().getString(it.next()));
             }
 
-            Set<String> collectionCityID = FitzApplication.Cities.keySet();
-            final List<String> cityID = new ArrayList<>(collectionCityID);
+            Set<String> collectionCityID = FitzApplication.CITY_CODE_NAME_MAP.keySet();
+            final List<String> cityCode = new ArrayList<>(collectionCityID);
             ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.simple_list_item, cityName);
 
             mListPopup = new QMUIListPopup(getContext(), QMUIPopup.DIRECTION_NONE, adapter);
@@ -135,7 +135,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                               QMUIDisplayHelper.dp2px(getContext(), 200), new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            String tag = cityID.get(i);
+                            String tag = cityCode.get(i);
                             if (fragmentMap.get(tag) == null) {
                                 BaseFragment fg = new BaseFragment();
                                 Bundle args = new Bundle();
@@ -147,7 +147,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                                 fitzBusFragmentUtils.replaceFragment(fragmentMap.get(tag), tag);
                             }
                             mListPopup.dismiss();
-                            FitzApplication.getInstance().setDefaultCityKey(cityID.get(i));
+                            FitzApplication.getInstance().setDefaultCityCode(cityCode.get(i));
                             mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());
                         }
                     });

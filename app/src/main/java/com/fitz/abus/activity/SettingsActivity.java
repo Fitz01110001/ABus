@@ -9,13 +9,21 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.base.BaseActivity;
 import com.fitz.abus.fitzview.FitzActionBar;
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.widget.QMUILoadingView;
+import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -31,6 +39,18 @@ public class SettingsActivity extends BaseActivity {
     @BindView(R.id.settings_fitzactionbar) FitzActionBar settingsFitzactionbar;
     @BindView(R.id.groupListView) QMUIGroupListView mGroupListView;
     private Context context;
+    private QMUICommonListItemView itemWithChevron;
+    private QMUICommonListItemView itemWithSwitch;
+    private static final LinkedHashMap<Long, String> REFRESH_TIME_MAP = new LinkedHashMap<Long, String>() {
+        {
+            put(10000L, "10s");
+            put(15000L, "15s");
+            put(20000L, "20s");
+            put(25000L, "25s");
+            put(30000L, "30s");
+        }
+    };
+    final List<Long> cityCode = new ArrayList<>(REFRESH_TIME_MAP.keySet());
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,42 +61,19 @@ public class SettingsActivity extends BaseActivity {
 
 
     private void initGroupListView() {
-        QMUICommonListItemView normalItem = mGroupListView.createItemView(
-                ContextCompat.getDrawable(getContext(), R.mipmap.ic_launcher),
-                "Item 1",
-                null,
-                QMUICommonListItemView.HORIZONTAL,
-                QMUICommonListItemView.ACCESSORY_TYPE_NONE);
-        normalItem.setOrientation(QMUICommonListItemView.VERTICAL);
-
-        QMUICommonListItemView itemWithDetail = mGroupListView.createItemView(
-                ContextCompat.getDrawable(getContext(), R.mipmap.ic_launcher),
-                "Item 2",
-                null,
-                QMUICommonListItemView.HORIZONTAL,
-                QMUICommonListItemView.ACCESSORY_TYPE_NONE);
-        itemWithDetail.setDetailText("在右方的详细信息");
-
-        QMUICommonListItemView itemWithDetailBelow = mGroupListView.createItemView("Item 3");
-        itemWithDetailBelow.setOrientation(QMUICommonListItemView.VERTICAL);
-        itemWithDetailBelow.setDetailText("在标题下方的详细信息");
-
-        QMUICommonListItemView itemWithChevron = mGroupListView.createItemView("Item 4");
-        itemWithChevron.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
-
-        QMUICommonListItemView itemWithSwitch = mGroupListView.createItemView("Item 5");
+        itemWithSwitch = mGroupListView.createItemView(getString(R.string.auto_refresh));
         itemWithSwitch.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_SWITCH);
+        itemWithSwitch.getSwitch().setChecked(FitzApplication.getInstance().isAutoRefresh());
         itemWithSwitch.getSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Toast.makeText(context, "checked = " + isChecked, Toast.LENGTH_SHORT).show();
+                FitzApplication.getInstance().setAutoRefresh(isChecked);
             }
         });
 
-        QMUICommonListItemView itemWithCustom = mGroupListView.createItemView("Item 6");
-        itemWithCustom.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CUSTOM);
-        QMUILoadingView loadingView = new QMUILoadingView(context);
-        itemWithCustom.addAccessoryCustomView(loadingView);
+        itemWithChevron = mGroupListView.createItemView(getString(R.string.auto_refresh_time));
+        itemWithChevron.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+        itemWithChevron.setDetailText(REFRESH_TIME_MAP.get(FitzApplication.getInstance().getRefreshTime()));
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -84,25 +81,39 @@ public class SettingsActivity extends BaseActivity {
                 if (v instanceof QMUICommonListItemView) {
                     CharSequence text = ((QMUICommonListItemView) v).getText();
                     Toast.makeText(context, text + " is Clicked", Toast.LENGTH_SHORT).show();
+                    showSimpleBottomSheetList();
                 }
             }
         };
 
         int size = QMUIDisplayHelper.dp2px(getContext(), 20);
-        QMUIGroupListView.newSection(getContext())
-                         .setTitle("Section 1: 默认提供的样式")
-                         .setDescription("Section 1 的描述")
-                         .addItemView(normalItem, onClickListener)
-                         .addItemView(itemWithDetail, onClickListener)
-                         .addItemView(itemWithDetailBelow, onClickListener)
-                         .addItemView(itemWithChevron, onClickListener)
-                         .addItemView(itemWithSwitch, onClickListener)
-                         .addTo(mGroupListView);
+        QMUIGroupListView
+                .newSection(getContext())
+                .setTitle("Section 1: 默认提供的样式")
+                .addItemView(itemWithSwitch, onClickListener)
+                .addItemView(itemWithChevron, onClickListener)
+                .addTo(mGroupListView);
 
-        QMUIGroupListView.newSection(getContext())
-                         .setTitle("Section 2: 自定义右侧 View")
-                         .addItemView(itemWithCustom, onClickListener)
-                         .addTo(mGroupListView);
+    }
+
+    private void showSimpleBottomSheetList() {
+        new QMUIBottomSheet.BottomListSheetBuilder(context)
+                .addItem("10s")
+                .addItem("15s")
+                .addItem("20s")
+                .addItem("25s")
+                .addItem("30s")
+                .setOnSheetItemClickListener(new QMUIBottomSheet.BottomListSheetBuilder.OnSheetItemClickListener() {
+                    @Override
+                    public void onClick(QMUIBottomSheet dialog, View itemView, int position, String tag) {
+                        dialog.dismiss();
+                        FLOG("time:"+cityCode.get(position));
+                        FitzApplication.getInstance().setRefreshTime(cityCode.get(position));
+                        itemWithChevron.setDetailText(REFRESH_TIME_MAP.get(FitzApplication.getInstance().getRefreshTime()));
+                    }
+                })
+                .build()
+                .show();
     }
 
     /**

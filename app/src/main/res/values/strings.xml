@@ -26,4 +26,6 @@
     <string name="stations">stations</string>
     <string name="noData">Void</string>
     <string name="not_found">This line has not been found yet</string>
+    <string name="auto_refresh">Page Auto Refresh</string>
+    <string name="auto_refresh_time">Auto refresh time interval</string>
 </resources>

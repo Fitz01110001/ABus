@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity {
         fitzBusFragmentUtils = new FitzBusFragmentUtils(appCompatActivity);
         BaseFragment fg = new BaseFragment();
         Bundle args = new Bundle();
-        String tag = FitzApplication.getInstance().getDefaultCityKey();
+        String tag = FitzApplication.getInstance().getDefaultCityCode();
         args.putString(ARG_TAG, tag);
         fg.setArguments(args);
         fitzBusFragmentUtils.replaceFragment(fg, tag);

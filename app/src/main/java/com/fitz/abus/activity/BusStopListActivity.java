@@ -104,18 +104,18 @@ public class BusStopListActivity extends BaseActivity {
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
                 tipDialog.dismiss();
-                switch (FitzApplication.getInstance().getDefaultCityKey()) {
-                    case FitzApplication.keySH:
+                switch (FitzApplication.getInstance().getDefaultCityCode()) {
+                    case FitzApplication.city_code_SH:
                         BusStopSHBean busStopSHBean = new Gson().fromJson(data, BusStopSHBean.class);
                         setBusInfoSH(null, busStopSHBean);
                         handleSuccess();
                         break;
-                    case FitzApplication.keyWH:
+                    case FitzApplication.city_code_WH:
                         busStopWHBean = new Gson().fromJson(data, BusStopWHBean.class);
                         setBusInfoWH();
                         handleSuccess();
                         break;
-                    case FitzApplication.keyNJ:
+                    case FitzApplication.city_code_NJ:
                         break;
                     default:
                 }
@@ -129,8 +129,8 @@ public class BusStopListActivity extends BaseActivity {
             }
         };
 
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
+        switch (FitzApplication.getInstance().getDefaultCityCode()) {
+            case FitzApplication.city_code_SH:
                 FitzApplication.direction = true;
                 if (getIntent().getExtras().containsKey(EXTRAS_BBS_SH)) {
                     BusBaseSHBean busBaseSHBean = getIntent().getExtras().getParcelable(EXTRAS_BBS_SH);
@@ -142,7 +142,7 @@ public class BusStopListActivity extends BaseActivity {
                     new FitzHttpUtils().getBusStopSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), mBusStationCallBack);
                 }
                 break;
-            case FitzApplication.keyWH:
+            case FitzApplication.city_code_WH:
                 if (getIntent().getExtras().containsKey(EXTRAS_BUSNAME_WH)) {
                     String busName = getIntent().getExtras().getString(EXTRAS_BUSNAME_WH);
                     new FitzHttpUtils().postBusLineDetails(busName, mBusStationCallBack);
@@ -151,7 +151,7 @@ public class BusStopListActivity extends BaseActivity {
                     new FitzHttpUtils().postBusLineDetails(busBaseInfoDB.getBusName(), mBusStationCallBack);
                 }
                 break;
-            case FitzApplication.keyNJ:
+            case FitzApplication.city_code_NJ:
                 break;
             default:
         }
@@ -166,18 +166,18 @@ public class BusStopListActivity extends BaseActivity {
 
     private List<ArriveBusInfo> convertJsonList2ArriveBusInfo(BusBaseInfoDB busBaseInfoDB) {
         List<ArriveBusInfo> list = new ArrayList<>();
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
+        switch (FitzApplication.getInstance().getDefaultCityCode()) {
+            case FitzApplication.city_code_SH:
                 for (Stops s : FitzApplication.direction ? busBaseInfoDB.getShStationList0() : busBaseInfoDB.getShStationList1()) {
                     list.add(new ArriveBusInfo(s.getZdmc(), s.getId()));
                 }
                 break;
-            case FitzApplication.keyWH:
+            case FitzApplication.city_code_WH:
                 for (List<String> l : FitzApplication.direction ? busBaseInfoDB.getWhStationList0() : busBaseInfoDB.getWhStationList1()) {
                     list.add(new ArriveBusInfo(l.get(1), l.get(0)));
                 }
                 break;
-            case FitzApplication.keyNJ:
+            case FitzApplication.city_code_NJ:
                 break;
             default:
         }

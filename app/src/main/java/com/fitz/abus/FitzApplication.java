@@ -11,7 +11,6 @@ import com.fitz.abus.greendao.DaoSession;
 import com.fitz.abus.utils.FitzDBUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,28 +27,37 @@ public class FitzApplication extends Application {
     /**
      * 存储区号-城市，每个城市需要单独适配
      */
-    public static final HashMap<String, Integer> Cities = new HashMap<String, Integer>() {
+    public static final HashMap<String, Integer> CITY_CODE_NAME_MAP = new HashMap<String, Integer>() {
         {
             put("021", R.string.city_sh);
             put("0553", R.string.city_wh);
             put("025", R.string.city_nj);
         }
     };
-    private static final String KEY = "defaultCityKey";
+    private static final List<String> CITY_CODE = new ArrayList<>(CITY_CODE_NAME_MAP.keySet());
+    private static final String DEFAULT_CITY_KEY = "default_city_Key";
+    private static final String DEFAULT_REFRESH_STATE_KEY = "default_refresh_state_key";
+    private static final String DEFAULT_REFRESH_TIME_KEY = "default_refresh_time_key";
     /**
      * json 中 direction = true 对应 lineResults0
      * 查询时 direction = true 对应 direction 0
      */
     public static boolean direction = true;
-    public static final String keySH = "021";
-    public static final String keyWH = "0553";
-    public static final String keyNJ = "025";
+    public static final String city_code_SH = "021";
+    public static final String city_code_WH = "0553";
+    public static final String city_code_NJ = "025";
     protected static FitzApplication application;
+
+
+    private boolean autoRefresh;
+    private long refreshTime;
     protected static DaoSession daoSession;
-    private static final String FIRST_BOOT_DEFAULT_CITY = "021";
-    private final List<String> cities = new ArrayList<>(Arrays.asList("021", "0553", "025"));
+    private static final String FIRST_BOOT_DEFAULT_CITY_CODE = "021";
+    //new ArrayList<>(Arrays.asList("021", "0553", "025"));
+
+
     private String TAG = "FitzApplication";
-    private String defaultCityKey;
+    private String defaultCityCode;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
     private List<BusBaseInfoDB> favoriteBusListSH = new ArrayList<>();
@@ -81,41 +89,86 @@ public class FitzApplication extends Application {
         this.favoriteBusListSH = favoriteBusListSH;
     }
 
-    public String getDefaultCityKey() {
-        FLOG("getDefaultCityKey:" + defaultCityKey);
-        return defaultCityKey;
+    public String getDefaultCityCode() {
+        FLOG("getDefaultCityCode:" + defaultCityCode);
+        return defaultCityCode;
     }
 
     /**
      * 保存用户选择的默认城市
      */
-    public void setDefaultCityKey(String defaultCityKey) {
-        this.defaultCityKey = defaultCityKey;
-        FLOG("setDefaultCityKey:" + defaultCityKey);
-        preferences = getApplicationContext().getSharedPreferences(KEY, MODE_PRIVATE);
+    public void setDefaultCityCode(String defaultCityCode) {
+        this.defaultCityCode = defaultCityCode;
+        FLOG("setDefaultCityCode:" + defaultCityCode);
+        preferences = getApplicationContext().getSharedPreferences(DEFAULT_CITY_KEY, MODE_PRIVATE);
         editor = preferences.edit();
-        editor.putString(KEY, defaultCityKey);
+        editor.putString(DEFAULT_CITY_KEY, defaultCityCode);
         if (!editor.commit()) {
-            Log.e(TAG, "set defaultCityKey error");
+            Log.e(TAG, "set defaultCityCode error");
+        }
+    }
+
+    public boolean isAutoRefresh() {
+        return autoRefresh;
+    }
+
+    /**
+     * 设置自动刷新开关
+     *
+     * @param autoRefresh
+     */
+    public void setAutoRefresh(boolean autoRefresh) {
+        this.autoRefresh = autoRefresh;
+        FLOG("setAutoRefresh:" + autoRefresh);
+        preferences = getApplicationContext().getSharedPreferences(DEFAULT_REFRESH_STATE_KEY, MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.putBoolean(DEFAULT_REFRESH_STATE_KEY, autoRefresh);
+        if (!editor.commit()) {
+            Log.e(TAG, "set setAutoRefresh error");
+        }
+    }
+
+    public long getRefreshTime() {
+        FLOG("getRefreshTime:" + refreshTime);
+        return refreshTime;
+    }
+
+    /**
+     * 设置默认刷新时间间隔
+     *
+     * @param refreshTime
+     */
+    public void setRefreshTime(long refreshTime) {
+        this.refreshTime = refreshTime;
+        FLOG("setRefreshTime:" + refreshTime);
+        preferences = getApplicationContext().getSharedPreferences(DEFAULT_REFRESH_TIME_KEY, MODE_PRIVATE);
+        editor = preferences.edit();
+        editor.putLong(DEFAULT_REFRESH_TIME_KEY, refreshTime);
+        if (!editor.commit()) {
+            Log.e(TAG, "set setAutoRefresh error");
         }
     }
 
     /**
      * 从Cities中取出对应区号的城市名称
+     *
+     * @return 当前选中城市名称
      */
     public String getDefaultCityName() {
-        FLOG("getDefaultCityName:" + getResources().getString(Cities.get(defaultCityKey)));
-        return getResources().getString(Cities.get(defaultCityKey));
+        FLOG("getDefaultCityName:" + getResources().getString(CITY_CODE_NAME_MAP.get(defaultCityCode)));
+        return getResources().getString(CITY_CODE_NAME_MAP.get(defaultCityCode));
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         application = this;
-        defaultCityKey = readDefaultCityKey();
+        autoRefresh = readAutoRefreshTimeState();
+        refreshTime = readRefreshTime();
+        defaultCityCode = readDefaultCityKey();
         setupDatabase();
-        favoriteBusListSH = FitzDBUtils.getInstance().queryRawBusWhereCityID(cities.get(0));
-        favoriteBusListWH = FitzDBUtils.getInstance().queryRawBusWhereCityID(cities.get(1));
+        favoriteBusListSH = FitzDBUtils.getInstance().queryRawBusWhereCityID(CITY_CODE.get(0));
+        favoriteBusListWH = FitzDBUtils.getInstance().queryRawBusWhereCityID(CITY_CODE.get(1));
         Log.d(TAG, "favoriteBusListSH" + favoriteBusListSH.toString());
     }
 
@@ -134,11 +187,30 @@ public class FitzApplication extends Application {
     }
 
     /**
-     * 应用启动获取默认城市，若是首次打开，选择 FIRST_BOOT_DEFAULT_CITY 设定值。
+     * 应用启动获取默认城市，若是首次打开，选择 FIRST_BOOT_DEFAULT_CITY_CODE 设定值。
      */
     private String readDefaultCityKey() {
-        preferences = getApplicationContext().getSharedPreferences(KEY, MODE_PRIVATE);
-        return preferences.getString(KEY, FIRST_BOOT_DEFAULT_CITY);
+        preferences = getApplicationContext().getSharedPreferences(DEFAULT_CITY_KEY, MODE_PRIVATE);
+        return preferences.getString(DEFAULT_CITY_KEY, FIRST_BOOT_DEFAULT_CITY_CODE);
+    }
+
+    /**
+     * 每次启动
+     *
+     * @return 返回自动刷新设定值，默认为 true
+     */
+    private boolean readAutoRefreshTimeState() {
+        preferences = getApplicationContext().getSharedPreferences(DEFAULT_REFRESH_STATE_KEY, MODE_PRIVATE);
+        return preferences.getBoolean(DEFAULT_REFRESH_STATE_KEY, true);
+    }
+
+    /**
+     * 启动时获取默认刷新时间
+     * @return
+     */
+    private Long readRefreshTime() {
+        preferences = getApplicationContext().getSharedPreferences(DEFAULT_REFRESH_TIME_KEY, MODE_PRIVATE);
+        return preferences.getLong(DEFAULT_REFRESH_TIME_KEY, 10000);
     }
 
     public void FLOG(String msg) {
@@ -146,5 +218,6 @@ public class FitzApplication extends Application {
             Log.d(TAG, msg);
         }
     }
+
 
 }

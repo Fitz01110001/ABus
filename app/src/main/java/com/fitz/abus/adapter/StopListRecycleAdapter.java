@@ -75,8 +75,8 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                 String plate = "";
                 String distance = "";
                 String remainingStation = "";
-                switch (FitzApplication.getInstance().getDefaultCityKey()) {
-                    case FitzApplication.keySH:
+                switch (FitzApplication.getInstance().getDefaultCityCode()) {
+                    case FitzApplication.city_code_SH:
                         arriveBaseSHBean = new Gson().fromJson(data, ArriveBaseSHBean.class);
                         plate = arriveBaseSHBean.getCars().get(0)
                                                 .getTerminal();
@@ -88,7 +88,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                                 .get(0)
                                 .getStopdis();
                         break;
-                    case FitzApplication.keyWH:
+                    case FitzApplication.city_code_WH:
                         arriveInfoWHBean = new Gson().fromJson(data, ArriveInfoWHBean.class);
                         plate = arriveInfoWHBean.getResult().getPlate();
                         distance = arriveInfoWHBean.getResult().getDistance();
@@ -100,7 +100,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
                             remainingStation = matcher.group(0);
                         }
                         break;
-                    case FitzApplication.keyNJ:
+                    case FitzApplication.city_code_NJ:
                         break;
                     default:
                 }
@@ -173,7 +173,7 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
     }
 
     private void saveBus() {
-        busBaseInfoDB.setCityID(FitzApplication.getInstance().getDefaultCityKey());
+        busBaseInfoDB.setCityID(FitzApplication.getInstance().getDefaultCityCode());
         FitzDBUtils.getInstance().insertBus(busBaseInfoDB);
     }
 
@@ -216,15 +216,15 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
 
     private void startNetQuest(BusBaseInfoDB busBaseInfoDB) {
         Log.d(TAG,"startNetQuest:"+busBaseInfoDB.toString());
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
+        switch (FitzApplication.getInstance().getDefaultCityCode()) {
+            case FitzApplication.city_code_SH:
                 new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB
                         .getStationID(), busBaseInfoDB.getDirection(), mArriveBaseCallBack);
                 break;
-            case FitzApplication.keyWH:
+            case FitzApplication.city_code_WH:
                 new FitzHttpUtils().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), busBaseInfoDB.getDirection(), mArriveBaseCallBack);
                 break;
-            case FitzApplication.keyNJ:
+            case FitzApplication.city_code_NJ:
                 break;
             default:
 

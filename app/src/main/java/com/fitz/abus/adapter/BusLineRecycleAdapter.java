@@ -79,16 +79,16 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, BusStopListActivity.class);
-                switch (FitzApplication.getInstance().getDefaultCityKey()) {
-                    case FitzApplication.keySH:
+                switch (FitzApplication.getInstance().getDefaultCityCode()) {
+                    case FitzApplication.city_code_SH:
                         Bundle b = new Bundle();
                         b.putParcelable(BusStopListActivity.EXTRAS_BBS_SH, mListSh.get(i));
                         intent.putExtras(b);
                         break;
-                    case FitzApplication.keyWH:
+                    case FitzApplication.city_code_WH:
                         intent.putExtra(BusStopListActivity.EXTRAS_BUSNAME_WH, mListWh.get(i));
                         break;
-                    case FitzApplication.keyNJ:
+                    case FitzApplication.city_code_NJ:
                         break;
                     default:
                         return;
@@ -99,12 +99,12 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
     }
 
     private String getLineName(int i) {
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
+        switch (FitzApplication.getInstance().getDefaultCityCode()) {
+            case FitzApplication.city_code_SH:
                 return mListSh.get(i).getLine_name();
-            case FitzApplication.keyWH:
+            case FitzApplication.city_code_WH:
                 return mListWh.get(i);
-            case FitzApplication.keyNJ:
+            case FitzApplication.city_code_NJ:
                 break;
             default:
                 return null;
@@ -114,12 +114,12 @@ public class BusLineRecycleAdapter extends RecyclerView.Adapter<BusLineRecycleAd
 
     @Override
     public int getItemCount() {
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
+        switch (FitzApplication.getInstance().getDefaultCityCode()) {
+            case FitzApplication.city_code_SH:
                 return mListSh.size();
-            case FitzApplication.keyWH:
+            case FitzApplication.city_code_WH:
                 return mListWh.size();
-            case FitzApplication.keyNJ:
+            case FitzApplication.city_code_NJ:
                 break;
             default:
                 return 0;

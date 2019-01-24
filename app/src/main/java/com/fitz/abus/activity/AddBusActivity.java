@@ -63,19 +63,19 @@ public class AddBusActivity extends BaseActivity {
             public void onCallSuccess(String data) {
                 super.onCallSuccess(data);
                 tipDialog.dismiss();
-                switch (FitzApplication.getInstance().getDefaultCityKey()) {
-                    case FitzApplication.keySH:
+                switch (FitzApplication.getInstance().getDefaultCityCode()) {
+                    case FitzApplication.city_code_SH:
                         BusBaseSHBean busBaseSHBean = new Gson().fromJson(data, BusBaseSHBean.class);
                         FLOG("callsuccess busBaseSHBean:" + busBaseSHBean.toString());
                         addRecyclerView.setAdapter(new BusLineRecycleAdapter(context, busBaseSHBean));
                         handleSuccess();
                         break;
-                    case FitzApplication.keyWH:
+                    case FitzApplication.city_code_WH:
                         BusBaseWHBean busBaseWHBean = new Gson().fromJson(data, BusBaseWHBean.class);
                         addRecyclerView.setAdapter(new BusLineRecycleAdapter(context, busBaseWHBean.getResult().getList()));
                         handleSuccess();
                         break;
-                    case FitzApplication.keyNJ:
+                    case FitzApplication.city_code_NJ:
                         break;
 
                     default:
@@ -104,14 +104,14 @@ public class AddBusActivity extends BaseActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    switch (FitzApplication.getInstance().getDefaultCityKey()) {
-                        case FitzApplication.keySH:
+                    switch (FitzApplication.getInstance().getDefaultCityCode()) {
+                        case FitzApplication.city_code_SH:
                             new FitzHttpUtils().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                             return true;
-                        case FitzApplication.keyWH:
+                        case FitzApplication.city_code_WH:
                             new FitzHttpUtils().postBusBaseWH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                             return true;
-                        case FitzApplication.keyNJ:
+                        case FitzApplication.city_code_NJ:
                             break;
                         default:
                             break;
@@ -187,14 +187,14 @@ public class AddBusActivity extends BaseActivity {
 
     @OnClick(R.id.button_search)
     public void onViewClicked() {
-        switch (FitzApplication.getInstance().getDefaultCityKey()) {
-            case FitzApplication.keySH:
+        switch (FitzApplication.getInstance().getDefaultCityCode()) {
+            case FitzApplication.city_code_SH:
                 new FitzHttpUtils().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                 break;
-            case FitzApplication.keyWH:
+            case FitzApplication.city_code_WH:
                 new FitzHttpUtils().postBusBaseWH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                 break;
-            case FitzApplication.keyNJ:
+            case FitzApplication.city_code_NJ:
                 break;
             default:
                 break;
