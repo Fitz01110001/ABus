@@ -324,9 +324,8 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
                     msg.what = MSG_REFRESH;
                     msg.obj = new Object[]{mainViewHolder, busBaseInfoDB};
                     handler.sendMessage(msg);
-                    if(FitzApplication.getInstance().isAutoRefresh()){
-                        Thread.sleep(FitzApplication.getInstance().getRefreshTime());
-                    }
+                    Thread.sleep(FitzApplication.getInstance().getRefreshTime());
+                    reFresh = reFresh && FitzApplication.getInstance().isAutoRefresh();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
