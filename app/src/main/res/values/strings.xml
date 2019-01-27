@@ -28,4 +28,8 @@
     <string name="not_found">This line has not been found yet</string>
     <string name="auto_refresh">Page Auto Refresh</string>
     <string name="auto_refresh_time">Auto refresh time interval</string>
+    <string name="auto_refresh_settings">Auto refresh settings</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="already_latest">Already the latest version</string>
+    <string name="click_check_updates">Click to check for updates</string>
 </resources>

@@ -29,4 +29,8 @@
     <string name="not_found">暂未查询到此线路</string>
     <string name="auto_refresh">主页自动刷新</string>
     <string name="auto_refresh_time">自动刷新间隔</string>
+    <string name="auto_refresh_settings">自动刷新设置</string>
+    <string name="check_for_updates">检查更新</string>
+    <string name="already_latest">已是最新版本</string>
+    <string name="click_check_updates">点击检查新版本</string>
 </resources>

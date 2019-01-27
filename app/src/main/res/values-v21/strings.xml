@@ -10,4 +10,5 @@
     <string name="city_sh">ShangHai</string>
     <string name="city_wh">WuHu</string>
     <string name="input_prompt_sh" >Please enter the full line name, only Chinese and numbers</string>
+    <string name="auto_refresh_settings">Auto refresh settings</string>
 </resources>

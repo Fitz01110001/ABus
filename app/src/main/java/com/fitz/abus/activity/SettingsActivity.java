@@ -3,9 +3,7 @@ package com.fitz.abus.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
@@ -13,15 +11,13 @@ import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.base.BaseActivity;
 import com.fitz.abus.fitzview.FitzActionBar;
-import com.qmuiteam.qmui.util.QMUIDisplayHelper;
-import com.qmuiteam.qmui.widget.QMUILoadingView;
 import com.qmuiteam.qmui.widget.dialog.QMUIBottomSheet;
 import com.qmuiteam.qmui.widget.grouplist.QMUICommonListItemView;
 import com.qmuiteam.qmui.widget.grouplist.QMUIGroupListView;
+import com.tencent.bugly.beta.Beta;
+import com.tencent.bugly.beta.UpgradeInfo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -39,8 +35,9 @@ public class SettingsActivity extends BaseActivity {
     @BindView(R.id.settings_fitzactionbar) FitzActionBar settingsFitzactionbar;
     @BindView(R.id.groupListView) QMUIGroupListView mGroupListView;
     private Context context;
-    private QMUICommonListItemView itemWithChevron;
-    private QMUICommonListItemView itemWithSwitch;
+    private QMUICommonListItemView itemSetTimeAutoRefresh;
+    private QMUICommonListItemView itemSwitchAutoRefresh;
+    private QMUICommonListItemView itemCheckUpdates;
     private static final LinkedHashMap<Long, String> REFRESH_TIME_MAP = new LinkedHashMap<Long, String>() {
         {
             put(10000L, "10s");
@@ -57,41 +54,49 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         context = this;
         initGroupListView();
+        Beta.checkUpgrade();
     }
 
 
     private void initGroupListView() {
-        itemWithSwitch = mGroupListView.createItemView(getString(R.string.auto_refresh));
-        itemWithSwitch.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_SWITCH);
-        itemWithSwitch.getSwitch().setChecked(FitzApplication.getInstance().isAutoRefresh());
-        itemWithSwitch.getSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        itemSwitchAutoRefresh = mGroupListView.createItemView(getString(R.string.auto_refresh));
+        itemSwitchAutoRefresh.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_SWITCH);
+        itemSwitchAutoRefresh.getSwitch().setChecked(FitzApplication.getInstance().isAutoRefresh());
+        itemSwitchAutoRefresh.getSwitch().setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 FitzApplication.getInstance().setAutoRefresh(isChecked);
             }
         });
 
-        itemWithChevron = mGroupListView.createItemView(getString(R.string.auto_refresh_time));
-        itemWithChevron.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
-        itemWithChevron.setDetailText(REFRESH_TIME_MAP.get(FitzApplication.getInstance().getRefreshTime()));
-
-        View.OnClickListener onClickListener = new View.OnClickListener() {
+        itemSetTimeAutoRefresh = mGroupListView.createItemView(getString(R.string.auto_refresh_time));
+        itemSetTimeAutoRefresh.setAccessoryType(QMUICommonListItemView.ACCESSORY_TYPE_CHEVRON);
+        itemSetTimeAutoRefresh.setDetailText(REFRESH_TIME_MAP.get(FitzApplication.getInstance().getRefreshTime()));
+        itemSetTimeAutoRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (v instanceof QMUICommonListItemView) {
-                    CharSequence text = ((QMUICommonListItemView) v).getText();
-                    Toast.makeText(context, text + " is Clicked", Toast.LENGTH_SHORT).show();
-                    showSimpleBottomSheetList();
-                }
+                showSimpleBottomSheetList();
             }
-        };
+        });
 
-        int size = QMUIDisplayHelper.dp2px(getContext(), 20);
+        itemCheckUpdates = mGroupListView.createItemView(getResources().getString(R.string.check_for_updates));
+        itemCheckUpdates.setRedDotPosition(QMUICommonListItemView.REDDOT_POSITION_RIGHT);
+        itemCheckUpdates.setDetailText(getResources().getString(R.string.click_check_updates));
+        itemCheckUpdates.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Beta.checkUpgrade();
+                loadUpgradeInfo();
+            }
+        });
+
+
         QMUIGroupListView
                 .newSection(getContext())
-                .setTitle("Section 1: 默认提供的样式")
-                .addItemView(itemWithSwitch, onClickListener)
-                .addItemView(itemWithChevron, onClickListener)
+                .setTitle(getResources().getString(R.string.auto_refresh_settings))
+                .addItemView(itemSwitchAutoRefresh, null)
+                .addItemView(itemSetTimeAutoRefresh, null)
+                .addItemView(itemCheckUpdates, null)
                 .addTo(mGroupListView);
 
     }
@@ -107,14 +112,42 @@ public class SettingsActivity extends BaseActivity {
                     @Override
                     public void onClick(QMUIBottomSheet dialog, View itemView, int position, String tag) {
                         dialog.dismiss();
-                        FLOG("time:"+cityCode.get(position));
+                        FLOG("time:" + cityCode.get(position));
                         FitzApplication.getInstance().setRefreshTime(cityCode.get(position));
-                        itemWithChevron.setDetailText(REFRESH_TIME_MAP.get(FitzApplication.getInstance().getRefreshTime()));
+                        itemSetTimeAutoRefresh.setDetailText(REFRESH_TIME_MAP.get(FitzApplication.getInstance().getRefreshTime()));
                     }
                 })
                 .build()
                 .show();
     }
+
+    private void loadUpgradeInfo() {
+
+        /***** 获取升级信息 *****/
+        UpgradeInfo upgradeInfo = Beta.getUpgradeInfo();
+
+        if (upgradeInfo == null) {
+            itemCheckUpdates.setDetailText(getResources().getString(R.string.already_latest));
+            return;
+        }
+        itemCheckUpdates.showRedDot(true);
+        StringBuilder info = new StringBuilder();
+        info.append("id: ").append(upgradeInfo.id).append("\n");
+        info.append("标题: ").append(upgradeInfo.title).append("\n");
+        info.append("升级说明: ").append(upgradeInfo.newFeature).append("\n");
+        info.append("versionCode: ").append(upgradeInfo.versionCode).append("\n");
+        info.append("versionName: ").append(upgradeInfo.versionName).append("\n");
+        info.append("发布时间: ").append(upgradeInfo.publishTime).append("\n");
+        info.append("安装包Md5: ").append(upgradeInfo.apkMd5).append("\n");
+        info.append("安装包下载地址: ").append(upgradeInfo.apkUrl).append("\n");
+        info.append("安装包大小: ").append(upgradeInfo.fileSize).append("\n");
+        info.append("弹窗间隔（ms）: ").append(upgradeInfo.popInterval).append("\n");
+        info.append("弹窗次数: ").append(upgradeInfo.popTimes).append("\n");
+        info.append("发布类型（0:测试 1:正式）: ").append(upgradeInfo.publishType).append("\n");
+        info.append("弹窗类型（1:建议 2:强制 3:手工）: ").append(upgradeInfo.upgradeType);
+
+    }
+
 
     /**
      * 获取子类 context

@@ -1,1 +1,1 @@
-include ':app', ':greendaodemo', ':okhttpdemo' ,':slideviewdemo'
+include ':app', ':buglydemo'
