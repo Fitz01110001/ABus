@@ -1,11 +1,12 @@
 package com.fitz.abus.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
@@ -89,7 +90,6 @@ public class SettingsActivity extends BaseActivity {
                 loadUpgradeInfo();
             }
         });
-
 
         QMUIGroupListView
                 .newSection(getContext())

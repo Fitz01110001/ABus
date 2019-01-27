@@ -66,7 +66,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     private FitzBusFragmentUtils fitzBusFragmentUtils;
     private Map<String, BaseFragment> fragmentMap;
 
-    /** actionbar 点击事件控制 */
+    /**
+     * actionbar 点击事件控制
+     */
     private View.OnClickListener mActionBarClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -116,7 +118,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    /** 城市TV 弹出 QMUI popmenu */
+    /**
+     * 城市TV 弹出 QMUI popmenu
+     */
     private void showQMUIpopupMenu(View v) {
         if (mListPopup == null) {
             Collection<Integer> collectionCityName = FitzApplication.CITY_CODE_NAME_MAP.values();
@@ -131,26 +135,26 @@ public abstract class BaseActivity extends AppCompatActivity {
             ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.simple_list_item, cityName);
 
             mListPopup = new QMUIListPopup(getContext(), QMUIPopup.DIRECTION_NONE, adapter);
-            mListPopup.create(QMUIDisplayHelper.dp2px(getContext(), 150),
-                              QMUIDisplayHelper.dp2px(getContext(), 200), new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            String tag = cityCode.get(i);
-                            if (fragmentMap.get(tag) == null) {
-                                BaseFragment fg = new BaseFragment();
-                                Bundle args = new Bundle();
-                                args.putString(ARG_TAG, tag);
-                                fg.setArguments(args);
-                                fitzBusFragmentUtils.replaceFragment(fg, tag);
-                                fragmentMap.put(tag, fg);
-                            } else {
-                                fitzBusFragmentUtils.replaceFragment(fragmentMap.get(tag), tag);
-                            }
-                            mListPopup.dismiss();
-                            FitzApplication.getInstance().setDefaultCityCode(cityCode.get(i));
-                            mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());
-                        }
-                    });
+            mListPopup.create(QMUIDisplayHelper.dp2px(getContext(), 150), QMUIDisplayHelper.dp2px(getContext(), 200),
+                    new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    String tag = cityCode.get(i);
+                    if (fragmentMap.get(tag) == null) {
+                        BaseFragment fg = new BaseFragment();
+                        Bundle args = new Bundle();
+                        args.putString(ARG_TAG, tag);
+                        fg.setArguments(args);
+                        fitzBusFragmentUtils.replaceFragment(fg, tag);
+                        fragmentMap.put(tag, fg);
+                    } else {
+                        fitzBusFragmentUtils.replaceFragment(fragmentMap.get(tag), tag);
+                    }
+                    mListPopup.dismiss();
+                    FitzApplication.getInstance().setDefaultCityCode(cityCode.get(i));
+                    mFitzActionBar.setDefaultCityTV(FitzApplication.getInstance().getDefaultCityName());
+                }
+            });
         }
         mListPopup.setAnimStyle(QMUIPopup.ANIM_GROW_FROM_CENTER);
         mListPopup.setPreferredDirection(QMUIPopup.DIRECTION_TOP);
@@ -171,7 +175,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         mFitzActionBar.setData(mActionBarClickListener, isBackVisible(), isCityVisible(), isOptionVisible(), isLocationImageVisible());
     }
 
-    /** 选项button 弹出popmenu */
+    /**
+     * 选项button 弹出popmenu
+     */
     protected void showPopMenu(int res, View view) {
         // 这里的view代表popupMenu需要依附的view
         PopupMenu popupMenu = new PopupMenu(this, view);
@@ -191,19 +197,21 @@ public abstract class BaseActivity extends AppCompatActivity {
                         Intent intent2 = new Intent(getContext(), SettingsActivity.class);
                         startActivity(intent2);
                         break;
-                    case R.id.options_about:
-                        FLOG("click options_about");
-                        break;
                     case R.id.options_feedback:
                         FLOG("click options_feedback");
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_EMAIL, FitzApplication.FitzEmail);
+                        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.email_body));
+                        intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.email_subject));
+                        intent.setType("message/rfc882");
+                        Intent.createChooser(intent, "");
+                        startActivity(intent);
                         break;
                     default:
                         break;
-                }
-                return true;
+                } return true;
             }
-        });
-        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+        }); popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
             public void onDismiss(PopupMenu menu) {
                 // 控件消失时的事件
@@ -211,25 +219,39 @@ public abstract class BaseActivity extends AppCompatActivity {
         });
     }
 
-    /** 获取子类 context */
+    /**
+     * 获取子类 context
+     */
     protected abstract Context getContext();
 
-    /** 获取子类view资源 */
+    /**
+     * 获取子类view资源
+     */
     protected abstract int getContentViewResId();
 
-    /** 主界面不应显示 */
+    /**
+     * 主界面不应显示
+     */
     protected abstract int isBackVisible();
 
-    /** 应始终显示 */
+    /**
+     * 应始终显示
+     */
     protected abstract int isCityVisible();
 
-    /** 应始终显示 */
+    /**
+     * 应始终显示
+     */
     protected abstract int isOptionVisible();
 
-    /** 只在主界面可点击 */
+    /**
+     * 只在主界面可点击
+     */
     protected abstract boolean isCitySelectable();
 
-    /** 获取当前activity包含的 actionbar res */
+    /**
+     * 获取当前activity包含的 actionbar res
+     */
     protected abstract int getContentActionBarResId();
 
     protected abstract int isLocationImageVisible();

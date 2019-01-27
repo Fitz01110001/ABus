@@ -32,4 +32,8 @@
     <string name="check_for_updates">Check for updates</string>
     <string name="already_latest">Already the latest version</string>
     <string name="click_check_updates">Click to check for updates</string>
+    <string name="feedback">Feedback</string>
+    <string name="send_email">send email</string>
+    <string name="email_body">Feedback on issues or suggestions you have encountered</string>
+    <string name="email_subject">Abus user feedback</string>
 </resources>

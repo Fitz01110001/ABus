@@ -57,6 +57,7 @@ public class MainActivity extends BaseActivity {
         args.putString(ARG_TAG, tag);
         fg.setArguments(args);
         fitzBusFragmentUtils.replaceFragment(fg, tag);
+
     }
 
     @Override

@@ -33,4 +33,8 @@
     <string name="check_for_updates">检查更新</string>
     <string name="already_latest">已是最新版本</string>
     <string name="click_check_updates">点击检查新版本</string>
+    <string name="feedback">反馈</string>
+    <string name="send_email">发送邮件</string>
+    <string name="email_body">反馈您遇到的问题或建议</string>
+    <string name="email_subject">Abus用户反馈</string>
 </resources>

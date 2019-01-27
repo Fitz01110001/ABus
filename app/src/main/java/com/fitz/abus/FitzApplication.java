@@ -29,6 +29,7 @@ public class FitzApplication extends Application {
 
     private boolean isDebug = true;
     private static final String APP_ID = "5d927adf2b";
+    public static final String[] FitzEmail = {"fitz361@163.com"};
     /**
      * 存储区号-城市，每个城市需要单独适配
      */
@@ -53,13 +54,10 @@ public class FitzApplication extends Application {
     public static final String city_code_NJ = "025";
     protected static FitzApplication application;
 
-
     private boolean autoRefresh;
     private long refreshTime;
     protected static DaoSession daoSession;
-    private static final String FIRST_BOOT_DEFAULT_CITY_CODE = "021";
-    //new ArrayList<>(Arrays.asList("021", "0553", "025"));
-
+    private static final String FIRST_BOOT_DEFAULT_CITY_CODE = "0553";
 
     private String TAG = "FitzApplication";
     private String defaultCityCode;
@@ -212,6 +210,7 @@ public class FitzApplication extends Application {
 
     /**
      * 启动时获取默认刷新时间
+     *
      * @return
      */
     private Long readRefreshTime() {
@@ -225,7 +224,7 @@ public class FitzApplication extends Application {
         }
     }
 
-    private void initBuglyBeta(){
+    private void initBuglyBeta() {
         /***** Beta高级设置 *****/
         /**
          * true表示app启动自动初始化升级模块;
