@@ -30,26 +30,21 @@ import butterknife.OnClick;
 public class MainActivity extends BaseActivity {
 
     private static final String ARG_TAG = "arg_tag";
-    @BindView(R.id.action_bar_button_back)
-    ImageButton actionBarButtonBack;
-    @BindView(R.id.action_bar_tv_city)
-    TextView actionBarTvCity;
-    @BindView(R.id.action_bar_button_options)
-    ImageButton actionBarButtonOptions;
-    @BindView(R.id.main_fitzactionbar)
-    FitzActionBar fitzactionbar;
-    @BindView(R.id.main_ConstraintLayout)
-    ConstraintLayout mainConstraintLayout;
-    @BindView(R.id.main_button_add)
-    QMUIRoundButton mainButtonAdd;
-    private Context mContext;
+    @BindView(R.id.action_bar_button_back) ImageButton actionBarButtonBack;
+    @BindView(R.id.action_bar_tv_city) TextView actionBarTvCity;
+    @BindView(R.id.action_bar_button_options) ImageButton actionBarButtonOptions;
+    @BindView(R.id.main_fitzactionbar) FitzActionBar fitzactionbar;
+    @BindView(R.id.main_ConstraintLayout) ConstraintLayout mainConstraintLayout;
+    @BindView(R.id.main_button_add) QMUIRoundButton mainButtonAdd;
+    private Context context;
     private AppCompatActivity appCompatActivity;
     private FitzBusFragmentUtils fitzBusFragmentUtils;
+    private Boolean firstBoot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
+        context = this;
         appCompatActivity = this;
         fitzBusFragmentUtils = new FitzBusFragmentUtils(appCompatActivity);
         BaseFragment fg = new BaseFragment();
@@ -58,12 +53,12 @@ public class MainActivity extends BaseActivity {
         args.putString(ARG_TAG, tag);
         fg.setArguments(args);
         fitzBusFragmentUtils.replaceFragment(fg, tag);
+        firstBoot = FitzApplication.getInstance().isFirstBoot();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //fragment切换控制应放到oncreate中，避免锁屏，切换后台，重新切换fg，浪费资源
     }
 
     @Override
@@ -74,23 +69,25 @@ public class MainActivity extends BaseActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        FLOG("onWindowFocusChanged:"+hasFocus);
-        if(FitzApplication.getInstance().isFirstBoot()){
-            GuideView guideView = new GuideView(this);
-            guideView.setGuideParent(this.findViewById(getContentActionBarResId()).findViewById(R.id.action_bar_tv_city));
-            guideView.setGuideStr("点击城市名切换默认城市");
-            guideView.startAnim();
+        if (hasFocus && firstBoot) {
+            new GuideView.Builder(context)
+                    .addGuideView(new GuideView(this)
+                            .setGuideParent(this.findViewById(getContentActionBarResId()).findViewById(R.id.action_bar_tv_city))
+                            .setGuideStr(getResources().getString(R.string.guide_string_city)))
+                    .addGuideView(new GuideView(this)
+                            .setGuideParent(this.findViewById(getContentActionBarResId()).findViewById(R.id.action_bar_button_options))
+                            .setGuideStr(getResources().getString(R.string.guide_string_options)))
+                    .show();
         }
     }
 
     @OnClick(R.id.main_button_add)
     public void onViewClicked() {
-
     }
 
     @Override
     protected Context getContext() {
-        return mContext;
+        return context;
     }
 
     @Override
@@ -98,7 +95,9 @@ public class MainActivity extends BaseActivity {
         return R.layout.main_activity_layout;
     }
 
-    /** 主界面可以点击城市列表 */
+    /**
+     * 主界面可以点击城市列表
+     */
     @Override
     protected boolean isCitySelectable() {
         return true;
@@ -115,23 +114,28 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    /** 不显示返回按键 */
+    /**
+     * 不显示返回按键
+     */
     @Override
     protected int isBackVisible() {
         return View.GONE;
     }
 
-    /** 主界面显示城市选项 */
+    /**
+     * 主界面显示城市选项
+     */
     @Override
     protected int isCityVisible() {
         return View.VISIBLE;
     }
 
-    /** 主界面显示选项按键 */
+    /**
+     * 主界面显示选项按键
+     */
     @Override
     protected int isOptionVisible() {
         return View.VISIBLE;
     }
-
 
 }

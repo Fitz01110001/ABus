@@ -65,12 +65,6 @@ public class FitzApplication extends Application {
     private List<BusBaseInfoDB> favoriteBusListSH = new ArrayList<>();
     private List<BusBaseInfoDB> favoriteBusListWH = new ArrayList<>();
     private List<BusBaseInfoDB> favoriteBusListNJ = new ArrayList<>();
-
-    public boolean isFirstBoot() {
-        //return isFirstBoot;
-        return true;
-    }
-
     private boolean isFirstBoot;
 
     /**
@@ -125,14 +119,14 @@ public class FitzApplication extends Application {
 
     private boolean checkFirstBoot() {
         preferences = getApplicationContext().getSharedPreferences(CHECK_FIRST_BOOT_KEY, MODE_PRIVATE);
-        if(preferences.getBoolean(CHECK_FIRST_BOOT_KEY, true)){
+        if (preferences.getBoolean(CHECK_FIRST_BOOT_KEY, true)) {
             editor = preferences.edit();
             editor.putBoolean(CHECK_FIRST_BOOT_KEY, false);
             if (!editor.commit()) {
                 Log.e(TAG, "checkFirstBoot error");
             }
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -261,6 +255,11 @@ public class FitzApplication extends Application {
 
         /***** 统一初始化Bugly产品，包含Beta *****/
         Bugly.init(this, APP_ID, true);
+    }
+
+    public boolean isFirstBoot() {
+        return isFirstBoot;
+        //return true;
     }
 
     public String getDefaultCityCode() {

@@ -37,4 +37,6 @@
     <string name="send_email">发送邮件</string>
     <string name="email_body">反馈您遇到的问题或建议</string>
     <string name="email_subject">Abus用户反馈</string>
+    <string name="guide_string_city">点击城市名切换默认城市</string>
+    <string name="guide_string_options">点击选项收藏站点</string>
 </resources>

@@ -296,6 +296,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         FLOG("onDestroy");
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        FLOG("onWindowFocusChanged");
+    }
+
     public void FLOG(String msg) {
         if (isDebug) {
             Log.d(TAG, msg);

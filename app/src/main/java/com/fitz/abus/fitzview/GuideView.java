@@ -18,6 +18,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
+import com.fitz.abus.R;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import static android.view.animation.Animation.REVERSE;
 
 /**
@@ -45,9 +51,7 @@ public class GuideView extends View {
     private int guideX;
     //需要引导的view的y坐标
     private int guideY;
-    /**
-     * 需要引导的view的宽
-     */
+    //需要引导的view的宽
     private int guideWidth;
     //需要引导的view的高
     private int guideHeight;
@@ -60,6 +64,7 @@ public class GuideView extends View {
     private ValueAnimator animator;
     private boolean added = false;
     private int redundantSpace = 10;
+
 
     public GuideView(Context context) {
         super(context);
@@ -89,11 +94,18 @@ public class GuideView extends View {
         }
     }
 
-    public void setGuideParent(View guideParent) {
+    public GuideView setGuideParent(View guideParent) {
         this.guideParent = guideParent;
         FLOG("guideParent:" + guideParent.toString());
         initSize();
         invalidate();
+        return this;
+    }
+
+    public GuideView setGuideStr(String guideStr) {
+        this.guideStr = guideStr;
+        invalidate();
+        return this;
     }
 
     /**
@@ -149,7 +161,8 @@ public class GuideView extends View {
             return;
         }
         int layerID = canvas.saveLayer(0, 0, bgWidth, bgHeight, bgPaint, Canvas.ALL_SAVE_FLAG);
-        canvas.drawRect(guideX - redundantSpace, guideY - redundantSpace, guideX + guideWidth + redundantSpace, guideY + guideHeight + redundantSpace, sourcePaint);
+        canvas.drawRect(guideX - redundantSpace, guideY - redundantSpace, guideX + guideWidth + redundantSpace,
+                guideY + guideHeight + redundantSpace, sourcePaint);
         canvas.drawRect(0, 0, bgWidth, bgHeight, bgPaint);
         int direction;
         if (guideY < bgHeight / 4) {
@@ -174,10 +187,7 @@ public class GuideView extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    public void setGuideStr(String guideStr) {
-        this.guideStr = guideStr;
-        invalidate();
-    }
+
 
     private void drawGuideText(Canvas canvas) {
         if (!TextUtils.isEmpty(guideStr)) {
@@ -193,9 +203,9 @@ public class GuideView extends View {
      * 画箭头
      *
      * @param direction 上或者下方向的箭头
-     * @param canvas 画布
-     * @param x 箭头顶点x坐标
-     * @param y 箭头顶点y坐标
+     * @param canvas    画布
+     * @param x         箭头顶点x坐标
+     * @param y         箭头顶点y坐标
      */
     private void drawArrow(int direction, Canvas canvas, float x, float y) {
         final float triangleWidth = 20 * density;
@@ -287,12 +297,16 @@ public class GuideView extends View {
         canvas.drawPath(rectPath, guidePaint);
     }
 
+    @Override
+    public String toString() {
+        return "guideParent:" + (guideParent == null) + " guideStr:" + guideStr;
+    }
+
     /**
      * 重写onTouchEvent，实现触摸之后就销毁GuideView的功能
      * 因为重写了onTouchEvent 所有View 的OnClickListener等将不能正常使用
      *
      * @param event 触摸
-     *
      * @return boolean true-触摸被自己消耗掉，false-触摸传到下一层
      */
     @Override
@@ -344,5 +358,60 @@ public class GuideView extends View {
         if (isDebug) {
             Log.d(TAG, msg);
         }
+    }
+
+    public static class GuideViewParams {
+        public View targetView;
+        public String targetIntroduction;
+
+        public GuideViewParams() {}
+    }
+
+    public static class Builder {
+        private List<GuideView> guideViewList = new ArrayList<>();
+        private Context context;
+
+        public Builder(Context context) {
+            this.context = context;
+        }
+
+        public GuideView.Builder addGuideView(GuideView guideView) {
+            if (guideView == null) {
+                return this;
+            } else {
+                this.guideViewList.add(guideView);
+                return this;
+            }
+        }
+
+        public void show() {
+            Iterator<GuideView> iterator = guideViewList.iterator();
+            show(iterator);
+        }
+
+        public void show(Iterator<GuideView> iterator) {
+            if (iterator.hasNext()) {
+                GuideView guideView = iterator.next();
+                guideView.startAnim();
+                guideView.setOnTouchListener(new OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (guideView.added) {
+                            ((ViewGroup) ((Activity) context).getWindow().getDecorView()).removeView(guideView);
+                            guideView.added = false;
+                        }
+                        if (guideView.animator != null) {
+                            if (guideView.animator.isRunning()) {
+                                guideView.animator.end();
+                            }
+                        }
+                        show(iterator);
+                        return true;
+                    }
+                });
+            }
+        }
+
+
     }
 }

@@ -36,4 +36,6 @@
     <string name="send_email">send email</string>
     <string name="email_body">Feedback on issues or suggestions you have encountered</string>
     <string name="email_subject">Abus user feedback</string>
+    <string name="guide_string_city">Click on the city name to switch to the default city</string>
+    <string name="guide_string_options">Click on the option to bookmark the site</string>
 </resources>
