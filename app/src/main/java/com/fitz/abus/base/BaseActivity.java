@@ -3,6 +3,7 @@ package com.fitz.abus.base;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.fitz.abus.R;
 import com.fitz.abus.activity.AddBusActivity;
 import com.fitz.abus.activity.SettingsActivity;
 import com.fitz.abus.fitzview.FitzActionBar;
+import com.fitz.abus.fitzview.GuideView;
 import com.fitz.abus.utils.FitzBusFragmentUtils;
 import com.qmuiteam.qmui.util.QMUIDisplayHelper;
 import com.qmuiteam.qmui.widget.popup.QMUIListPopup;
@@ -198,14 +200,12 @@ public abstract class BaseActivity extends AppCompatActivity {
                         startActivity(intent2);
                         break;
                     case R.id.options_feedback:
-                        FLOG("click options_feedback");
-                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        Uri uri = Uri.parse("mailto:fitz361@163.com");
+                        Intent intent = new Intent(Intent.ACTION_SENDTO,uri);
                         intent.putExtra(Intent.EXTRA_EMAIL, FitzApplication.FitzEmail);
                         intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.email_body));
                         intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.email_subject));
-                        intent.setType("message/rfc882");
-                        Intent.createChooser(intent, "");
-                        startActivity(intent);
+                        startActivity(Intent.createChooser(intent,""));
                         break;
                     default:
                         break;

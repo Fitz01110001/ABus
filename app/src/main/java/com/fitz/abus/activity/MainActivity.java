@@ -13,6 +13,7 @@ import com.fitz.abus.R;
 import com.fitz.abus.base.BaseActivity;
 import com.fitz.abus.base.BaseFragment;
 import com.fitz.abus.fitzview.FitzActionBar;
+import com.fitz.abus.fitzview.GuideView;
 import com.fitz.abus.utils.FitzBusFragmentUtils;
 import com.qmuiteam.qmui.widget.roundwidget.QMUIRoundButton;
 
@@ -57,7 +58,6 @@ public class MainActivity extends BaseActivity {
         args.putString(ARG_TAG, tag);
         fg.setArguments(args);
         fitzBusFragmentUtils.replaceFragment(fg, tag);
-
     }
 
     @Override
@@ -69,6 +69,18 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        FLOG("onWindowFocusChanged:"+hasFocus);
+        if(FitzApplication.getInstance().isFirstBoot()){
+            GuideView guideView = new GuideView(this);
+            guideView.setGuideParent(this.findViewById(getContentActionBarResId()).findViewById(R.id.action_bar_tv_city));
+            guideView.setGuideStr("点击城市名切换默认城市");
+            guideView.startAnim();
+        }
     }
 
     @OnClick(R.id.main_button_add)
