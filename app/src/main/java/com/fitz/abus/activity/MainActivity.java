@@ -1,9 +1,11 @@
 package com.fitz.abus.activity;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -35,11 +37,13 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.action_bar_button_options) ImageButton actionBarButtonOptions;
     @BindView(R.id.main_fitzactionbar) FitzActionBar fitzactionbar;
     @BindView(R.id.main_ConstraintLayout) ConstraintLayout mainConstraintLayout;
-    @BindView(R.id.main_button_add) QMUIRoundButton mainButtonAdd;
     private Context context;
     private AppCompatActivity appCompatActivity;
     private FitzBusFragmentUtils fitzBusFragmentUtils;
-    private Boolean firstBoot;
+    private Boolean isFirstBoot = false;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+    private static final String CHECK_FIRST_BOOT_KEY = "check_first_boot_key";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,6 @@ public class MainActivity extends BaseActivity {
         args.putString(ARG_TAG, tag);
         fg.setArguments(args);
         fitzBusFragmentUtils.replaceFragment(fg, tag);
-        firstBoot = FitzApplication.getInstance().isFirstBoot();
     }
 
     @Override
@@ -64,12 +67,13 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        isFirstBoot = checkFirstBoot();
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && firstBoot) {
+        if (hasFocus && isFirstBoot) {
             new GuideView.Builder(context)
                     .addGuideView(new GuideView(this)
                             .setGuideParent(this.findViewById(getContentActionBarResId()).findViewById(R.id.action_bar_tv_city))
@@ -81,8 +85,18 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @OnClick(R.id.main_button_add)
-    public void onViewClicked() {
+    private boolean checkFirstBoot() {
+        preferences = getSharedPreferences(CHECK_FIRST_BOOT_KEY, MODE_PRIVATE);
+        if (preferences.getBoolean(CHECK_FIRST_BOOT_KEY, true)) {
+            editor = preferences.edit();
+            editor.putBoolean(CHECK_FIRST_BOOT_KEY, false);
+            if (!editor.commit()) {
+                Log.e("main", "checkFirstBoot error");
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
