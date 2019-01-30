@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 import com.fitz.abus.adapter.FragmentListAdapter;
 import com.fitz.abus.bean.BusBaseInfoDB;
@@ -42,7 +43,7 @@ import butterknife.Unbinder;
 public class BaseFragment extends Fragment {
 
     public static final String TAG = "fitzBaseFragment";
-    private static final boolean isDebug = true;
+    private static final boolean isDebug = FitzApplication.Debug;
     private static final String ARG_TAG = "arg_tag";
     public Activity mActivity;
     private String defaultCityKey;

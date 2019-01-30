@@ -7,17 +7,20 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
+import com.fitz.abus.FitzApplication;
 import com.fitz.abus.R;
 
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ public class GuideView extends View {
     public View guideParent;
     private Context context;
     private float density;
-    private boolean isDebug = true;
+    private boolean isDebug = FitzApplication.Debug;
     private String TAG = "GuideView";
     //背景宽
     private int bgWidth;
@@ -81,8 +84,12 @@ public class GuideView extends View {
         if (context instanceof Activity) {
             DisplayMetrics dm = new DisplayMetrics();
             ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
-            bgWidth = dm.widthPixels;//设置背景宽为屏幕宽
-            bgHeight = dm.heightPixels;//设置背景高为屏幕高
+            /*bgWidth = dm.widthPixels;//设置背景宽为屏幕宽
+            bgHeight = dm.heightPixels;//设置背景高为屏幕高*/
+            Point outSize = new Point();
+            ((Activity) context).getWindowManager().getDefaultDisplay().getRealSize(outSize);
+            bgWidth = outSize.x;
+            bgHeight = outSize.y;
             int[] location = new int[2];
             guideParent.getLocationOnScreen(location);//得到需要引导的view在整个屏幕中的坐标
             guideX = location[0];
@@ -91,6 +98,7 @@ public class GuideView extends View {
             guideHeight = guideParent.getHeight();
             density = dm.density;//获取像素密度 2.0，2.5，3.0
             distance = 40 * density;//箭头与需要引导的view之间的距离
+            FLOG("width:" + bgWidth + " heigth:" + bgHeight + " density" + density);
         }
     }
 
@@ -186,7 +194,6 @@ public class GuideView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-
 
 
     private void drawGuideText(Canvas canvas) {

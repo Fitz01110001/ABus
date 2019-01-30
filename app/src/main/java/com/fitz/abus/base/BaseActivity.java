@@ -51,7 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     private static final String ARG_TAG = "arg_tag";
-    private boolean isDebug = true;
+    private boolean isDebug = FitzApplication.Debug;
     /**
      * 是否禁止旋转屏幕
      */

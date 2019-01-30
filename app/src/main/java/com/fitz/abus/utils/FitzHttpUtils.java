@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.fitz.abus.FitzApplication;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -39,7 +41,7 @@ public class FitzHttpUtils {
     private static final MediaType mediaType = MediaType.parse("text/x-markdown; charset=utf-8");
     private static final String EMPTY = "{ }";
     private static final String ERROR = "error";
-    private final boolean isDebug = true;
+    private final boolean isDebug = FitzApplication.Debug;
     private OkHttpClient.Builder mOkHttpClientBuilder;
     private OkHttpClient mOkHttpClient;
     private Handler handler = new Handler(Looper.getMainLooper());

@@ -16,7 +16,7 @@ public class FitzActionBar extends RelativeLayout {
 
     protected TextView mTextView_City;
     protected Context context;
-    private boolean isDebug = true;
+    private boolean isDebug = FitzApplication.Debug;
     private String TAG = "FitzActionBar";
     private View contentView;
     private ImageView imageView_location;

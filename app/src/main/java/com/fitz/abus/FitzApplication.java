@@ -46,7 +46,6 @@ public class FitzApplication extends Application {
     private static final String DEFAULT_CITY_KEY = "default_city_Key";
     private static final String DEFAULT_REFRESH_STATE_KEY = "default_refresh_state_key";
     private static final String DEFAULT_REFRESH_TIME_KEY = "default_refresh_time_key";
-    private static final String CHECK_FIRST_BOOT_KEY = "check_first_boot_key";
     private static final String FIRST_BOOT_DEFAULT_CITY_CODE = "0553";
     /**
      * json 中 direction = true 对应 lineResults0
@@ -55,7 +54,7 @@ public class FitzApplication extends Application {
     public static boolean direction = true;
     protected static FitzApplication application;
     protected static DaoSession daoSession;
-    private boolean isDebug = true;
+    public static final boolean Debug = BuildConfig.DEBUG;
     private boolean autoRefresh;
     private long refreshTime;
     private String TAG = "FitzApplication";
@@ -116,7 +115,6 @@ public class FitzApplication extends Application {
     }
 
 
-
     /**
      * 初始化GreenDao
      */
@@ -160,7 +158,7 @@ public class FitzApplication extends Application {
     }
 
     public void FLOG(String msg) {
-        if (isDebug) {
+        if (Debug) {
             Log.d(TAG, msg);
         }
     }

@@ -13,17 +13,6 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/bus_station_list_fitzactionbar">
 
-    <com.qmuiteam.qmui.widget.QMUILoadingView
-        android:id="@+id/empty_view_loading"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:padding="5dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_line_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_line_name" />
-
     <TextView
         android:id="@+id/tv_line_name"
         android:layout_width="wrap_content"
@@ -138,17 +127,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/item_search" />
 
+    <com.qmuiteam.qmui.widget.QMUILoadingView
+        android:id="@+id/empty_view_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:padding="5dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_line_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_line_name" />
+
     <ImageView
         android:id="@+id/callback_state"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="40dp"
+        android:layout_height="20dp"
         android:padding="1dp"
         android:scaleType="fitCenter"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/empty_view_loading"
         app:layout_constraintEnd_toEndOf="@+id/empty_view_loading"
-        app:layout_constraintStart_toStartOf="@+id/empty_view_loading"
-        app:layout_constraintTop_toTopOf="@+id/empty_view_loading"
         app:srcCompat="@drawable/call_success" />
 
 </android.support.constraint.ConstraintLayout>

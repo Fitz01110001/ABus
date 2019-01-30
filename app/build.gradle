@@ -17,7 +17,7 @@ android {
         release {
             keyAlias 'Abus'
             keyPassword '821072710'
-            storeFile file('E:/文档/个人项目/ABus/资源/AbusKey.jks')
+            storeFile file('data/AbusKey.jks')
             storePassword '821072710'
         }
         config {
@@ -40,11 +40,18 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            // 混淆
+            minifyEnabled true
+            // Zipalign优化
+            zipAlignEnabled true
+            // 移除无用的resource文件
+            shrinkResources true
+            buildConfigField "boolean","LOG_DEBUG","false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
         debug {
+            buildConfigField "boolean","LOG_DEBUG","true"
             signingConfig signingConfigs.debug
             //applicationIdSuffix ".debug"
         }
