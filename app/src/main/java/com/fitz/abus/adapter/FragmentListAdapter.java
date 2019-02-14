@@ -143,7 +143,6 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         if (holderThreadMap.get(mainViewHolder) != null) {
             holderThreadMap.get(mainViewHolder).setReFresh(false);
         }
-        notifyItemRemoved(mainViewHolder.getAdapterPosition());
     }
 
     @Override

@@ -58,7 +58,6 @@ public class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FLOG("onCreate");
-        EventBus.getDefault().register(this);
         mActivity = getActivity();
         defaultCityKey = getArguments().getString(ARG_TAG);
     }
@@ -100,6 +99,7 @@ public class BaseFragment extends Fragment {
     public void onStart() {
         super.onStart();
         FLOG("onStart");
+        EventBus.getDefault().register(this);
     }
 
     @Override
