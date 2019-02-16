@@ -48,6 +48,7 @@ public class FitzDBUtils {
         BusBaseInfoDBDao busBaseInfoDBDao = FitzApplication.getDaoInstant().getBusBaseInfoDBDao();
         List<BusBaseInfoDB> l = busBaseInfoDBDao.queryBuilder().where(BusBaseInfoDBDao.Properties.BusName.eq(busBaseInfo.getBusName()))
                                                 .where(BusBaseInfoDBDao.Properties.CityID.eq(busBaseInfo.getCityID()))
+                                                .where(BusBaseInfoDBDao.Properties.Direction.eq(busBaseInfo.getDirection()))
                                                 .where(BusBaseInfoDBDao.Properties.StationName.eq(busBaseInfo.getStationName())).build().list();
 
         Log.d(TAG, "l:" + l.size());

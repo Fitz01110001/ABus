@@ -20,7 +20,7 @@
     <string name="waiting">等待发车</string>
     <string name="plate">车牌：</string>
     <string name="cancel">取消</string>
-    <string name="save">收藏</string>
+    <string name="save">添加到主页</string>
     <string name="distance">距离：</string>
     <string name="remaining">剩余：</string>
     <string name="station">站</string>

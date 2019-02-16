@@ -82,6 +82,7 @@ public class MainActivity extends BaseActivity {
                             .setGuideParent(this.findViewById(getContentActionBarResId()).findViewById(R.id.action_bar_button_options))
                             .setGuideStr(getResources().getString(R.string.guide_string_options)))
                     .show();
+            isFirstBoot = false;
         }
     }
 
