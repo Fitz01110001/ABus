@@ -218,11 +218,11 @@ public class StopListRecycleAdapter extends RecyclerView.Adapter<StopListRecycle
         Log.d(TAG,"startNetQuest:"+busBaseInfoDB.toString());
         switch (FitzApplication.getInstance().getDefaultCityCode()) {
             case FitzApplication.city_code_SH:
-                new FitzHttpUtils().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB
+                FitzHttpUtils.getInstance().getArriveBaseSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), busBaseInfoDB
                         .getStationID(), busBaseInfoDB.getDirection(), mArriveBaseCallBack);
                 break;
             case FitzApplication.city_code_WH:
-                new FitzHttpUtils().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), busBaseInfoDB.getDirection(), mArriveBaseCallBack);
+                FitzHttpUtils.getInstance().postArriveBaseWH(busBaseInfoDB.getBusName(), busBaseInfoDB.getStationID(), busBaseInfoDB.getDirection(), mArriveBaseCallBack);
                 break;
             case FitzApplication.city_code_NJ:
                 break;

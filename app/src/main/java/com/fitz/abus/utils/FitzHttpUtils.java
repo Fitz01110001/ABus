@@ -46,17 +46,26 @@ public class FitzHttpUtils {
     private OkHttpClient mOkHttpClient;
     private Handler handler = new Handler(Looper.getMainLooper());
 
-    public FitzHttpUtils() {
-        init();
+    private static volatile FitzHttpUtils fitzHttpUtils;
+
+    public static FitzHttpUtils getInstance(){
+        if(fitzHttpUtils == null){
+            synchronized (FitzHttpUtils.class){
+                if(fitzHttpUtils == null){
+                    fitzHttpUtils = new FitzHttpUtils();
+                }
+            }
+        }
+        return fitzHttpUtils;
     }
 
-    private void init() {
+    private FitzHttpUtils() {
         mOkHttpClientBuilder = new OkHttpClient.Builder().addInterceptor(new FitzLogInterceptor());
         //设置超时
         mOkHttpClient = mOkHttpClientBuilder.connectTimeout(TIMEOUT, TimeUnit.SECONDS).writeTimeout(TIMEOUT, TimeUnit.SECONDS)
                                             .readTimeout(TIMEOUT, TimeUnit.SECONDS).build();
-
     }
+
 
     /**
      * 获取上海公交线路信息

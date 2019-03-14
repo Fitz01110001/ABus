@@ -28,8 +28,8 @@ android {
         applicationId "com.fitz.abus"
         minSdkVersion 24
         targetSdkVersion 26
-        versionCode 2
-        versionName "1.01"
+        versionCode 3
+        versionName "1.02"
         flavorDimensions "default"
         ndk {
             //设置支持的SO库架构
@@ -71,8 +71,8 @@ android {
             minSdkVersion 24
             applicationId 'com.fitz.abus'
             targetSdkVersion 26
-            versionName '1.01'
-            versionCode 2
+            //versionName '1.01'
+            //versionCode 2
             signingConfig signingConfigs.release
         }
     }
@@ -108,6 +108,11 @@ dependencies {
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
     implementation 'com.tencent.bugly:nativecrashreport:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    // Optional, if you use support library fragments:
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+
 }
 
 android.applicationVariants.all { variant ->

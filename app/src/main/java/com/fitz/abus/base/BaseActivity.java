@@ -288,6 +288,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onDestroy();
         mUnbinder.unbind();
         FLOG("onDestroy");
+        FitzApplication.getRefWatcher(this).watch(this);
     }
 
     @Override

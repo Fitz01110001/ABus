@@ -242,10 +242,10 @@ public class FragmentListAdapter extends RecyclerView.Adapter<FragmentListAdapte
         };
         switch (FitzApplication.getInstance().getDefaultCityCode()) {
             case FitzApplication.city_code_SH:
-                new FitzHttpUtils().getArriveBaseSH(b.getBusName(), b.getLineId(), b.getStationID(), b.getDirection(), mMainCallBack);
+                FitzHttpUtils.getInstance().getArriveBaseSH(b.getBusName(), b.getLineId(), b.getStationID(), b.getDirection(), mMainCallBack);
                 break;
             case FitzApplication.city_code_WH:
-                new FitzHttpUtils().postArriveBaseWH(b.getBusName(), b.getStationID(), b.getDirection(), mMainCallBack);
+                FitzHttpUtils.getInstance().postArriveBaseWH(b.getBusName(), b.getStationID(), b.getDirection(), mMainCallBack);
                 break;
             case FitzApplication.city_code_NJ:
                 break;

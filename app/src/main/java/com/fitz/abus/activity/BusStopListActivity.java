@@ -135,20 +135,20 @@ public class BusStopListActivity extends BaseActivity {
                 if (getIntent().getExtras().containsKey(EXTRAS_BBS_SH)) {
                     BusBaseSHBean busBaseSHBean = getIntent().getExtras().getParcelable(EXTRAS_BBS_SH);
                     setBusInfoSH(busBaseSHBean, null);
-                    new FitzHttpUtils().getBusStopSH(busBaseSHBean.getLine_name(), busBaseSHBean.getLineId(), mBusStationCallBack);
+                    FitzHttpUtils.getInstance().getBusStopSH(busBaseSHBean.getLine_name(), busBaseSHBean.getLineId(), mBusStationCallBack);
                 } else if (getIntent().getExtras().containsKey(EXTRAS_BBI_SH)) {
                     busBaseInfoDB = getIntent().getExtras().getParcelable(EXTRAS_BBI_SH);
                     FLOG("busBaseInfoDB:" + busBaseInfoDB.toString());
-                    new FitzHttpUtils().getBusStopSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), mBusStationCallBack);
+                    FitzHttpUtils.getInstance().getBusStopSH(busBaseInfoDB.getBusName(), busBaseInfoDB.getLineId(), mBusStationCallBack);
                 }
                 break;
             case FitzApplication.city_code_WH:
                 if (getIntent().getExtras().containsKey(EXTRAS_BUSNAME_WH)) {
                     String busName = getIntent().getExtras().getString(EXTRAS_BUSNAME_WH);
-                    new FitzHttpUtils().postBusLineDetails(busName, mBusStationCallBack);
+                    FitzHttpUtils.getInstance().postBusLineDetails(busName, mBusStationCallBack);
                 } else if (getIntent().getExtras().containsKey(EXTRAS_BBI_WH)) {
                     busBaseInfoDB = getIntent().getExtras().getParcelable(EXTRAS_BBI_WH);
-                    new FitzHttpUtils().postBusLineDetails(busBaseInfoDB.getBusName(), mBusStationCallBack);
+                    FitzHttpUtils.getInstance().postBusLineDetails(busBaseInfoDB.getBusName(), mBusStationCallBack);
                 }
                 break;
             case FitzApplication.city_code_NJ:

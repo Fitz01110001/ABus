@@ -1,6 +1,7 @@
 package com.fitz.abus;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
@@ -11,6 +12,8 @@ import com.fitz.abus.bean.BusBaseInfoDB;
 import com.fitz.abus.greendao.DaoMaster;
 import com.fitz.abus.greendao.DaoSession;
 import com.fitz.abus.utils.FitzDBUtils;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
 
@@ -65,6 +68,12 @@ public class FitzApplication extends Application {
     private List<BusBaseInfoDB> favoriteBusListWH = new ArrayList<>();
     private List<BusBaseInfoDB> favoriteBusListNJ = new ArrayList<>();
 
+    public static RefWatcher getRefWatcher(Context context) {
+        return application.refWatcher;
+    }
+
+    private RefWatcher refWatcher;
+
     /**
      * 单例
      */
@@ -104,6 +113,12 @@ public class FitzApplication extends Application {
     public void onCreate() {
         super.onCreate();
         application = this;
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(this);
         autoRefresh = readAutoRefreshTimeState();
         refreshTime = readRefreshTime();
         defaultCityCode = readDefaultCityKey();

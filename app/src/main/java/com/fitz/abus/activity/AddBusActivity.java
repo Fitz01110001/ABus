@@ -106,10 +106,10 @@ public class AddBusActivity extends BaseActivity {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     switch (FitzApplication.getInstance().getDefaultCityCode()) {
                         case FitzApplication.city_code_SH:
-                            new FitzHttpUtils().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
+                            FitzHttpUtils.getInstance().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                             return true;
                         case FitzApplication.city_code_WH:
-                            new FitzHttpUtils().postBusBaseWH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
+                            FitzHttpUtils.getInstance().postBusBaseWH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                             return true;
                         case FitzApplication.city_code_NJ:
                             break;
@@ -189,10 +189,10 @@ public class AddBusActivity extends BaseActivity {
     public void onViewClicked() {
         switch (FitzApplication.getInstance().getDefaultCityCode()) {
             case FitzApplication.city_code_SH:
-                new FitzHttpUtils().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
+                FitzHttpUtils.getInstance().getBusBaseSH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                 break;
             case FitzApplication.city_code_WH:
-                new FitzHttpUtils().postBusBaseWH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
+                FitzHttpUtils.getInstance().postBusBaseWH(addTextViewInputLine.getText().toString(), mBusBaseCallBack);
                 break;
             case FitzApplication.city_code_NJ:
                 break;

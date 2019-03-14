@@ -1,6 +1,7 @@
 package com.fitz.abus.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -53,6 +54,11 @@ public class BaseFragment extends Fragment {
     private Unbinder mUnBinder;
     private List<BusBaseInfoDB> currentBusList = new ArrayList<>();
     private final String DELETE = "item_delete";
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -130,6 +136,7 @@ public class BaseFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         FLOG("onDestroy");
+        FitzApplication.getRefWatcher(getActivity()).watch(this);
     }
 
     private void updateList(){
